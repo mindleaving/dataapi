@@ -1,0 +1,9 @@
+{
+  "DisplayName": "TestScript",
+  "InputType": "",
+  "OutputType": "",
+  "ScriptPath": "",
+  "Parameters": {
+    "TestParameter": "TestValue"
+  }
+}
