@@ -1,0 +1,22 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <AssemblyName>SqlMigrationTools</AssemblyName>
+    <RootNamespace>SqlMigrationTools</RootNamespace>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <Authors>Jan Scholtyssek</Authors>
+    <Description>Tools for migrating data to and from SQL databases</Description>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <Copyright>2020</Copyright>
+    <RepositoryUrl>https://github.com/mindleaving/dataapi</RepositoryUrl>
+    <Version>1.0.7</Version>
+    <Product>SqlMigrationTools</Product>
+    <PackageId>SqlMigrationTools</PackageId>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="System.Data.SqlClient" Version="4.8.1" />
+  </ItemGroup>
+
+</Project>
