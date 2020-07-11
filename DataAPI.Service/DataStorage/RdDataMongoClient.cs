@@ -21,10 +21,11 @@ namespace DataAPI.Service.DataStorage
             string password)
         {
             SetupConventions();
+            var useReplicaSet = !string.IsNullOrEmpty(replicaSetName);
             Client = new MongoClient(new MongoClientSettings
             {
-                ConnectionMode = ConnectionMode.ReplicaSet,
-                ReplicaSetName = replicaSetName,
+                ConnectionMode = useReplicaSet ? ConnectionMode.ReplicaSet : ConnectionMode.Direct,
+                ReplicaSetName = useReplicaSet ? replicaSetName : null,
                 Servers = serverAddresses.Select(MongoServerAddress.Parse).ToList(),
                 Credential = MongoCredential.CreateCredential("admin", username, password)
             });

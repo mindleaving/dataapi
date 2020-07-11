@@ -21,6 +21,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DataAPI.DataStructures", "D
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MongoDbBackupUploader", "MongoDbBackupUploader\MongoDbBackupUploader.csproj", "{0D24933D-952A-4A4F-91CD-164C4FF0B45C}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TypescriptGenerator", "TypescriptGenerator\TypescriptGenerator.csproj", "{CD6BB0B6-CB7B-4E1F-A9EC-9EDE01A6213E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -63,6 +65,10 @@ Global
 		{0D24933D-952A-4A4F-91CD-164C4FF0B45C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0D24933D-952A-4A4F-91CD-164C4FF0B45C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0D24933D-952A-4A4F-91CD-164C4FF0B45C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CD6BB0B6-CB7B-4E1F-A9EC-9EDE01A6213E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CD6BB0B6-CB7B-4E1F-A9EC-9EDE01A6213E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CD6BB0B6-CB7B-4E1F-A9EC-9EDE01A6213E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CD6BB0B6-CB7B-4E1F-A9EC-9EDE01A6213E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

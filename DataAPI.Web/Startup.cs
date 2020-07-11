@@ -32,7 +32,7 @@ namespace DataAPI.Web
 {
     public class Startup
     {
-        private const string CorsPolicyName = "CorsPolicy";
+        private const string CorsPolicyName = "LocalhostCorsPolicy";
 
         public Startup(IConfiguration configuration)
         {
@@ -140,6 +140,7 @@ namespace DataAPI.Web
                 var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
                 c.IncludeXmlComments(xmlPath);
             });
+
         }
 
         // ReSharper disable once UnusedMember.Global

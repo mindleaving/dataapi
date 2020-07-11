@@ -18,7 +18,7 @@ using Newtonsoft.Json;
 namespace DataAPI.Web.Controllers
 {
     [Authorize]
-    [Route("[controller]/[action]")]
+    [Route("api/[controller]/[action]")]
 #pragma warning disable 1591
     public class DownloadController : Controller
 #pragma warning restore 1591
