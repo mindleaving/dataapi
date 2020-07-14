@@ -7,8 +7,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DataProcessing", "DataProce
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DataProcessing.Test", "DataProcessing.Test\DataProcessing.Test.csproj", "{52D6D429-8EF8-4A95-A797-207C10E2E0AF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DataProcessingService", "DataProcessingService\DataProcessingService.csproj", "{A7AB2AA0-C0DA-4F70-84E6-73F38264D807}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DataProcessingServiceMonitor", "DataProcessingServiceMonitor\DataProcessingServiceMonitor.csproj", "{D21D5FEB-1545-4031-9296-481A0261B020}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SharedViewModels", "SharedViewModels\SharedViewModels.csproj", "{078692C1-C50F-4225-BB4B-87F452585F89}"
@@ -18,6 +16,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SharedWpfControls.Test", "SharedWpfControls.Test\SharedWpfControls.Test.csproj", "{87260882-B87D-42A5-AD00-6BA8088E57B7}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AutoCompleteMatchers", "AutoCompleteMatchers\AutoCompleteMatchers.csproj", "{9F11B9C1-36CE-4064-B323-86BA5505E7AD}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DataProcessingService.Web", "DataProcessingService.Web\DataProcessingService.Web.csproj", "{34D459D8-9B5E-4E34-BDBA-E3BABDFE0C86}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,10 +33,6 @@ Global
 		{52D6D429-8EF8-4A95-A797-207C10E2E0AF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{52D6D429-8EF8-4A95-A797-207C10E2E0AF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{52D6D429-8EF8-4A95-A797-207C10E2E0AF}.Release|Any CPU.Build.0 = Release|Any CPU
-		{A7AB2AA0-C0DA-4F70-84E6-73F38264D807}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{A7AB2AA0-C0DA-4F70-84E6-73F38264D807}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{A7AB2AA0-C0DA-4F70-84E6-73F38264D807}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{A7AB2AA0-C0DA-4F70-84E6-73F38264D807}.Release|Any CPU.Build.0 = Release|Any CPU
 		{D21D5FEB-1545-4031-9296-481A0261B020}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{D21D5FEB-1545-4031-9296-481A0261B020}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D21D5FEB-1545-4031-9296-481A0261B020}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -57,6 +53,10 @@ Global
 		{9F11B9C1-36CE-4064-B323-86BA5505E7AD}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9F11B9C1-36CE-4064-B323-86BA5505E7AD}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9F11B9C1-36CE-4064-B323-86BA5505E7AD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{34D459D8-9B5E-4E34-BDBA-E3BABDFE0C86}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{34D459D8-9B5E-4E34-BDBA-E3BABDFE0C86}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{34D459D8-9B5E-4E34-BDBA-E3BABDFE0C86}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{34D459D8-9B5E-4E34-BDBA-E3BABDFE0C86}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

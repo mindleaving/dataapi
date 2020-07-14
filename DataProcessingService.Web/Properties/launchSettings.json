@@ -1,0 +1,13 @@
+﻿{
+  "profiles": {
+    "DataProcessingService.Web": {
+      "commandName": "Project",
+      "environmentVariables": {
+        "DOTNET_ENVIRONMENT": "Development",
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      },
+      "applicationUrl": "https://localhost:44388;http://localhost:5002"
+    }
+  },
+  "$schema": "http://json.schemastore.org/launchsettings.json"
+}

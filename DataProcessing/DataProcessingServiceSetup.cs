@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.Specialized;
 using System.Linq;
 using Commons.Extensions;
 using DataAPI.Client;
@@ -16,7 +15,7 @@ namespace DataProcessing
         public DataProcessingServiceSetup(
             IDataApiClient dataApiClient,
             LoginInformation apiLoginInformation,
-            NameValueCollection appSettings)
+            DataProcessingServiceSettings settings)
         {
             var authenticationResult = dataApiClient.Login(apiLoginInformation.Username, apiLoginInformation.Password);
             if(authenticationResult == null)
@@ -27,7 +26,7 @@ namespace DataProcessing
 
             try
             {
-                var processorDefinitionDirectory = appSettings["ProcessorDefinitionDirectory"];
+                var processorDefinitionDirectory = settings.ProcessorDefinitionDirectory;
                 var processorLoader = new ProcessorLoader(processorDefinitionDirectory);
                 Processors = new List<IProcessor>
                 {
@@ -45,7 +44,7 @@ namespace DataProcessing
                     dataProcessingServiceLogger);
 
 
-                var taskDefinitionDirectory = appSettings["TaskDefinitionDirectory"];
+                var taskDefinitionDirectory = settings.TaskDefinitionDirectory;
                 var taskLoader = new TaskLoader(taskDefinitionDirectory);
                 var taskDatabase = new TaskDatabase();
                 Tasks = new List<ITask>

@@ -29,7 +29,11 @@ namespace DataProcessingService
             var serviceSetup = new DataProcessingServiceSetup(
                 dataApiClient,
                 apiLoginInformation,
-                ConfigurationManager.AppSettings);
+                new DataProcessingServiceSettings
+                {
+                    ProcessorDefinitionDirectory = ConfigurationManager.AppSettings["ProcessorDefinitionDirectory"],
+                    TaskDefinitionDirectory = ConfigurationManager.AppSettings["TaskDefinitionDirectory"]
+                });
             var servicesToRun = new ServiceBase[]
             {
                 new DataProcessingService(serviceSetup)
