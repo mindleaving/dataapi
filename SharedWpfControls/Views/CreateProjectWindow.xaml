@@ -1,0 +1,60 @@
+﻿<Window x:Class="SharedWpfControls.Views.CreateProjectWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:converters="clr-namespace:SharedWpfControls.Converters"
+        xmlns:views="clr-namespace:SharedWpfControls.Views"
+        mc:Ignorable="d"
+        Title="Create project" Height="300" Width="500"
+        Name="Self">
+    <Window.Resources>
+        <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
+        <converters:NullVisibilityConverter x:Key="NullVisibilityConverter"/>
+    </Window.Resources>
+    <Grid DataContext="{Binding ElementName=Self, Path=ViewModel}" Margin="20" HorizontalAlignment="Center">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="200"/>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="80"/>
+            <ColumnDefinition Width="100"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <Label Grid.Row="1" Grid.Column="0" Content="Project ID:" VerticalAlignment="Center"/>
+        <TextBox Grid.Row="1" Grid.Column="1" Text="{Binding ProjectId, UpdateSourceTrigger=PropertyChanged}" Margin="2 5" Height="24"/>
+        <Label Grid.Row="1" Grid.Column="3" Content="ID type:" VerticalAlignment="Center"/>
+        <ComboBox Grid.Row="1" Grid.Column="4" ItemsSource="{Binding IdSourceSystems}" SelectedItem="{Binding SelectedIdSourceSystem}"
+                  Margin="2" Height="24"/>
+
+        <Label Grid.Row="2" Grid.Column="0" Content="Protocol:" VerticalAlignment="Center" Margin="0 5"/>
+        <views:AutoCompleteTextBox Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="2" ViewModel="{Binding ProtocolsAutoCompleteViewModel}"/>
+        <Button Grid.Row="2" Grid.Column="3" Content="Edit" Command="{Binding EditProtocolCommand}" Height="24" Margin="2" />
+        <Button Grid.Row="2" Grid.Column="4" Content="Create new..." Command="{Binding CreateNewProtocolCommand}" Height="24" Margin="2" />
+
+        <GroupBox Grid.Row="3" Grid.Column="1" Grid.ColumnSpan="3" 
+            Header="Protocol preview:" 
+            Visibility="{Binding ProtocolsAutoCompleteViewModel.SelectedObject, Converter={StaticResource NullVisibilityConverter}}">
+            <ScrollViewer VerticalScrollBarVisibility="Auto">
+                <views:ProtocolPreviewView Protocol="{Binding ProtocolsAutoCompleteViewModel.SelectedObject}"/>
+            </ScrollViewer>
+        </GroupBox>
+
+        <StackPanel Grid.Row="4" Grid.Column="1" Grid.ColumnSpan="2" Orientation="Horizontal" HorizontalAlignment="Center">
+            <Button Command="{Binding SaveCommand}" CommandParameter="{Binding ElementName=Self}" Height="32" Width="80" Margin="8">
+                <StackPanel Orientation="Horizontal">
+                    <Label Content="Save"/>
+                    <ProgressBar Width="40" Height="6" Visibility="{Binding IsSaving, Converter={StaticResource BooleanToVisibilityConverter}}" IsIndeterminate="True"/>
+                </StackPanel>
+            </Button>
+            <Button Content="Cancel" Command="{Binding CancelCommand}" CommandParameter="{Binding ElementName=Self}" Height="32" Width="80" Margin="8"/>
+        </StackPanel>
+    </Grid>
+</Window>

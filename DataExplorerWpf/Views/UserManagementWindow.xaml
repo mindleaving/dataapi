@@ -1,0 +1,101 @@
+﻿<Window x:Class="DataExplorerWpf.Views.UserManagementWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:views="clr-namespace:DataExplorerWpf.Views"
+        xmlns:viewModels="clr-namespace:DataExplorerWpf.ViewModels"
+        xmlns:converters="clr-namespace:DataExplorerWpf.Converters"
+        mc:Ignorable="d"
+        Title="User management" Height="600" Width="1200"
+        Name="Self">
+    <Window.Resources>
+        <converters:RolesToStringConverter x:Key="RolesToStringConverter"/>
+    </Window.Resources>
+    <Grid DataContext="{Binding ElementName=Self, Path=ViewModel}">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="360"/>
+            <ColumnDefinition Width="0.5*"/>
+        </Grid.ColumnDefinitions>
+
+        <GroupBox Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" Header="User profiles" BorderThickness="2" BorderBrush="DimGray">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+
+                <ListView Grid.Row="0" 
+                          ItemsSource="{Binding UserProfiles}" SelectedItem="{Binding SelectedUserProfile}"
+                          MinHeight="80" Margin="5">
+                    <ListView.View>
+                        <GridView>
+                            <GridViewColumn Header="Username" DisplayMemberBinding="{Binding Username}" Width="200"/>
+                            <GridViewColumn Header="Firstname" DisplayMemberBinding="{Binding Firstname}" Width="140"/>
+                            <GridViewColumn Header="Lastname" DisplayMemberBinding="{Binding Lastname}" Width="140"/>
+                            <GridViewColumn Header="Email" DisplayMemberBinding="{Binding Email}" Width="200"/>
+                            <GridViewColumn Header="Roles" Width="240">
+                                <GridViewColumn.CellTemplate>
+                                    <DataTemplate DataType="viewModels:UserProfileViewModel">
+                                        <TextBlock Text="{Binding Roles, Converter={StaticResource RolesToStringConverter}}"/>
+                                    </DataTemplate>
+                                </GridViewColumn.CellTemplate>
+                            </GridViewColumn>
+                        </GridView>
+                    </ListView.View>
+                </ListView>
+
+                <GroupBox Grid.Column="1" Header="Actions" Width="220" Padding="10 5">
+                    <StackPanel Orientation="Vertical">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="20"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="20"/>
+                                <RowDefinition Height="Auto"/>
+                            </Grid.RowDefinitions>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+
+                            <Label Grid.Row="0" Grid.Column="0" Content="Firstname:"/>
+                            <TextBox Grid.Row="0" Grid.Column="1" Text="{Binding SelectedUserProfile.Firstname}" Height="24" Margin="2"/>
+
+                            <Label Grid.Row="1" Grid.Column="0" Content="Lastname:"/>
+                            <TextBox Grid.Row="1" Grid.Column="1" Text="{Binding SelectedUserProfile.Lastname}" Height="24" Margin="2"/>
+
+                            <Label Grid.Row="2" Grid.Column="0" Content="Email:"/>
+                            <TextBox Grid.Row="2" Grid.Column="1" Text="{Binding SelectedUserProfile.Email}" Height="24" Margin="2"/>
+
+                            <Button Grid.Row="3" Grid.Column="1" Content="Save" Command="{Binding SaveUserDetailsCommand}" Height="24" Margin="2" Width="100"/>
+
+                            <Label Grid.Row="5" Grid.Column="0" Content="Role:"/>
+                            <ComboBox Grid.Row="5" Grid.Column="1" 
+                                      ItemsSource="{Binding Roles}" SelectedItem="{Binding SelectedRole}" 
+                                      Height="24" Margin="2"/>
+
+                            <Button Grid.Row="6" Grid.Column="1" Content="Add role" Command="{Binding AddRoleCommand}" Height="24" Margin="2" Width="100"/>
+                            <Button Grid.Row="7" Grid.Column="1" Content="Remove role" Command="{Binding RemoveRoleCommand}" Height="24" Margin="2" Width="100"/>
+                            <Button Grid.Row="9" Grid.Column="1" Content="Delete user" Command="{Binding DeleteUserCommand}" Foreground="Red" Height="24" Margin="2" Width="100" />
+                        </Grid>
+                    </StackPanel>
+                </GroupBox>
+            </Grid>
+        </GroupBox>
+
+        <GroupBox Grid.Row="1" Grid.Column="0" Header="Create user" Padding="10 5" BorderThickness="2" BorderBrush="DimGray" Margin="2">
+            <views:CreateUserView ViewModel="{Binding CreateUserViewModel}"/>
+        </GroupBox>
+    </Grid>
+</Window>

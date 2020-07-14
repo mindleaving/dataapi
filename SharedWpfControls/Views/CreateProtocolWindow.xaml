@@ -1,0 +1,148 @@
+﻿<Window x:Class="SharedWpfControls.Views.CreateProtocolWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:views="clr-namespace:SharedWpfControls.Views"
+        xmlns:viewModels="clr-namespace:SharedViewModels.ViewModels;assembly=SharedViewModels"
+        mc:Ignorable="d"
+        Title="Create protocol" Height="450" Width="900"
+        Name="Self">
+    <Window.Resources>
+        <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
+        <Style TargetType="TextBox">
+            <Setter Property="Height" Value="24"/>
+            <Setter Property="Margin" Value="2"/>
+        </Style>
+    </Window.Resources>
+    <Grid DataContext="{Binding ElementName=Self, Path=ViewModel}" HorizontalAlignment="Center">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <StackPanel Grid.Row="0" Orientation="Horizontal" HorizontalAlignment="Center">
+            <Label Content="Protocol name:" VerticalAlignment="Center"/>
+            <TextBox Text="{Binding ProtocolId, UpdateSourceTrigger=PropertyChanged}" IsEnabled="{Binding IsNewProtocol}" Margin="2 5" Height="24" Width="200"/>
+        </StackPanel>
+
+        <Grid Grid.Row="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+            <Label Grid.Column="0" Content="Parameters:"/>
+            <Button Grid.Column="2" Content="Add" Command="{Binding AddParameterCommand}" Width="60" Margin="2" Height="24"/>
+            <Button Grid.Column="3" Content="Delete" Command="{Binding DeleteParameterCommand}" Width="60" Margin="2" Height="24"/>
+        </Grid>
+        <ListView Grid.Row="2" 
+                  ItemsSource="{Binding Parameters}" SelectedItem="{Binding SelectedParameter}" 
+                  MinHeight="100" Margin="2 2 2 10">
+            <ListView.View>
+                <GridView>
+                    <GridViewColumn Header="Name" Width="180">
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate DataType="{x:Type viewModels:ProtocolParameterViewModel}">
+                                <views:AutoCompleteTextBox ViewModel="{Binding NameAutoCompleteViewModel}" Width="160"/>
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+                    <GridViewColumn Header="Type" Width="240">
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate DataType="{x:Type viewModels:ProtocolParameterViewModel}">
+                                <StackPanel Orientation="Horizontal">
+                                    <ComboBox
+                                        ItemsSource="{Binding ParameterTypes}" SelectedItem="{Binding SelectedParameterType}"
+                                        IsEnabled="{Binding NameAutoCompleteViewModel.IsNewValue}"
+                                        Width="90" Height="24" Margin="2" />
+                                    <views:AutoCompleteTextBox
+                                        ViewModel="{Binding DataTypeAutoCompleteViewModel}" Width="130"
+                                        IsEnabled="{Binding NameAutoCompleteViewModel.IsNewValue}"
+                                        Visibility="{Binding IsDataTypeSelected, Converter={StaticResource BooleanToVisibilityConverter}}" />
+                                </StackPanel>
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+                    <GridViewColumn Header="Default value" Width="200">
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate DataType="{x:Type viewModels:ProtocolParameterViewModel}">
+                                <views:DataCollectionProtocolParameterValueView ViewModel="{Binding ValueViewModel}" Width="180"/>
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+                    <GridViewColumn Header="Mandatory" Width="90">
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate DataType="{x:Type viewModels:ProtocolParameterViewModel}">
+                                <CheckBox IsChecked="{Binding IsMandatory}" Margin="10 0"/>
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+                </GridView>
+            </ListView.View>
+        </ListView>
+
+        <Grid Grid.Row="3">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+            <Label Grid.Column="0" Content="Expected data:"/>
+            <Button Grid.Column="2" Content="Add" Command="{Binding AddDataPlaceholderCommand}" Width="60" Margin="2" Height="24"/>
+            <Button Grid.Column="3" Content="Delete" Command="{Binding DeleteDataPlaceholderCommand}" Width="60" Margin="2" Height="24"/>
+        </Grid>
+        <ListView Grid.Row="4" 
+                  ItemsSource="{Binding DataPlaceholders}" SelectedItem="{Binding SelectedDataPlaceholder}"
+                  MinHeight="100" Margin="2 2 2 10">
+            <ListView.View>
+                <GridView>
+                    <GridViewColumn Header="Data type" Width="140">
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate DataType="{x:Type viewModels:DataPlaceholdersViewModel}">
+                                <TextBox Text="{Binding DataType}" Width="120"/>
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+                    <GridViewColumn Header="Name" Width="140">
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate DataType="{x:Type viewModels:DataPlaceholdersViewModel}">
+                                <TextBox Text="{Binding Name}" Width="120"/>
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+                    <GridViewColumn Header="Description" Width="240">
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate DataType="{x:Type viewModels:DataPlaceholdersViewModel}">
+                                <TextBox Text="{Binding Description}" Width="220" TextWrapping="Wrap"/>
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+                    <GridViewColumn Header="Mandatory" Width="90">
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate DataType="{x:Type viewModels:DataPlaceholdersViewModel}">
+                                <CheckBox IsChecked="{Binding IsMandatory}"  Margin="10 0"/>
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+                </GridView>
+            </ListView.View>
+        </ListView>
+
+        <StackPanel Grid.Row="5" Grid.Column="0" Orientation="Horizontal" HorizontalAlignment="Center">
+            <Button Command="{Binding SaveCommand}" CommandParameter="{Binding ElementName=Self}" Height="32" Width="80" Margin="8">
+                <StackPanel Orientation="Horizontal">
+                    <Label Content="Save"/>
+                    <ProgressBar Width="40" Height="6" Visibility="{Binding IsSaving, Converter={StaticResource BooleanToVisibilityConverter}}" IsIndeterminate="True"/>
+                </StackPanel>
+            </Button>
+            <Button Content="Cancel" Command="{Binding CancelCommand}" CommandParameter="{Binding ElementName=Self}" Height="32" Width="80" Margin="8"/>
+        </StackPanel>
+    </Grid>
+</Window>

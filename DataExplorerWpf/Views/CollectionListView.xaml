@@ -1,0 +1,55 @@
+﻿<UserControl x:Class="DataExplorerWpf.Views.CollectionListView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:DataExplorerWpf.Views"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="180"
+             Name="Self">
+    <Grid DataContext="{Binding ElementName=Self, Path=ViewModel}">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        <Expander Grid.Row="0" Header="Filters">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <Label Grid.Row="0" Grid.Column="0" Content="Filter:" VerticalAlignment="Center"/>
+                <TextBox Grid.Row="0" Grid.Column="1" Text="{Binding CollectionSearchPattern, UpdateSourceTrigger=PropertyChanged}" Margin="5" Height="28"/>
+
+                <CheckBox Grid.Row="1" Grid.Column="1" Content="Show hidden" IsChecked="{Binding IncludeHidden}" VerticalAlignment="Center" Margin="2"/>
+            </Grid>
+        </Expander>
+        <ListView Grid.Row="1"
+                  ItemsSource="{Binding Collections}"
+                  SelectedItem="{Binding SelectedCollection}">
+            <ListView.Resources>
+                <Style TargetType="GridViewColumnHeader">
+                    <Setter Property="Visibility" Value="Collapsed"/>
+                </Style>
+            </ListView.Resources>
+            <ListView.View>
+                <GridView>
+                    <GridViewColumn Width="500">
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <local:CollectionListViewItemView ViewModel="{Binding}"/>
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+                </GridView>
+            </ListView.View>
+        </ListView>
+
+        <Button Grid.Row="2" Content="Refresh" Command="{Binding RefreshCollectionListCommand}" Margin="10 2"/>
+    </Grid>
+</UserControl>

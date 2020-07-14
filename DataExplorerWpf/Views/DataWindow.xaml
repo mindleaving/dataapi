@@ -1,0 +1,44 @@
+﻿<Window x:Class="DataExplorerWpf.Views.DataWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:views="clr-namespace:DataExplorerWpf.Views"
+        xmlns:viewModels="clr-namespace:DataExplorerWpf.ViewModels"
+        xmlns:viewModels1="clr-namespace:SharedViewModels.ViewModels;assembly=SharedViewModels"
+        mc:Ignorable="d"
+        Title="{Binding ElementName=Self, Path=ViewModel.WindowTitle}" 
+        Height="450" Width="1200"
+        Name="Self">
+    <Grid DataContext="{Binding ElementName=Self, Path=ViewModel}">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+
+        <GroupBox Grid.Column="0" Header="Data objects:" Padding="5">
+            <GroupBox.HeaderTemplate>
+                <DataTemplate>
+                    <TextBlock Text="{Binding}" FontWeight="Bold"/>
+                </DataTemplate>
+            </GroupBox.HeaderTemplate>
+            <ListView x:Name="DataObjectList" ItemsSource="{Binding DataObjects}" Width="380"
+                      SelectionChanged="DataObjectList_OnSelectionChanged">
+                <ListView.View>
+                    <GridView>
+                        <GridViewColumn Header="ID/File name" DisplayMemberBinding="{Binding DisplayName}" Width="200"/>
+                        <GridViewColumn Header="Type" DisplayMemberBinding="{Binding DataType}" Width="160" />
+                    </GridView>
+                </ListView.View>
+            </ListView>
+        </GroupBox>
+
+        <ItemsControl Grid.Column="1" ItemsSource="{Binding SelectedDataObjects}">
+            <ItemsControl.ItemTemplate>
+                <DataTemplate DataType="{x:Type viewModels1:DataObjectViewModel}">
+                    <views:DataObjectView ViewModel="{Binding}"/>
+                </DataTemplate>
+            </ItemsControl.ItemTemplate>
+        </ItemsControl>
+    </Grid>
+</Window>

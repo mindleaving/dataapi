@@ -1,0 +1,106 @@
+﻿<Window x:Class="FileUploader.Views.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:sharedViews="clr-namespace:SharedWpfControls.Views;assembly=SharedWpfControls"
+        xmlns:viewModels="clr-namespace:SharedViewModels.ViewModels;assembly=SharedViewModels"
+        xmlns:converters="clr-namespace:SharedWpfControls.Converters;assembly=SharedWpfControls"
+        xmlns:views="clr-namespace:FileUploader.Views"
+        mc:Ignorable="d"
+        Title="File uploader" Height="550" Width="900"
+        Loaded="MainWindow_OnLoaded"
+        Name="Self">
+    <Window.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="pack://application:,,,/SharedWpfControls;component/Views/SharedViewResources.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+
+            <converters:CollectionCountToVisibilityConverter x:Key="CollectionCountToVisibilityConverter"/>
+        </ResourceDictionary>
+    </Window.Resources>
+    <Grid DataContext="{Binding ElementName=Self, Path=ViewModel}">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto" MinHeight="120"/>
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="60"/>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="60"/>
+        </Grid.ColumnDefinitions>
+        <Menu Grid.Row="0" Grid.ColumnSpan="3">
+            <MenuItem Header="About" Command="{Binding OpenAboutWindowCommand}"/>
+        </Menu>
+
+        <StackPanel Grid.Row="1" Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Center" Margin="0 20 0 0">
+            <Label Content="Project:"/>
+            <sharedViews:AutoCompleteTextBox ViewModel="{Binding ProjectAutoCompleteViewModel}" Width="200"/>
+            <Button Content="Create new..." Command="{Binding CreateNewProjectCommand}" Height="24" Margin="2"/>
+        </StackPanel>
+
+        <Expander Grid.Row="2" Grid.Column="1" Header="Protocol parameters" HorizontalAlignment="Center" 
+                  Width="360" BorderBrush="DimGray" BorderThickness="1" Margin="5"
+                  IsExpanded="{Binding ParameterResponsesViewModel.ShowParameters}"
+                  Visibility="{Binding IsProjectSelected, Converter={StaticResource BooleanToVisibilityConverter}}">
+            <sharedViews:DataProtocolParameterResponsesView ViewModel="{Binding ParameterResponsesViewModel}"/>
+        </Expander>
+
+        <Border Grid.Row="3" Grid.Column="1" 
+                Width="200" Height="100"
+                CornerRadius="5" BorderBrush="DimGray" BorderThickness="2"
+                AllowDrop="True" Drop="DropBorderDrop" Background="White"
+                Visibility="{Binding IsProtocolParametersCompleted, Converter={StaticResource BooleanToVisibilityConverter}}">
+            <Label Content="Drag files here" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+        </Border>
+        <Grid Grid.Row="4" Grid.Column="1" Margin="20 0" MinWidth="450">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+            <Border Grid.Row="0" Background="Bisque" Padding="5" CornerRadius="3"
+                      Visibility="{Binding FileList.Count, Converter={StaticResource CollectionCountToVisibilityConverter}}">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition />
+                        <RowDefinition />
+                    </Grid.RowDefinitions>
+                    <Label Content="Create/extend data set" FontWeight="Bold" Margin="10 -6" />
+                    <StackPanel Grid.Row="1" Orientation="Horizontal">
+                        <Label Content="Data set name:" Margin="0 0 20 0"/>
+                        <sharedViews:AutoCompleteTextBox ViewModel="{Binding DataSetAutoCompleteViewModel}" Width="180"/>
+                        <Button Content="Add selected files and save" Command="{Binding AddSelectedFilesToDataSetCommand}" Margin="2" Height="24" Width="160" />
+                    </StackPanel>
+                </Grid>
+            </Border>
+            <StackPanel Grid.Row="1" Orientation="Horizontal" Visibility="{Binding FileList.Count, Converter={StaticResource CollectionCountToVisibilityConverter}}">
+                <Button Command="{Binding SelectAllCommand}" Content="Select all" Height="24" Margin="5 2" Template="{StaticResource LinkButtonTemplate}" />
+                <Button Command="{Binding DeselectAllCommand}" Content="Deselect all" Height="24" Margin="5 2" Template="{StaticResource LinkButtonTemplate}"/>
+            </StackPanel>
+            <ScrollViewer Grid.Row="2" VerticalScrollBarVisibility="Auto">
+                <ItemsControl ItemsSource="{Binding FileList}">
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <DockPanel VerticalAlignment="Top"/>
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                    <ItemsControl.ItemContainerStyle>
+                        <Style>
+                            <Setter Property="DockPanel.Dock" Value="Top"/>
+                        </Style>
+                    </ItemsControl.ItemContainerStyle>
+                    <ItemsControl.Resources>
+                        <DataTemplate DataType="{x:Type viewModels:UploadedFileViewModel}">
+                            <views:FileListItemView ViewModel="{Binding}"/>
+                        </DataTemplate>
+                    </ItemsControl.Resources>
+                </ItemsControl>
+            </ScrollViewer>
+        </Grid>
+    </Grid>
+</Window>

@@ -1,0 +1,52 @@
+﻿<UserControl x:Class="SharedWpfControls.Views.DataProtocolParameterResponsesView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:views="clr-namespace:SharedWpfControls.Views"
+             xmlns:converters="clr-namespace:SharedWpfControls.Converters"
+             xmlns:viewModels="clr-namespace:SharedViewModels.ViewModels;assembly=SharedViewModels"
+             mc:Ignorable="d" 
+             d:DesignHeight="200" d:DesignWidth="400"
+             Name="Self">
+    <UserControl.Resources>
+        <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
+        <converters:BooleanToBoldConverter x:Key="BooleanToBoldConverter"/>
+    </UserControl.Resources>
+    <Grid DataContext="{Binding ElementName=Self, Path=ViewModel}">
+        <StackPanel Orientation="Vertical">
+            <ListView ItemsSource="{Binding ParameterResponses}" MinHeight="80" BorderThickness="0">
+                <ListView.Resources>
+                    <Style TargetType="GridViewColumnHeader">
+                        <Setter Property="Visibility" Value="Collapsed" />
+                    </Style>
+                </ListView.Resources>
+                <ListView.View>
+                    <GridView>
+                        <GridViewColumn Header="Name" Width="160">
+                            <GridViewColumn.CellTemplate>
+                                <DataTemplate DataType="{x:Type viewModels:ProtocolParameterResponseViewModel}">
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock Text="{Binding Name}" 
+                                                 FontWeight="{Binding IsMandatory, Converter={StaticResource BooleanToBoldConverter}}"/>
+                                        <TextBlock Text="*"
+                                                 FontWeight="{Binding IsMandatory, Converter={StaticResource BooleanToBoldConverter}}"
+                                                 Visibility="{Binding IsMandatory, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+                                    </StackPanel>
+                                </DataTemplate>
+                            </GridViewColumn.CellTemplate>
+                        </GridViewColumn>
+                        <GridViewColumn Header="Response" Width="200">
+                            <GridViewColumn.CellTemplate>
+                                <DataTemplate DataType="{x:Type viewModels:ProtocolParameterResponseViewModel}">
+                                    <views:DataCollectionProtocolParameterValueView ViewModel="{Binding ValueViewModel}" Width="180"/>
+                                </DataTemplate>
+                            </GridViewColumn.CellTemplate>
+                        </GridViewColumn>
+                    </GridView>
+                </ListView.View>
+            </ListView>
+            <Button Content="Save" Command="{Binding SaveCommand}" Width="100" Height="24" Margin="0 5"/>
+        </StackPanel>
+    </Grid>
+</UserControl>
