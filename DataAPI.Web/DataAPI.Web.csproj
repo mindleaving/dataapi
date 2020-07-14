@@ -1,0 +1,35 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <PackageId>DataAPI.WebModule</PackageId>
+    <Authors>Jan Scholtyssek</Authors>
+    <Company></Company>
+    <Product>DataAPI.WebModule</Product>
+    <Description>DataAPI for handling data storage of data to and from different data sources</Description>
+    <Copyright>Copyright 2020</Copyright>
+    <PackageIconUrl></PackageIconUrl>
+    <PackageTags>DataAPI Web</PackageTags>
+    <Version>2.0.0</Version>
+  </PropertyGroup>
+  <PropertyGroup>
+    <GenerateDocumentationFile>True</GenerateDocumentationFile>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Folder Include="wwwroot\swagger\ui\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="3.1.5" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="3.1.5" />
+    <PackageReference Include="mindleaving.Commons" Version="2.1.8" />
+    <PackageReference Include="MongoDB.Bson" Version="2.10.4" />
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="5.4.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\DataAPI.Service\DataAPI.Service.csproj" />
+  </ItemGroup>
+
+</Project>
