@@ -1,6 +1,8 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using DataAPI.Client.Repositories;
 using DataAPI.Client.Test.Models;
+using Moq;
 using NUnit.Framework;
 
 namespace DataAPI.Client.Test.Repositories
@@ -8,29 +10,56 @@ namespace DataAPI.Client.Test.Repositories
     [TestFixture]
     public class GenericDatabaseTest
     {
-        private readonly IDataApiClient dataApiClient;
+        private readonly Mock<IDataApiClient> dataApiClient;
 
         public GenericDatabaseTest()
         {
-            var apiConfiguration = new ApiConfiguration("", 443);
-            dataApiClient = new DataApiClient(apiConfiguration);
-            dataApiClient.Login();
+            dataApiClient = new Mock<IDataApiClient>();
+            dataApiClient.Setup(x => x.IsLoggedIn).Returns(true);
         }
 
         [Test]
-        [Category("IntegrationTest")]
-        public void GetAllDoesntThrowException()
+        public async Task GetManyStringWhereClauseIsUsed()
         {
-            var sut = new GenericDatabase<Location>(dataApiClient);
-            Assert.That(async () => await sut.GetAllAsync(), Throws.Nothing);
+            const string WhereClause = "Data.source_id LIKE 'abc%'";
+            string actual = null;
+            dataApiClient.Setup(x => x.GetManyAsync<TestObject1>(It.IsAny<string>(), null, null))
+                .Callback<string, string, uint?>((whereArguments, orderByArguments, limit) => actual = whereArguments)
+                .ReturnsAsync(new List<TestObject1>());
+            var sut = new GenericDatabase<TestObject1>(dataApiClient.Object);
+
+            await sut.GetManyAsync(WhereClause);
+
+            Assert.That(actual, Is.EqualTo(WhereClause));
         }
 
         [Test]
-        [Category("IntegrationTest")]
-        public void GetManyDoesntThrowException()
+        public async Task GetManyFilterExpressionIsUsed()
         {
-            var sut = new GenericDatabase<TestObject1>(dataApiClient);
-            Assert.That(async () => (await sut.GetManyAsync("_id LIKE 'abc%'", limit: 10)).ToList(), Throws.Nothing);
+            const string Expected = "Data.source_id LIKE 'abc%'";
+            string actual = null;
+            dataApiClient.Setup(x => x.GetManyAsync<TestObject1>(It.IsAny<string>(), null, null))
+                .Callback<string, string, uint?>((whereArguments, orderByArguments, limit) => actual = whereArguments)
+                .ReturnsAsync(new List<TestObject1>());
+            var sut = new GenericDatabase<TestObject1>(dataApiClient.Object);
+
+            await sut.GetManyAsync(x => x.SourceId.StartsWith("abc"));
+
+            Assert.That(actual, Is.EqualTo(Expected));
+        }
+
+        [Test]
+        public async Task PermanentFilterIsApplied()
+        {
+            string actual = null;
+            dataApiClient.Setup(x => x.GetManyAsync<TestObject1>(It.IsAny<string>(), null, null))
+                .Callback<string, string, uint?>((whereArguments, orderByArguments, limit) => actual = whereArguments)
+                .ReturnsAsync(new List<TestObject1>());
+            var sut = new GenericDatabase<TestObject1>(dataApiClient.Object, x => x.SourceSystem == "XY");
+
+            await sut.GetManyAsync("Data.source_id LIKE 'abc%'");
+
+            Assert.That(actual, Is.EqualTo("Data.source_system = 'XY' AND (Data.source_id LIKE 'abc%')"));
         }
     }
 }

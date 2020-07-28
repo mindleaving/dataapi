@@ -16,7 +16,6 @@ namespace DataAPI.Client.Repositories
     {
         private readonly IDataApiClient dataApiClient;
         private readonly ConcurrentDictionary<string, JObject> cachedItems = new ConcurrentDictionary<string, JObject>();
-        private bool allItemsLoaded;
 
         public GenericDatabase(IDataApiClient dataApiClient, string collectionName)
         {
@@ -32,20 +31,6 @@ namespace DataAPI.Client.Repositories
         public void DeleteCache()
         {
             cachedItems.Clear();
-            allItemsLoaded = false;
-        }
-
-        public async Task<IEnumerable<JObject>> GetAllAsync()
-        {
-            EnsureLoggedIn();
-            if (allItemsLoaded)
-                return cachedItems.Values;
-            var items = (await dataApiClient.GetManyAsync(CollectionName))
-                .Select(JObject.Parse)
-                .ToList();
-            items.ForEach(item => cachedItems.AddOrUpdate(GetId(item), item, (key, existingItem) => item));
-            allItemsLoaded = true;
-            return items;
         }
 
         public async Task<IEnumerable<JObject>> GetManyAsync(string sqlWhereClause, string orderByClause = null, uint? limit = null)
@@ -58,11 +43,14 @@ namespace DataAPI.Client.Repositories
             return items;
         }
 
+        public Task<IEnumerable<JObject>> GetManyAsync(Expression<Func<JObject, bool>> filter, string orderByClause = null, uint? limit = null)
+        {
+            throw new NotSupportedException("Use a typed GenericDatabase if you want to use expressions for searching");
+        }
+
         public async Task<JObject> GetFromIdAsync(string id)
         {
             EnsureLoggedIn();
-            if (allItemsLoaded && !cachedItems.ContainsKey(id))
-                return default;
             if (cachedItems.TryGetValue(id, out var item))
                 return item;
             try
@@ -131,12 +119,16 @@ namespace DataAPI.Client.Repositories
     public class GenericDatabase<T> : IObjectDatabase<T> where T: IId
     {
         private readonly IDataApiClient dataApiClient;
+        private readonly Expression<Func<T, bool>> permanentFilter;
+        private readonly string parsedPermanentFilter;
         private readonly ConcurrentDictionary<string, T> cachedItems = new ConcurrentDictionary<string, T>();
-        private bool allItemsLoaded;
 
-        public GenericDatabase(IDataApiClient dataApiClient)
+        public GenericDatabase(IDataApiClient dataApiClient, Expression<Func<T, bool>> permanentFilter = null)
         {
             this.dataApiClient = dataApiClient ?? throw new ArgumentNullException(nameof(dataApiClient));
+            this.permanentFilter = permanentFilter;
+            if (permanentFilter != null)
+                parsedPermanentFilter = ExpressionParser.ParseWhereExpression(permanentFilter);
             ElementType = typeof(T);
             Provider = new DataApiQueryProvider<T>(dataApiClient);
             Expression = Expression.Constant(this);
@@ -145,33 +137,26 @@ namespace DataAPI.Client.Repositories
         public void DeleteCache()
         {
             cachedItems.Clear();
-            allItemsLoaded = false;
         }
 
-        public async Task<IEnumerable<T>> GetAllAsync()
+        public async Task<IEnumerable<T>> GetManyAsync(string sqlWhereClause = null, string orderByClause = null, uint? limit = null)
         {
             EnsureLoggedIn();
-            if (allItemsLoaded)
-                return cachedItems.Values;
-            var items = await dataApiClient.GetManyAsync<T>();
+            var combinedWhereClause = WhereClauseCombiner.CombinedWhereClause(parsedPermanentFilter, sqlWhereClause);
+            var items = await dataApiClient.GetManyAsync<T>(combinedWhereClause, orderByClause, limit);
             items.ForEach(item => cachedItems.AddOrUpdate(GetId(item), item, (key, existingItem) => item));
-            allItemsLoaded = true;
             return items;
         }
 
-        public async Task<IEnumerable<T>> GetManyAsync(string sqlWhereClause, string orderByClause = null, uint? limit = null)
+        public async Task<IEnumerable<T>> GetManyAsync(Expression<Func<T,bool>> filter, string orderByClause = null, uint? limit = null)
         {
-            EnsureLoggedIn();
-            var items = await dataApiClient.GetManyAsync<T>(sqlWhereClause, orderByClause, limit);
-            items.ForEach(item => cachedItems.AddOrUpdate(GetId(item), item, (key, existingItem) => item));
-            return items;
+            var sqlWhereClause = ExpressionParser.ParseWhereExpression(filter);
+            return await GetManyAsync(sqlWhereClause, orderByClause, limit);
         }
 
         public async Task<T> GetFromIdAsync(string id)
         {
             EnsureLoggedIn();
-            if (allItemsLoaded && !cachedItems.ContainsKey(id))
-                return default;
             if (cachedItems.TryGetValue(id, out var item))
                 return item;
             try

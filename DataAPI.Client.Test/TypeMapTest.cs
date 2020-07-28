@@ -32,15 +32,9 @@ namespace DataAPI.Client.Test
         }
 
         [Test]
-        public void GetCollectionNameReturnsSharedDataStructuresInterfaceName()
+        public void GetCollectionNameReturnsClosestCollectionNameAttribute()
         {
             Assert.That(DataApiClient.GetCollectionName<CompletelyOtherNameImplementation>(), Is.EqualTo("ParameterValidation"));
-        }
-
-        [Test]
-        public void GetCollectionNameReturnsInterfaceNameWithoutI()
-        {
-            Assert.That(DataApiClient.GetCollectionName<IParameterValidation<IParameterOption>>(), Is.EqualTo("ParameterValidation"));
         }
 
         [Test]
@@ -115,7 +109,7 @@ namespace DataAPI.Client.Test
         }
 
         [DataApiCollection("ParameterValidation")]
-        private interface IParameterValidation<TParameterOption>
+        private interface IParameterValidation<TParameterOption> : ICollectionName
         {
             [Required]
             ParameterValidationType ParameterValidationType { get; set; }
@@ -130,6 +124,12 @@ namespace DataAPI.Client.Test
 
             [RequiredIfPropertyEqualTo(nameof(ParameterValidationType), TypeMapTest.ParameterValidationType.List)]
             List<TParameterOption> Options { get; }
+        }
+
+        [DataApiCollection("MyCollection")]
+        private interface ICollectionName
+        {
+            
         }
 
         private interface IParameterOption

@@ -13,7 +13,7 @@ namespace DataAPI.Client
 
         public static string GetCollectionName(Type type)
         {
-            IEnumerable<Type> interfaces = type.GetInterfaces();
+            IEnumerable<Type> interfaces = new List<Type>();
             var baseType = type;
             while (baseType != null)
             {
@@ -31,28 +31,11 @@ namespace DataAPI.Client
                 interfaces = interfaces.Concat(baseTypeInterfaces);
                 baseType = baseType.BaseType;
             }
-            var dataStructuresAssembly = Assembly.GetAssembly(typeof(IId));
-            var domainModels = interfaces
-                .Where(x => x.Assembly == dataStructuresAssembly)
-                .Except(new[] {typeof(IId) })
-                .ToList();
-            if (domainModels.Count == 0)
+            if (type.IsInterface)
             {
-                if (type.IsInterface)
-                {
-                    return RemoveGenericSuffix(type.Name).Substring(1); // Remove leading 'I'
-                }
-                return RemoveGenericSuffix(type.Name);
+                return RemoveGenericSuffix(type.Name).Substring(1); // Remove leading 'I'
             }
-            if(domainModels.Count > 1)
-            {
-                throw new Exception($"Cannot determine collection name for type '{type.FullName}' "
-                                    + "because it implements more than one SharedDataStructures-interface. "
-                                    + $"Please register the collection name using {nameof(DataApiClient)}.{nameof(DataApiClient.RegisterType)}");
-            }
-            var sharedDataStructuresInterface = domainModels[0];
-            var interfaceName = RemoveGenericSuffix(sharedDataStructuresInterface.Name);
-            return interfaceName.Substring(1); // Remove leading 'I'
+            return RemoveGenericSuffix(type.Name);
         }
 
         private static string RemoveGenericSuffix(string typeName)

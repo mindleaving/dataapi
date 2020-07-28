@@ -12,12 +12,10 @@ namespace DataAPI.Client
     internal class DataApiQueryProvider<TSource> : IQueryProvider
     {
         private readonly IDataApiClient dataApiClient;
-        private readonly ExpressionParser expressionParser;
 
         public DataApiQueryProvider(IDataApiClient dataApiClient)
         {
             this.dataApiClient = dataApiClient;
-            expressionParser = new ExpressionParser();
         }
 
         public IQueryable CreateQuery(Expression expression)
@@ -79,7 +77,7 @@ namespace DataAPI.Client
             if (!isStrongTypeCollection && !isJObjectCollection)
                 throw new NotSupportedException($"Incompatible return type for {GetType().Name}.Execute '{typeof(TResult).Name}'");
 
-            var query = expressionParser.ParseQueryExpression(expression);
+            var query = ExpressionParser.ParseQueryExpression(expression);
             var jObjects = Task.Run(
                 async () =>
                 {
@@ -96,7 +94,7 @@ namespace DataAPI.Client
 
         public object Execute(Expression expression)
         {
-            var query = expressionParser.ParseQueryExpression(expression);
+            var query = ExpressionParser.ParseQueryExpression(expression);
             return Task.Run(
                 async () =>
                 {
@@ -107,7 +105,7 @@ namespace DataAPI.Client
 
         public string GetQueryText(Expression expression)
         {
-            return expressionParser.ParseQueryExpression(expression);
+            return ExpressionParser.ParseQueryExpression(expression);
         }
     }
 }
