@@ -53,5 +53,20 @@ namespace DataAPI.Client.Test
             Assert.That(searchResult, Is.Not.Null);
             CollectionAssert.AreEqual(ids, searchResult.Select(x => x.Id));
         }
+
+        [Test]
+        public void AutocompleteWithGenericDatabaseQueryable()
+        {
+            var resultStream = new MemoryStream(Encoding.UTF8.GetBytes(
+                "{\"Data\": {  \"id\": \"1179240\",  \"source_id\": \"84\",  \"business_name\": \"Letmælk\",  \"source_system\": \"SQL\",  \"source_table\": \"ingredients_dbo_Ingredient\",  \"component_type\": \"Ingredient\",  \"created_on\": \"1/13/2017 9:58:45 AM\",  \"created_by\": \"JDOE\",  \"updated_on\": null,  \"updated_by\": null,  \"is_deleted\": \"False\"} }"
+            ));
+
+            var dataApiClient = new Mock<IDataApiClient>();
+            dataApiClient
+                .Setup(x => x.SearchAsync(It.IsAny<string>(), ResultFormat.Json))
+                .Returns(Task.FromResult((Stream)resultStream));
+            var trialRepository = new GenericDatabase<TestObject1>(dataApiClient.Object);
+            Assert.That(() => trialRepository.Where(x => x.Id.StartsWith("abc")).Take(10).ToList(), Throws.Nothing);
+        }
     }
 }

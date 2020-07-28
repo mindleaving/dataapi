@@ -1,10 +1,11 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
+using DataAPI.DataStructures.DomainModels;
 using Newtonsoft.Json;
 
 namespace DataAPI.Client.Test.Models
 {
-    public class Location : IEquatable<Location>
+    public class Location : IId, IEquatable<Location>
     {
         [JsonConstructor]
         public Location(string site, string room)

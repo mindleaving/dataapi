@@ -6,6 +6,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Net;
 using System.Threading.Tasks;
+using DataAPI.DataStructures.DomainModels;
 using DataAPI.DataStructures.Exceptions;
 using Newtonsoft.Json.Linq;
 
@@ -47,10 +48,10 @@ namespace DataAPI.Client.Repositories
             return items;
         }
 
-        public async Task<IEnumerable<JObject>> SearchAsync(string sqlWhereClause, int limit)
+        public async Task<IEnumerable<JObject>> GetManyAsync(string sqlWhereClause, string orderByClause = null, uint? limit = null)
         {
             EnsureLoggedIn();
-            var items = (await dataApiClient.GetManyAsync(CollectionName, sqlWhereClause))
+            var items = (await dataApiClient.GetManyAsync(CollectionName, sqlWhereClause, orderByClause, limit))
                 .Select(JObject.Parse)
                 .ToList();
             items.ForEach(item => cachedItems.AddOrUpdate(GetId(item), item, (key, existingItem) => item));
@@ -127,7 +128,7 @@ namespace DataAPI.Client.Repositories
         }
     }
 
-    public class GenericDatabase<T> : IObjectDatabase<T>
+    public class GenericDatabase<T> : IObjectDatabase<T> where T: IId
     {
         private readonly IDataApiClient dataApiClient;
         private readonly ConcurrentDictionary<string, T> cachedItems = new ConcurrentDictionary<string, T>();
@@ -158,10 +159,10 @@ namespace DataAPI.Client.Repositories
             return items;
         }
 
-        public async Task<IEnumerable<T>> SearchAsync(string sqlWhereClause, int limit)
+        public async Task<IEnumerable<T>> GetManyAsync(string sqlWhereClause, string orderByClause = null, uint? limit = null)
         {
             EnsureLoggedIn();
-            var items = await dataApiClient.GetManyAsync<T>(sqlWhereClause);
+            var items = await dataApiClient.GetManyAsync<T>(sqlWhereClause, orderByClause, limit);
             items.ForEach(item => cachedItems.AddOrUpdate(GetId(item), item, (key, existingItem) => item));
             return items;
         }
@@ -218,8 +219,7 @@ namespace DataAPI.Client.Repositories
 
         private static string GetId(T item)
         {
-            dynamic d = item;
-            return d.Id.ToString();
+            return item.Id;
         }
 
         public IEnumerator<T> GetEnumerator()

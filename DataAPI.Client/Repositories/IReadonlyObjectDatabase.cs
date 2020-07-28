@@ -8,7 +8,7 @@ namespace DataAPI.Client.Repositories
     {
         void DeleteCache();
         Task<IEnumerable<T>> GetAllAsync();
-        Task<IEnumerable<T>> SearchAsync(string sqlWhereClause, int limit = -1);
+        Task<IEnumerable<T>> GetManyAsync(string sqlWhereClause, string orderByClause = null, uint? limit = null);
         Task<T> GetFromIdAsync(string id);
         Task<bool> ExistsAsync(string id);
     }

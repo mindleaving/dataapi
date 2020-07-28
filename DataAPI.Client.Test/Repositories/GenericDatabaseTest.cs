@@ -1,4 +1,5 @@
-﻿using DataAPI.Client.Repositories;
+﻿using System.Linq;
+using DataAPI.Client.Repositories;
 using DataAPI.Client.Test.Models;
 using NUnit.Framework;
 
@@ -22,6 +23,14 @@ namespace DataAPI.Client.Test.Repositories
         {
             var sut = new GenericDatabase<Location>(dataApiClient);
             Assert.That(async () => await sut.GetAllAsync(), Throws.Nothing);
+        }
+
+        [Test]
+        [Category("IntegrationTest")]
+        public void GetManyDoesntThrowException()
+        {
+            var sut = new GenericDatabase<TestObject1>(dataApiClient);
+            Assert.That(async () => (await sut.GetManyAsync("_id LIKE 'abc%'", limit: 10)).ToList(), Throws.Nothing);
         }
     }
 }

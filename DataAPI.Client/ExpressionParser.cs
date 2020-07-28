@@ -132,6 +132,8 @@ namespace DataAPI.Client
                 case ExpressionType.Call:
                     if (IsContainsStatement(expression))
                         return BuildContainsExpression((MethodCallExpression)expression);
+                    if (IsStringMatchStatement(expression))
+                        return BuildStringMatchStatement((MethodCallExpression) expression);
                     return GetValue(expression);
                 case ExpressionType.LessThan:
                     return ParseBinaryExpression((BinaryExpression)expression, "<", omitParentheses: true);
@@ -161,6 +163,13 @@ namespace DataAPI.Client
             if (!(expression is MethodCallExpression methodCallExpression))
                 return false;
             return methodCallExpression.Method.Name.InSet("Contains", "InSet");
+        }
+
+        private bool IsStringMatchStatement(Expression expression)
+        {
+            if (!(expression is MethodCallExpression methodCallExpression))
+                return false;
+            return methodCallExpression.Method.Name.InSet("StartsWith", "EndsWith", "IsMatch");
         }
 
         private string BuildContainsExpression(MethodCallExpression expression)
@@ -198,6 +207,31 @@ namespace DataAPI.Client
             else
                 throw new NotSupportedException($"Cannot build IN-expression from method '{expression.Method.Name}'");
             return $"{propertyPath} IN [{string.Join(", ", values)}]";
+        }
+
+        private string BuildStringMatchStatement(MethodCallExpression expression)
+        {
+            string propertyPath;
+            string matchPattern;
+            var methodName = expression.Method.Name;
+            if (methodName == "StartsWith")
+            {
+                propertyPath = ExtractPath(expression.Object);
+                matchPattern = $"'{GetValue(expression.Arguments[0], omitQuotes: true)}%'";
+            } 
+            else if (methodName == "EndsWith")
+            {
+                propertyPath = ExtractPath(expression.Object);
+                matchPattern = $"'%{GetValue(expression.Arguments[0], omitQuotes: true)}'";
+            } 
+            else if (methodName == "IsMatch")
+            {
+                propertyPath = ExtractPath(expression.Arguments[0]);
+                matchPattern = GetValue(expression.Arguments[1], true);
+            }
+            else
+                throw new NotSupportedException($"Cannot build LIKE-expression for method '{methodName}'");
+            return $"{propertyPath} LIKE {matchPattern}";
         }
 
         private static string GetValue(Expression expression, bool omitQuotes = false)
