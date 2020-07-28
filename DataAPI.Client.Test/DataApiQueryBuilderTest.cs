@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Text.RegularExpressions;
 using Commons.Extensions;
 using DataAPI.Client.Test.Models;
 using DataAPI.DataStructures.Constants;
@@ -166,6 +167,46 @@ namespace DataAPI.Client.Test
             string query = null;
             Assert.That(() => query = builder.Build(), Throws.Nothing);
             Assert.That(query, Is.EqualTo("SELECT * FROM Location WHERE Data.Site IN ['København', 'Amsterdam']"));
+        }
+
+        [Test]
+        public void CanParseStartsWithFilter()
+        {
+            var builder = new DataApiQueryBuilder<Location>()
+                .Where(x => x.Site.StartsWith("Arp"));
+            string query = null;
+            Assert.That(() => query = builder.Build(), Throws.Nothing);
+            Assert.That(query, Is.EqualTo("SELECT * FROM Location WHERE Data.Site LIKE 'Arp%'"));
+        }
+
+        [Test]
+        public void CanParseEndsWithFilter()
+        {
+            var builder = new DataApiQueryBuilder<Location>()
+                .Where(x => x.Site.EndsWith("Arp"));
+            string query = null;
+            Assert.That(() => query = builder.Build(), Throws.Nothing);
+            Assert.That(query, Is.EqualTo("SELECT * FROM Location WHERE Data.Site LIKE '%Arp'"));
+        }
+
+        [Test]
+        public void CanParseContainsFilter()
+        {
+            var builder = new DataApiQueryBuilder<Location>()
+                .Where(x => x.Site.Contains("Arp"));
+            string query = null;
+            Assert.That(() => query = builder.Build(), Throws.Nothing);
+            Assert.That(query, Is.EqualTo("SELECT * FROM Location WHERE Data.Site LIKE '%Arp%'"));
+        }
+
+        [Test]
+        public void CanParseRegexIsMatchFilter()
+        {
+            var builder = new DataApiQueryBuilder<Location>()
+                .Where(x => Regex.IsMatch(x.Site, "[a-zA-Z0-9]+"));
+            string query = null;
+            Assert.That(() => query = builder.Build(), Throws.Nothing);
+            Assert.That(query, Is.EqualTo("SELECT * FROM Location WHERE Data.Site LIKE [a-zA-Z0-9]+"));
         }
     }
 }
