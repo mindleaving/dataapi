@@ -8,13 +8,6 @@ namespace DataAPI.Client
 {
     public class DataApiQueryBuilder<T>
     {
-        private readonly ExpressionParser expressionParser;
-
-        public DataApiQueryBuilder()
-        {
-            expressionParser = new ExpressionParser();
-        }
-
         private string selectArguments;
         private string SelectArguments
         {
@@ -80,7 +73,7 @@ namespace DataAPI.Client
             var paths = new List<string>();
             foreach (var projection in projections)
             {
-                var path = expressionParser.ExtractPath(projection.Body);
+                var path = ExpressionParser.ExtractPath(projection.Body);
                 paths.Add(path);
             }
             if (paths.Any())
@@ -110,13 +103,13 @@ namespace DataAPI.Client
 
         public DataApiQueryBuilder<T> Where(Expression<Func<T, bool>> predicate)
         {
-            WhereArguments = expressionParser.ParseWhereExpression(predicate.Body);
+            WhereArguments = ExpressionParser.ParseWhereExpression(predicate.Body);
             return this;
         }
 
         public DataApiQueryBuilder<T> GroupBy(Expression<Func<T, object>> groupKey)
         {
-            GroupByArguments = expressionParser.ExtractPath(groupKey.Body);
+            GroupByArguments = ExpressionParser.ExtractPath(groupKey.Body);
             return this;
         }
 
@@ -126,7 +119,7 @@ namespace DataAPI.Client
                 throw new ArgumentOutOfRangeException(nameof(sortDirection), sortDirection, "Undefined is not a valid sort direction");
             if (OrderByArguments != null)
                 throw new InvalidOperationException("OrderBy can only be called once for each query. Use ThenBy for adding secondary sort criteria.");
-            var path = expressionParser.ExtractPath(sortField.Body);
+            var path = ExpressionParser.ExtractPath(sortField.Body);
             var sortDirectionString = sortDirection == SortDirection.Descending ? "DESC" : "ASC";
             OrderByArguments = $"{path} {sortDirectionString}";
             return this;
@@ -138,7 +131,7 @@ namespace DataAPI.Client
                 throw new ArgumentOutOfRangeException(nameof(sortDirection), sortDirection, "Undefined is not a valid sort direction");
             if (OrderByArguments == null)
                 throw new InvalidOperationException("ThenBy can only be called after OrderBy");
-            var path = expressionParser.ExtractPath(sortField.Body);
+            var path = ExpressionParser.ExtractPath(sortField.Body);
             var sortDirectionString = sortDirection == SortDirection.Descending ? "DESC" : "ASC";
             OrderByArguments += $", {path} {sortDirectionString}";
             return this;

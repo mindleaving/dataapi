@@ -10,9 +10,9 @@ using Newtonsoft.Json;
 
 namespace DataAPI.Client
 {
-    internal class ExpressionParser
+    internal static class ExpressionParser
     {
-        public string ParseQueryExpression(Expression expression)
+        public static string ParseQueryExpression(Expression expression)
         {
             var queryParts = new Stack<string>();
             ParseQueryExpressionImpl(expression, queryParts);
@@ -20,7 +20,7 @@ namespace DataAPI.Client
             return query;
         }
 
-        private void ParseQueryExpressionImpl(Expression expression, Stack<string> stack)
+        private static void ParseQueryExpressionImpl(Expression expression, Stack<string> stack)
         {
             switch (expression.NodeType)
             {
@@ -84,7 +84,7 @@ namespace DataAPI.Client
             }
         }
 
-        private IEnumerable<string> ParseSelectArguments(IEnumerable<Expression> selectArgumentExpressions)
+        private static IEnumerable<string> ParseSelectArguments(IEnumerable<Expression> selectArgumentExpressions)
         {
             foreach (var selectArgumentExpression in selectArgumentExpressions)
             {
@@ -92,7 +92,7 @@ namespace DataAPI.Client
             }
         }
 
-        public string ParseWhereExpression(Expression expression)
+        public static string ParseWhereExpression(Expression expression)
         {
             switch (expression.NodeType)
             {
@@ -158,21 +158,21 @@ namespace DataAPI.Client
             }
         }
 
-        private bool IsContainsStatement(Expression expression)
+        private static bool IsContainsStatement(Expression expression)
         {
             if (!(expression is MethodCallExpression methodCallExpression))
                 return false;
             return methodCallExpression.Method.Name.InSet("Contains", "InSet");
         }
 
-        private bool IsStringMatchStatement(Expression expression)
+        private static bool IsStringMatchStatement(Expression expression)
         {
             if (!(expression is MethodCallExpression methodCallExpression))
                 return false;
             return methodCallExpression.Method.Name.InSet("StartsWith", "EndsWith", "IsMatch");
         }
 
-        private string BuildContainsExpression(MethodCallExpression expression)
+        private static string BuildContainsExpression(MethodCallExpression expression)
         {
             string propertyPath;
             IEnumerable<string> values;
@@ -209,7 +209,7 @@ namespace DataAPI.Client
             return $"{propertyPath} IN [{string.Join(", ", values)}]";
         }
 
-        private string BuildStringMatchStatement(MethodCallExpression expression)
+        private static string BuildStringMatchStatement(MethodCallExpression expression)
         {
             string propertyPath;
             string matchPattern;
@@ -254,7 +254,7 @@ namespace DataAPI.Client
             return constant;
         }
 
-        public string ExtractPath(Expression expression)
+        public static string ExtractPath(Expression expression)
         {
             switch (expression)
             {
@@ -282,7 +282,7 @@ namespace DataAPI.Client
             }
         }
 
-        private string GetMemberName(MemberInfo memberInfo)
+        private static string GetMemberName(MemberInfo memberInfo)
         {
             var jsonPropertyAttribute = memberInfo.GetCustomAttribute<JsonPropertyAttribute>();
             if (jsonPropertyAttribute == null)
@@ -290,7 +290,7 @@ namespace DataAPI.Client
             return jsonPropertyAttribute.PropertyName;
         }
 
-        private string ParseBinaryExpression(BinaryExpression expression, string operatorSymbol, bool omitParentheses = false)
+        private static string ParseBinaryExpression(BinaryExpression expression, string operatorSymbol, bool omitParentheses = false)
         {
             var leftExpression = IsPathReference(expression.Left)
                 ? ExtractPath(expression.Left)
@@ -304,9 +304,9 @@ namespace DataAPI.Client
                 return $"({leftExpression}) {operatorSymbol} ({rightExpression})";
         }
 
-        private bool IsPathReference(Expression expression)
+        private static bool IsPathReference(Expression expression)
         {
-            Expression currentExpression = expression;
+            var currentExpression = expression;
             while (currentExpression is MemberExpression memberExpression)
             {
                 currentExpression = memberExpression.Expression;

@@ -23,7 +23,6 @@ namespace DataAPI.Client
     {
         private readonly IHttpClientProxy httpClientProxy;
         private readonly LoginManager loginManager;
-        private readonly ExpressionParser expressionParser;
 
         public DataApiClient(ApiConfiguration apiConfiguration, bool ignoreSslNameMismatch = false)
             : this(apiConfiguration, new DataApiHttpClientProxy(true, ignoreSslNameMismatch))
@@ -35,7 +34,6 @@ namespace DataAPI.Client
             this.httpClientProxy = httpClientProxy;
             ApiConfiguration = apiConfiguration;
             loginManager = new LoginManager(apiConfiguration, this.httpClientProxy);
-            expressionParser = new ExpressionParser();
         }
 
         public ApiConfiguration ApiConfiguration { get; }
@@ -186,7 +184,7 @@ namespace DataAPI.Client
             => DataIoCommunicator.GetSubmissionMetadata(ApiConfiguration, httpClientProxy.Client, dataType, id);
 
         public Task<List<T>> GetManyAsync<T>(Expression<Func<T,bool>> filter, Expression<Func<T,object>> orderBy = null, uint? limit = null)
-            => DataIoCommunicator.GetManyAsync<T>(ApiConfiguration, httpClientProxy.Client, filter != null ? expressionParser.ParseWhereExpression(filter) : null, orderBy != null ? expressionParser.ParseWhereExpression(orderBy) : null, limit);
+            => DataIoCommunicator.GetManyAsync<T>(ApiConfiguration, httpClientProxy.Client, filter != null ? ExpressionParser.ParseWhereExpression(filter) : null, orderBy != null ? ExpressionParser.ParseWhereExpression(orderBy) : null, limit);
 
         public Task<List<T>> GetManyAsync<T>(string whereArguments = null, string orderByArguments = null, uint? limit = null)
             => DataIoCommunicator.GetManyAsync<T>(ApiConfiguration, httpClientProxy.Client, whereArguments, orderByArguments, limit);
@@ -195,7 +193,7 @@ namespace DataAPI.Client
             => DataIoCommunicator.GetManyAsync(ApiConfiguration, httpClientProxy.Client, dataType, whereArguments, orderByArguments, limit);
 
         public Task<T> FirstOrDefault<T>(Expression<Func<T, bool>> filter, Expression<Func<T, object>> orderBy = null)
-            => DataIoCommunicator.FirstOrDefault<T>(ApiConfiguration, httpClientProxy.Client, filter != null ? expressionParser.ParseWhereExpression(filter) : null, orderBy != null ? expressionParser.ParseWhereExpression(orderBy) : null);
+            => DataIoCommunicator.FirstOrDefault<T>(ApiConfiguration, httpClientProxy.Client, filter != null ? ExpressionParser.ParseWhereExpression(filter) : null, orderBy != null ? ExpressionParser.ParseWhereExpression(orderBy) : null);
 
         public Task<T> FirstOrDefault<T>(string whereArguments, string orderByArguments = null)
             => DataIoCommunicator.FirstOrDefault<T>(ApiConfiguration, httpClientProxy.Client, whereArguments, orderByArguments);
