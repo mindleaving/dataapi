@@ -20,7 +20,7 @@ namespace DataAPI.Service.IdGeneration
             var replaceResult = await idGeneratorStateCollection.ReplaceOneAsync(
                 x => x.DataType == idGeneratorState.DataType && !x.IsLocked,
                 idGeneratorState,
-                new UpdateOptions { IsUpsert = true });
+                new ReplaceOptions { IsUpsert = true });
             return replaceResult.IsAcknowledged && replaceResult.ModifiedCount == 1;
         }
 

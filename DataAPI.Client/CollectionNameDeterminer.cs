@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using DataAPI.DataStructures.Attributes;
-using DataAPI.DataStructures.DomainModels;
 
 namespace DataAPI.Client
 {
@@ -13,7 +12,6 @@ namespace DataAPI.Client
 
         public static string GetCollectionName(Type type)
         {
-            IEnumerable<Type> interfaces = new List<Type>();
             var baseType = type;
             while (baseType != null)
             {
@@ -28,7 +26,6 @@ namespace DataAPI.Client
                     .FirstOrDefault(attr => attr != null);
                 if (dataApiCollectionAttribute != null)
                     return dataApiCollectionAttribute.CollectionName;
-                interfaces = interfaces.Concat(baseTypeInterfaces);
                 baseType = baseType.BaseType;
             }
             if (type.IsInterface)

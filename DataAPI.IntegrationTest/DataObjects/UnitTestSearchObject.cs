@@ -1,8 +1,9 @@
 ﻿using System.Collections.Generic;
+using DataAPI.DataStructures.DomainModels;
 
 namespace DataAPI.IntegrationTest.DataObjects
 {
-    public class UnitTestSearchObject
+    public class UnitTestSearchObject : IId
     {
         public string Id { get; set; }
         public string Name { get; set; }

@@ -89,7 +89,7 @@ namespace DataAPI.Service.DataStorage
             var id = container.Id;
             if(overwrite)
             {
-                var replaceResult = await collection.ReplaceOneAsync(x => x.Id == id, container, new UpdateOptions { IsUpsert = true });
+                var replaceResult = await collection.ReplaceOneAsync(x => x.Id == id, container, new ReplaceOptions { IsUpsert = true });
                 var dataModificationType = replaceResult.MatchedCount == 0 ? DataModificationType.Created : DataModificationType.Replaced;
                 return new StoreResult(id, dataModificationType, isNewCollection);
             }
