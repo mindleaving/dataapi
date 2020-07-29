@@ -56,7 +56,6 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Converters\IsErrorVisibilityConverter.cs" />
-    <Compile Include="Objects\SampleCompositionGridAnnotation.cs" />
     <Compile Include="Objects\SharedColumn.cs" />
     <Compile Include="Objects\SharedValue.cs" />
     <Compile Include="Objects\SingleValueAnnotation.cs" />

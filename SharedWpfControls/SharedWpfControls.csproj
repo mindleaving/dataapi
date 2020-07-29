@@ -68,8 +68,6 @@
     <Compile Include="Helpers\WpfFolderBrowseDialog.cs" />
     <Compile Include="Helpers\WpfFolderBrowseDialogSpawner.cs" />
     <Compile Include="Objects\AnnotationRunnerSettings.cs" />
-    <Compile Include="Objects\PlateLayerType.cs" />
-    <Compile Include="Objects\StorageLocationType.cs" />
     <Compile Include="Objects\WpfPasswordBox.cs" />
     <Compile Include="Properties\Annotations.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

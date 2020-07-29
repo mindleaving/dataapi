@@ -376,7 +376,7 @@ namespace DataAPI.Service.AccessManagement
             await collectionMetadataCollection.ReplaceOneAsync(
                 x => x.CollectionName == collectionName, 
                 collectionMetadata, 
-                new UpdateOptions { IsUpsert = true});
+                new ReplaceOptions { IsUpsert = true});
         }
 
         public async Task<bool> IsOverwritingAllowedForCollectionAsync(string collectionName)

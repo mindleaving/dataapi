@@ -46,7 +46,7 @@ namespace DataAPI.Service.DataRouting
             await dataRedirectionCollection.ReplaceOneAsync(
                 x => x.Id == dataRedirection.Id, 
                 dataRedirection, 
-                new UpdateOptions { IsUpsert = true});
+                new ReplaceOptions { IsUpsert = true});
         }
 
         public async IAsyncEnumerable<string> ListCollectionNamesAsync()

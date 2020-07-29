@@ -5,15 +5,15 @@
   </PropertyGroup>
   
   <ItemGroup>
-    <PackageReference Include="DataAPI.Client" Version="1.14.0" />
-    <PackageReference Include="Microsoft.Azure.Storage.Blob" Version="11.1.7" />
+    <PackageReference Include="DataAPI.Client" Version="1.16.1" />
+    <PackageReference Include="Microsoft.Azure.Storage.Blob" Version="11.2.0" />
     <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
     <PackageReference Include="mindleaving.Commons" Version="2.1.8" />
     <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
     <PackageReference Include="System.ComponentModel.Annotations" Version="4.7.0" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.6.1" />
     <PackageReference Include="NUnit" Version="3.12.0" />
-    <PackageReference Include="NUnit3TestAdapter" Version="3.16.1">
+    <PackageReference Include="NUnit3TestAdapter" Version="3.17.0">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
