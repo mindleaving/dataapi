@@ -26,7 +26,7 @@ namespace DataAPI.Client.UtilityFunctions
         public static async Task CreateDataProject(
             IDataApiClient dataApiClient,
             string dataProjectId,
-            IdSourceSystem projectSourceSystem,
+            string projectSourceSystem,
             string protocolName,
             Dictionary<string, string> protocolParameterResponses)
         {
@@ -58,7 +58,7 @@ namespace DataAPI.Client.UtilityFunctions
             }
             catch (KeyNotFoundException)
             {
-                if(projectSourceSystem != IdSourceSystem.SelfAssigned)
+                if(projectSourceSystem != "SelfAssigned")
                     globalizedProjectId = IdGenerator.GlobalizeLocalId(projectSourceSystem, dataProjectId);
             }
             var dataProject = new DataProject(

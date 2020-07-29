@@ -11,7 +11,7 @@ namespace DataAPI.DataStructures.DataManagement
         [JsonConstructor]
         public DataProject(
             string id, 
-            IdSourceSystem idSourceSystem,
+            string idSourceSystem,
             DataCollectionProtocol protocol,
             Dictionary<string, string> parameterResponse)
         {
@@ -24,7 +24,7 @@ namespace DataAPI.DataStructures.DataManagement
         [Required]
         public string Id { get; private set; }
         [Required]
-        public IdSourceSystem IdSourceSystem { get; private set; }
+        public string IdSourceSystem { get; private set; }
         [Required]
         public DataCollectionProtocol Protocol { get; private set; }
         public Dictionary<string, string> ParameterResponse { get; private set; }
