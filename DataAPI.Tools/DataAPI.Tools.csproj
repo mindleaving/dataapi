@@ -5,7 +5,7 @@
   </PropertyGroup>
   
   <ItemGroup>
-    <PackageReference Include="DataAPI.Client" Version="1.16.1" />
+    <PackageReference Include="DataAPI.Client" Version="1.17.0" />
     <PackageReference Include="Microsoft.Azure.Storage.Blob" Version="11.2.0" />
     <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
     <PackageReference Include="mindleaving.Commons" Version="2.1.8" />

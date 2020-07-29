@@ -12,7 +12,7 @@ namespace DataAPI.DataStructures.DomainModels
         where TDataPlaceholder: IDataPlaceholder
     {
         [Required]
-        IdSourceSystem IdSourceSystem { get; }
+        string IdSourceSystem { get; }
 
         [Required]
         TDataCollectionProtocol Protocol { get; }

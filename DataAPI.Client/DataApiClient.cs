@@ -321,7 +321,7 @@ namespace DataAPI.Client
         public Task CreateDataCollectionProtocol(string protocolName, List<DataCollectionProtocolParameter> parameters, List<DataPlaceholder> expectedData)
             => DataProjectFunctions.CreateDataCollectionProtocol(this, protocolName, parameters, expectedData);
 
-        public Task CreateDataProject(string dataProjectId, IdSourceSystem projectSourceSystem, string protocolName, Dictionary<string, string> protocolParameterResponses)
+        public Task CreateDataProject(string dataProjectId, string projectSourceSystem, string protocolName, Dictionary<string, string> protocolParameterResponses)
             => DataProjectFunctions.CreateDataProject(this, dataProjectId, projectSourceSystem, protocolName, protocolParameterResponses);
 
         public Task AddToDataProject(string dataProjectId, string dataType, string id, List<DataReference> derivedData, string filename)

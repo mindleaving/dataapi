@@ -605,7 +605,7 @@ namespace DataAPI.Client
         /// Responses to the parameters of the data collection protocol.
         /// At least all mandatory parameters must be answered, otherwise an exception is thrown
         /// </param>
-        Task CreateDataProject(string dataProjectId, IdSourceSystem projectSourceSystem, string protocolName, Dictionary<string, string> protocolParameterResponses);
+        Task CreateDataProject(string dataProjectId, string projectSourceSystem, string protocolName, Dictionary<string, string> protocolParameterResponses);
 
         /// <summary>
         /// Add object to data project. Throws exception if data project doesn't exist

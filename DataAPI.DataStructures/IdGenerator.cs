@@ -13,14 +13,14 @@ namespace DataAPI.DataStructures
     public static class IdGenerator
     {
         public const char PrefixDelimiter = '.';
-        public static readonly Dictionary<IdSourceSystem, string> SourceSystemPrefixes = new Dictionary<IdSourceSystem, string>
+        public static readonly Dictionary<string, string> SourceSystemPrefixes = new Dictionary<string, string>
         {
             //{ IdSourceSystem.<SystemName>, "<Prefix>" },
         };
-        public static readonly Dictionary<string, IdSourceSystem> ReverseSourceSystemPrefixes =
+        public static Dictionary<string, string> ReverseSourceSystemPrefixes =>
             SourceSystemPrefixes.ToDictionary(kvp => kvp.Value, kvp => kvp.Key);
 
-        public static string GlobalizeLocalId(IdSourceSystem sourceSystem, string localId)
+        public static string GlobalizeLocalId(string sourceSystem, string localId)
         {
             return SourceSystemPrefixes[sourceSystem] + PrefixDelimiter + localId;
         }
@@ -91,7 +91,7 @@ namespace DataAPI.DataStructures
             }
         }
 
-        public static IdSourceSystem GetSourceSystem(string id)
+        public static string GetSourceSystem(string id)
         {
             var prefix = GetPrefix(id);
             if (!ReverseSourceSystemPrefixes.ContainsKey(prefix))

@@ -130,7 +130,7 @@ namespace DataAPI.Client.Test
         public void CanParseExpressionWithMethodCall()
         {
             var builder = new DataApiQueryBuilder<TestObject1>()
-                .Where(x => !x.IsDiscontinued && x.SourceSystem == IdSourceSystem.SelfAssigned.ToString());
+                .Where(x => !x.IsDiscontinued && x.SourceSystem == "SelfAssigned");
             string query = null;
             Assert.That(() => query = builder.Build(), Throws.Nothing);
             Assert.That(query, Is.EqualTo("SELECT * FROM TestObject1 WHERE (Data.is_deleted = false) AND (Data.source_system = 'SelfAssigned')"));
