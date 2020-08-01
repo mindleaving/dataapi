@@ -18,6 +18,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SpaServices.ReactDevelopmentServer;
 using Microsoft.Azure.Storage;
 using Microsoft.Azure.Storage.Auth;
 using Microsoft.Extensions.Configuration;
@@ -141,6 +142,12 @@ namespace DataAPI.Web
                 c.IncludeXmlComments(xmlPath);
             });
 
+            // In production, the React files will be served from this directory
+            services.AddSpaStaticFiles(configuration =>
+            {
+                configuration.RootPath = "frontend/build";
+            });
+
         }
 
         // ReSharper disable once UnusedMember.Global
@@ -150,17 +157,22 @@ namespace DataAPI.Web
             {
                 app.UseDeveloperExceptionPage();
             }
+            else
+            {
+                app.UseHsts();
+            }
 
+            app.UseHttpsRedirection();
             app.UseStaticFiles();
+            app.UseSpaStaticFiles();
             app.UseSwagger();
             app.UseSwaggerUI(
                 c =>
                 {
-                    c.SwaggerEndpoint($"./swagger/v{ApiVersion.Current}/swagger.json", "DataAPI");
-                    c.RoutePrefix = string.Empty;
+                    c.SwaggerEndpoint($"./v{ApiVersion.Current}/swagger.json", "DataAPI");
+                    //c.RoutePrefix = null;
                 });
 
-            app.UseHttpsRedirection();
             app.UseRouting();
             app.UseAuthentication();
             app.UseAuthorization();
@@ -169,6 +181,16 @@ namespace DataAPI.Web
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
+            });
+
+            app.UseSpa(spa =>
+            {
+                spa.Options.SourcePath = "frontend";
+
+                if (env.IsDevelopment())
+                {
+                    spa.UseProxyToSpaDevelopmentServer("http://localhost:3000/");
+                }
             });
         }
 
