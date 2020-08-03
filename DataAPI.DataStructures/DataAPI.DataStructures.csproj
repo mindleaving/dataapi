@@ -13,6 +13,8 @@
     <Description>Library with data structures used for communicating with DataAPI.</Description>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <RepositoryUrl>https://github.com/mindleaving/dataapi</RepositoryUrl>
+    <PackageId>mindleaving.DataAPI.DataStructures</PackageId>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
   </PropertyGroup>
 
   <ItemGroup>

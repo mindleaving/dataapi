@@ -537,7 +537,7 @@ namespace DataAPI.Client
         /// <summary>
         /// Get ID for <paramref name="dataType"/>
         /// </summary>
-        /// <param name="dataType">Name of data type, e.g. Trial, Batch, Plate, Image, etc.</param>
+        /// <param name="dataType">Name of data type, e.g. Product, Machine, Image, etc.</param>
         /// <returns>A globally unique ID</returns>
         Task<string> GetNewIdAsync(string dataType);
 
@@ -551,7 +551,7 @@ namespace DataAPI.Client
         /// <summary>
         /// Get several IDs for <paramref name="dataType"/>
         /// </summary>
-        /// <param name="dataType">Name of data type, e.g. Trial, Batch, Plate, Image, etc.</param>
+        /// <param name="dataType">Name of data type, e.g. Product, Machine, Image, etc.</param>
         /// <param name="count">Number of IDs</param>
         /// <returns>Unique reserved IDs</returns>
         Task<List<string>> GetMultipleNewIdsAsync(string dataType, uint count);

@@ -13,12 +13,14 @@
     <RootNamespace>DataAPI.Client</RootNamespace>
     <AssemblyName>DataAPI.Client</AssemblyName>
     <RepositoryUrl>https://github.com/mindleaving/dataapi</RepositoryUrl>
+    <PackageId>mindleaving.DataAPI.Client</PackageId>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="DataAPI.DataStructures" Version="1.15.0" />
     <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
     <PackageReference Include="mindleaving.Commons" Version="2.1.8" />
+    <PackageReference Include="mindleaving.DataAPI.DataStructures" Version="1.15.0" />
     <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
   </ItemGroup>
 
