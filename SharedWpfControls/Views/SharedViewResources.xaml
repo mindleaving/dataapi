@@ -1,0 +1,22 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:objects="clr-namespace:SharedWpfControls.Objects">
+
+    <ControlTemplate x:Key="LinkButtonTemplate" TargetType="Button">
+        <TextBlock TextDecorations="Underline" VerticalAlignment="Bottom" Foreground="DodgerBlue" FontWeight="Black" Cursor="Hand">
+            <ContentPresenter />
+        </TextBlock>
+    </ControlTemplate>
+
+    <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
+
+    <DataTemplate DataType="{x:Type objects:WpfPasswordBox}">
+        <ContentControl Content="{Binding PasswordBox}" IsTabStop="False">
+            <ContentControl.Resources>
+                <Style TargetType="{x:Type PasswordBox}">
+                    <Setter Property="TabIndex" Value="{Binding TabIndex}"/>
+                </Style>
+            </ContentControl.Resources>
+        </ContentControl>
+    </DataTemplate>
+</ResourceDictionary>

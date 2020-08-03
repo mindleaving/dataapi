@@ -1,0 +1,167 @@
+﻿<Window x:Class="DataExplorerWpf.Views.CollectionSettingsWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:viewModels="clr-namespace:DataExplorerWpf.ViewModels"
+        xmlns:validation="clr-namespace:DataAPI.DataStructures.Validation;assembly=DataAPI.DataStructures"
+        mc:Ignorable="d"
+        Title="Edit collection settings" Height="500" Width="1200"
+        Name="Self">
+    <Grid DataContext="{Binding ElementName=Self, Path=ViewModel}">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="0.4*"/>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="0.6*"/>
+        </Grid.ColumnDefinitions>
+        <Grid Grid.Column="0">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="140"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+
+            <StackPanel Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" Orientation="Horizontal" Margin="0 10">
+                <Label Content="Collection: "/>
+                <Label Content="{Binding CollectionName}" FontWeight="Bold" />
+            </StackPanel>
+
+            <Label Grid.Row="1" Grid.Column="0" Content="Display name"/>
+            <TextBox Grid.Row="1" Grid.Column="1" Margin="2" Height="24" Text="{Binding DisplayName}" IsEnabled="{Binding IsAdmin}"/>
+
+            <Label Grid.Row="2" Grid.Column="0" Content="Description"/>
+            <TextBox Grid.Row="2" Grid.Column="1" Margin="2" Text="{Binding Description}" IsEnabled="{Binding IsAdmin}"
+                 TextWrapping="Wrap" Height="60"/>
+
+            <TextBlock Grid.Row="3" Grid.Column="0" Text="ID type" Margin="2 5" ToolTip="Determines how IDs are generated. Integer-IDs are much slower to generate than GUIDs but are shorter"/>
+            <ComboBox Grid.Row="3" Grid.Column="1" ItemsSource="{Binding IdGeneratorTypes}" SelectedItem="{Binding SelectedIdGeneratorType}" 
+                      IsEnabled="{Binding IsAdmin}" VerticalAlignment="Center" HorizontalAlignment="Left" Width="100"  Margin="2"/>
+
+            <TextBlock Grid.Row="4" Grid.Column="0" Text="Allow overwriting data from other users" Margin="2 5" TextWrapping="Wrap" ToolTip="Allow non-admin users to overwrite and delete data from other users"/>
+            <CheckBox Grid.Row="4" Grid.Column="1" Content="Allow" IsChecked="{Binding NonAdminUsersCanOverwriteData}" 
+                  IsEnabled="{Binding IsAdmin}" VerticalAlignment="Center"/>
+
+            <Label Grid.Row="5" Grid.Column="0" Content="Make hidden" ToolTip="Hidden collections are not shown in the collection list by default. This does NOT protect them from being used"/>
+            <CheckBox Grid.Row="5" Grid.Column="1" Content="Hide" IsChecked="{Binding IsHidden}"
+                  IsEnabled="{Binding IsAdmin}" VerticalAlignment="Center"/>
+
+            <Label Grid.Row="6" Grid.Column="0" Content="Protect" ToolTip="Protected collections can have individual permissions"/>
+            <CheckBox Grid.Row="6" Grid.Column="1" Content="Protect" IsChecked="{Binding IsProtected}"
+                  IsEnabled="{Binding IsAdmin}" VerticalAlignment="Center"/>
+
+            <ListView Grid.Row="7" Grid.Column="0" Grid.ColumnSpan="2" MinHeight="100" MinWidth="430"
+                  ItemsSource="{Binding UserPermissions}" IsEnabled="{Binding CanEditUserPermissions}">
+                <ListView.ItemContainerStyle>
+                    <Style TargetType="{x:Type ListViewItem}">
+                        <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+                    </Style>
+                </ListView.ItemContainerStyle>
+                <ListView.View>
+                    <GridView>
+                        <GridViewColumn Header="Username" DisplayMemberBinding="{Binding Username}" Width="100"/>
+                        <GridViewColumn Header="View" Width="80">
+                            <GridViewColumn.CellTemplate>
+                                <DataTemplate DataType="{x:Type viewModels:UserPermissionsViewModel}">
+                                    <CheckBox IsChecked="{Binding CanView}" HorizontalAlignment="Center"
+                                          IsEnabled="{Binding CanSetNonAdminPermissions}" />
+                                </DataTemplate>
+                            </GridViewColumn.CellTemplate>
+                        </GridViewColumn>
+                        <GridViewColumn Header="Write" Width="80">
+                            <GridViewColumn.CellTemplate>
+                                <DataTemplate DataType="{x:Type viewModels:UserPermissionsViewModel}">
+                                    <CheckBox IsChecked="{Binding CanWrite}" HorizontalAlignment="Center"
+                                          IsEnabled="{Binding CanSetNonAdminPermissions}" />
+                                </DataTemplate>
+                            </GridViewColumn.CellTemplate>
+                        </GridViewColumn>
+                        <GridViewColumn Header="User manager" Width="80">
+                            <GridViewColumn.CellTemplate>
+                                <DataTemplate DataType="{x:Type viewModels:UserPermissionsViewModel}">
+                                    <CheckBox IsChecked="{Binding IsUserManager}" HorizontalAlignment="Center"
+                                          IsEnabled="{Binding CanSetNonAdminPermissions}" />
+                                </DataTemplate>
+                            </GridViewColumn.CellTemplate>
+                        </GridViewColumn>
+                        <GridViewColumn Header="Admin" Width="80">
+                            <GridViewColumn.CellTemplate>
+                                <DataTemplate DataType="{x:Type viewModels:UserPermissionsViewModel}">
+                                    <CheckBox IsChecked="{Binding IsAdmin}" HorizontalAlignment="Center"
+                                          IsEnabled="{Binding CanSetAnyPermission}"/>
+                                </DataTemplate>
+                            </GridViewColumn.CellTemplate>
+                        </GridViewColumn>
+                    </GridView>
+                </ListView.View>
+            </ListView>
+            <StackPanel Grid.Row="7" Grid.Column="2">
+                <Button Content="+" Width="30" Height="30" Margin="5" Command="{Binding AddUserCommand}" />
+                <Button Content="-" Width="30" Height="30" Margin="5" Command="{Binding DeleteUserCommand}" />
+            </StackPanel>
+
+            <StackPanel Grid.Row="8" Grid.Column="0" Grid.ColumnSpan="2" Orientation="Horizontal" HorizontalAlignment="Center" Margin="10">
+                <Button Content="OK" Command="{Binding SaveCommand}" CommandParameter="{Binding ElementName=Self}" Height="32" Width="80" Margin="8"/>
+                <Button Content="Cancel" Command="{Binding CancelCommand}" CommandParameter="{Binding ElementName=Self}" Height="32" Width="80" Margin="8"/>
+            </StackPanel>
+        </Grid>
+
+        <Separator Grid.Column="1" Width="2" Style="{StaticResource {x:Static ToolBar.SeparatorStyleKey}}" Margin="5 10"/>
+
+        <Grid Grid.Column="2">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+            <Label Grid.Row="0" Content="Validators:"/>
+
+            <ListView Grid.Row="1"
+                      ItemsSource="{Binding Validators}">
+                <ListView.View>
+                    <GridView>
+                        <GridViewColumn Header="Responsible" DisplayMemberBinding="{Binding Submitter}" Width="100"/>
+                        <GridViewColumn Header="Active" Width="80">
+                            <GridViewColumn.CellTemplate>
+                                <DataTemplate DataType="{x:Type validation:ValidatorDefinition}">
+                                    <CheckBox IsChecked="{Binding IsApproved}" IsEnabled="{Binding ElementName=Self, Path=ViewModel.IsAdmin}"/>
+                                </DataTemplate>
+                            </GridViewColumn.CellTemplate>
+                        </GridViewColumn>
+                        <GridViewColumn Header="Ruleset" Width="500">
+                            <GridViewColumn.CellTemplate>
+                                <DataTemplate DataType="{x:Type viewModels:ValidatorDefinitionViewModel}">
+                                    <Expander Header="{Binding RulesSingleLineTruncated}">
+                                        <ItemsControl ItemsSource="{Binding Rules}">
+                                            <ItemsControl.ItemsPanel>
+                                                <ItemsPanelTemplate>
+                                                    <StackPanel Orientation="Vertical"/>
+                                                </ItemsPanelTemplate>
+                                            </ItemsControl.ItemsPanel>
+                                            <ItemsControl.ItemTemplate>
+                                                <DataTemplate>
+                                                    <TextBlock Text="{Binding}"/>
+                                                </DataTemplate>
+                                            </ItemsControl.ItemTemplate>
+                                        </ItemsControl>
+                                    </Expander>
+                                </DataTemplate>
+                            </GridViewColumn.CellTemplate>
+                        </GridViewColumn>
+                    </GridView>
+                </ListView.View>
+            </ListView>
+        </Grid>
+
+
+    </Grid>
+</Window>

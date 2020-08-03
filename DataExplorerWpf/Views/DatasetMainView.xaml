@@ -1,0 +1,86 @@
+﻿<UserControl x:Class="DataExplorerWpf.Views.DatasetMainView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:views="clr-namespace:DataExplorerWpf.Views"
+             xmlns:sharedViews="clr-namespace:SharedWpfControls.Views;assembly=SharedWpfControls"
+             xmlns:viewModels="clr-namespace:DataExplorerWpf.ViewModels"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800"
+             Name="Self">
+    <Grid DataContext="{Binding ElementName=Self, Path=ViewModel}">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="5"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <GroupBox Grid.Row="0" Header="Data sets">
+            <GroupBox.HeaderTemplate>
+                <DataTemplate>
+                    <TextBlock Text="{Binding}" FontWeight="Bold"/>
+                </DataTemplate>
+            </GroupBox.HeaderTemplate>
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+
+                <StackPanel Grid.Row="0" Orientation="Horizontal">
+                    <Label Content="Search:" VerticalAlignment="Center"/>
+                    <sharedViews:AutoCompleteTextBox ViewModel="{Binding DataSetAutoCompleteViewModel}" Width="200"/>
+
+                    <Button Content="Load data set list" Command="{Binding LoadDataSetListCommand}" Width="100" Height="24" VerticalAlignment="Center" Margin="20 2 2 2"/>
+                    <ComboBox ItemsSource="{Binding DataSets}" SelectedItem="{Binding SelectedDataSet}"
+                              IsEnabled="{Binding IsDataSetsLoaded}"
+                              Height="24" Margin="5 2" MinWidth="150" DisplayMemberPath="Id"/>
+                </StackPanel>
+
+                <ContentControl Grid.Row="1" Content="{Binding SelectedDataSetViewModel}">
+                    <ContentControl.ContentTemplate>
+                        <DataTemplate DataType="{x:Type viewModels:DataSetViewModel}">
+                            <views:DataSetView ViewModel="{Binding}"/>
+                        </DataTemplate>
+                    </ContentControl.ContentTemplate>
+                </ContentControl>
+            </Grid>
+        </GroupBox>
+
+        <GridSplitter Grid.Row="1" Height="5" HorizontalAlignment="Stretch"/>
+
+        <GroupBox Grid.Row="2" Header="Data projects">
+            <GroupBox.HeaderTemplate>
+                <DataTemplate>
+                    <TextBlock Text="{Binding}" FontWeight="Bold"/>
+                </DataTemplate>
+            </GroupBox.HeaderTemplate>
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+
+                <StackPanel Grid.Row="0" Orientation="Horizontal">
+                    <Label Content="Search:" VerticalAlignment="Center"/>
+                    <sharedViews:AutoCompleteTextBox ViewModel="{Binding ProjectAutoCompleteViewModel}" Width="200"/>
+
+                    <Button Content="Load project list" Command="{Binding LoadDataProjectListCommand}" Width="100" Height="24" VerticalAlignment="Center" Margin="20 2 2 2"/>
+                    <ComboBox ItemsSource="{Binding DataProjects}" SelectedItem="{Binding SelectedDataProject}"
+                              IsEnabled="{Binding IsDataProjectsLoaded}"
+                              Height="24" Margin="5 2" MinWidth="150" DisplayMemberPath="Id"/>
+                </StackPanel>
+
+                <ContentControl Grid.Row="1" Content="{Binding SelectedDataProjectViewModel}">
+                    <ContentControl.ContentTemplate>
+                        <DataTemplate DataType="{x:Type viewModels:DataProjectViewModel}">
+                            <views:DataProjectView ViewModel="{Binding}"/>
+                        </DataTemplate>
+                    </ContentControl.ContentTemplate>
+                </ContentControl>
+
+            </Grid>
+        </GroupBox>
+    </Grid>
+</UserControl>

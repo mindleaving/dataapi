@@ -1,0 +1,30 @@
+﻿<UserControl x:Class="SharedWpfControls.Views.DataCollectionProtocolParameterValueView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:views="clr-namespace:SharedWpfControls.Views"
+             xmlns:viewModels="clr-namespace:SharedViewModels.ViewModels;assembly=SharedViewModels"
+             mc:Ignorable="d" 
+             d:DesignHeight="28" d:DesignWidth="300"
+             Name="Self">
+    <ContentControl DataContext="{Binding ElementName=Self, Path=ViewModel}" Content="{Binding}">
+        <ContentControl.Resources>
+            <DataTemplate DataType="{x:Type viewModels:TextParameterViewModel}">
+                <TextBox Text="{Binding Text, ValidatesOnExceptions=True}" />
+            </DataTemplate>
+            <DataTemplate DataType="{x:Type viewModels:NumberParameterViewModel}">
+                <TextBox Text="{Binding Number, ValidatesOnExceptions=True}" />
+            </DataTemplate>
+            <DataTemplate DataType="{x:Type viewModels:DateParameterViewModel}">
+                <DatePicker SelectedDate="{Binding Date}"/>
+            </DataTemplate>
+            <DataTemplate DataType="{x:Type viewModels:UnitValueParameterViewModel}">
+                <views:UnitValueEditView ViewModel="{Binding UnitValueEditViewModel}"/>
+            </DataTemplate>
+            <DataTemplate DataType="{x:Type viewModels:DataTypeParameterViewModel}">
+                <views:AutoCompleteTextBox ViewModel="{Binding AutoCompleteViewModel}"/>
+            </DataTemplate>
+        </ContentControl.Resources>
+    </ContentControl>
+</UserControl>

@@ -1,0 +1,70 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{C760323D-EA02-47EE-B872-AA23FA7F53EF}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>FileHandlers</RootNamespace>
+    <AssemblyName>FileHandlers</AssemblyName>
+    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <Deterministic>true</Deterministic>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="AdditionalInformation\IAdditionalInformationObjectBuilder.cs" />
+    <Compile Include="AdditionalInformation\KeyValuePairAdditionalInformationViewModel.cs" />
+    <Compile Include="AdditionalInformation\KeyValuePairViewModel.cs" />
+    <Compile Include="CsvFileHandler.cs" />
+    <Compile Include="AdditionalInformation\IAdditionalInformationViewModel.cs" />
+    <Compile Include="AdditionalInformation\IAdditionalInformationViewSpawner.cs" />
+    <Compile Include="Models\CsvFile.cs" />
+    <Compile Include="Models\ExcelCell.cs" />
+    <Compile Include="Models\ExcelWorkbook.cs" />
+    <Compile Include="Models\ExcelWorksheet.cs" />
+    <Compile Include="Objects\AdditionalInformationRequestResult.cs" />
+    <Compile Include="Objects\CompositionComponent.cs" />
+    <Compile Include="Objects\FileHandlerResult.cs" />
+    <Compile Include="UploadedFileProcessor.cs" />
+    <Compile Include="IFileHandler.cs" />
+    <Compile Include="ImageFileHandler.cs" />
+    <Compile Include="Machines\DataBlobBuilder.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="mindleaving.Commons">
+      <Version>2.1.8</Version>
+    </PackageReference>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\SharedViewModels\SharedViewModels.csproj">
+      <Project>{078692C1-C50F-4225-BB4B-87F452585F89}</Project>
+      <Name>SharedViewModels</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup />
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>

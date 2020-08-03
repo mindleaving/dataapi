@@ -1,0 +1,29 @@
+﻿<Window x:Class="DataServicesApp.Views.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:views="clr-namespace:DataServicesApp.Views"
+        xmlns:sharedViews="clr-namespace:SharedWpfControls.Views;assembly=SharedWpfControls"
+        mc:Ignorable="d"
+        Title="DataAPI Data Services" Height="450" Width="800"
+        Name="Self">
+    <Grid DataContext="{Binding ElementName=Self, Path=ViewModel}">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <Menu Grid.Row="0">
+            <MenuItem Header="File">
+                <MenuItem Header="Exit" Command="{Binding ExitCommand}" CommandParameter="{Binding ElementName=Self}"/>
+            </MenuItem>
+        </Menu>
+        <TabControl Grid.Row="1">
+            <TabItem Header="Export to SQL">
+                <views:SqlExportView ViewModel="{Binding SqlExportViewModel}"/>
+            </TabItem>
+        </TabControl>
+
+        <sharedViews:UserSwitchView Grid.Row="1" ViewModel="{Binding UserSwitchViewModel}"/>
+    </Grid>
+</Window>
