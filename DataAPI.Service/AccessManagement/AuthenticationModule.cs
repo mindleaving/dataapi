@@ -101,7 +101,7 @@ namespace DataAPI.Service.AccessManagement
             var salt = Convert.FromBase64String(existingUser.Salt);
             var storedPasswordHash = Convert.FromBase64String(existingUser.PasswordHash);
             var providedPasswordHash = PasswordHasher.Hash(loginInformation.Password, salt, 8 * storedPasswordHash.Length);
-            var isMatch = providedPasswordHash.SequenceEqual(storedPasswordHash);
+            var isMatch = HashComparer.Compare(providedPasswordHash, storedPasswordHash);
             if (!isMatch)
             {
                 return AuthenticationResult.Failed(AuthenticationErrorType.InvalidPassword);
