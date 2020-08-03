@@ -1,0 +1,1 @@
+﻿This projects tests both the DataAPI.Client and DataAPI.Web running on the server specified in ApiSetup.cs.
