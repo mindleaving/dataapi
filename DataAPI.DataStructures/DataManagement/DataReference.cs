@@ -1,6 +1,5 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
-using DataAPI.DataStructures.DomainModels;
 using Newtonsoft.Json;
 
 namespace DataAPI.DataStructures.DataManagement

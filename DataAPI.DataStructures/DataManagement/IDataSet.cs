@@ -1,6 +1,6 @@
 ﻿using DataAPI.DataStructures.Attributes;
 
-namespace DataAPI.DataStructures.DomainModels
+namespace DataAPI.DataStructures.DataManagement
 {
     /// <summary>
     /// A better name for this class might be DataTagDescription,

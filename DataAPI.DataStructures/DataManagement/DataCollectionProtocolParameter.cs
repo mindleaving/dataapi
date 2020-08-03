@@ -5,7 +5,7 @@ using Newtonsoft.Json;
 
 namespace DataAPI.DataStructures.DataManagement
 {
-    public class DataCollectionProtocolParameter
+    public class DataCollectionProtocolParameter : IDataCollectionProtocolParameter
     {
         [JsonConstructor]
         public DataCollectionProtocolParameter(

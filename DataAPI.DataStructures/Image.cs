@@ -1,7 +1,7 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
 using System.IO;
-using DataAPI.DataStructures.DomainModels;
+using DataAPI.DataStructures.DataIo;
 using Newtonsoft.Json;
 
 namespace DataAPI.DataStructures

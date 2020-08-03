@@ -1,9 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using DataAPI.DataStructures.Attributes;
-using DataAPI.DataStructures.Constants;
 
-namespace DataAPI.DataStructures.DomainModels
+namespace DataAPI.DataStructures.DataManagement
 {
     [DataApiCollection("DataProject")]
     public interface IDataProject<out TDataCollectionProtocol, TDataCollectionProtocolParamter,TDataPlaceholder> : IId

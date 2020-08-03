@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using DataAPI.DataStructures.Attributes;
 
-namespace DataAPI.DataStructures.DomainModels
+namespace DataAPI.DataStructures.DataManagement
 {
     [DataApiCollection("ShortId")]
     public interface IShortId : IId

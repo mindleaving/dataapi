@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace DataAPI.DataStructures.DomainModels
+namespace DataAPI.DataStructures
 {
     public interface IId
     {

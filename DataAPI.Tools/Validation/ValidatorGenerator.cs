@@ -7,7 +7,7 @@ using System.Reflection;
 using System.Threading.Tasks;
 using Commons.Misc;
 using DataAPI.Client;
-using DataAPI.DataStructures.DomainModels;
+using DataAPI.DataStructures;
 using DataAPI.DataStructures.Validation;
 using Newtonsoft.Json;
 using NUnit.Framework;

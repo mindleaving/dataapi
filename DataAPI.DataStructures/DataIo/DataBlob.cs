@@ -1,10 +1,9 @@
 ﻿using System;
-using DataAPI.DataStructures.DomainModels;
 using Newtonsoft.Json;
 
 namespace DataAPI.DataStructures.DataIo
 {
-    public class DataBlob : IId
+    public class DataBlob : IDataBlob
     {
         [JsonConstructor]
         public DataBlob(string id, byte[] data, string filename = null)

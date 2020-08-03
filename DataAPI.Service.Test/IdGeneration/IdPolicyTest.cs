@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
-using DataAPI.DataStructures.DomainModels;
+using DataAPI.DataStructures;
 using DataAPI.DataStructures.PostBodies;
 using DataAPI.Service.DataStorage;
 using DataAPI.Service.IdGeneration;

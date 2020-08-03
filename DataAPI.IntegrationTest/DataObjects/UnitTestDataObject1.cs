@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using DataAPI.DataStructures.DomainModels;
+using DataAPI.DataStructures;
 
 namespace DataAPI.IntegrationTest.DataObjects
 {

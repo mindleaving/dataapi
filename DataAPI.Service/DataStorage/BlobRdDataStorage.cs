@@ -8,7 +8,6 @@ using Commons.Extensions;
 using DataAPI.DataStructures;
 using DataAPI.DataStructures.DataIo;
 using DataAPI.DataStructures.DataSubscription;
-using DataAPI.DataStructures.DomainModels;
 using DataAPI.Service.Helpers;
 using DataAPI.Service.IdGeneration;
 using DataAPI.Service.Objects;

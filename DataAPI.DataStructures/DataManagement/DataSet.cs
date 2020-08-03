@@ -8,7 +8,7 @@ namespace DataAPI.DataStructures.DataManagement
     /// because data is not directly associated with a data set but instead tagged.
     /// All data with a specific tag constitute a DataSet.
     /// </summary>
-    public class DataSet
+    public class DataSet : IDataSet
     {
         [JsonConstructor]
         public DataSet(string id)

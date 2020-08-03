@@ -1,4 +1,4 @@
-﻿using DataAPI.DataStructures.DomainModels;
+﻿using DataAPI.DataStructures;
 using Newtonsoft.Json;
 
 namespace DataAPI.Client.Test.Models

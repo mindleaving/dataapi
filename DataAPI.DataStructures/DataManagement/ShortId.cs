@@ -1,10 +1,9 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using DataAPI.DataStructures.DomainModels;
 using Newtonsoft.Json;
 
 namespace DataAPI.DataStructures.DataManagement
 {
-    public class ShortId
+    public class ShortId : IShortId
     {
         [JsonConstructor]
         public ShortId(string id, string collectionName, string originalId)

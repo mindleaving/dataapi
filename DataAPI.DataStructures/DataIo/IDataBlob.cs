@@ -1,6 +1,6 @@
 ﻿using DataAPI.DataStructures.Attributes;
 
-namespace DataAPI.DataStructures.DomainModels
+namespace DataAPI.DataStructures.DataIo
 {
     [DataApiCollection("DataBlob")]
     public interface IDataBlob : IId

@@ -2,7 +2,7 @@
 
 namespace DataAPI.DataStructures.DataManagement
 {
-    public class DataPlaceholder
+    public class DataPlaceholder : IDataPlaceholder
     {
         public DataPlaceholder(
             string dataType, 

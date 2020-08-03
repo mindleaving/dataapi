@@ -1,7 +1,7 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
 
-namespace DataAPI.DataStructures.DomainModels
+namespace DataAPI.DataStructures.DataManagement
 {
     public interface IDataReference : IEquatable<IDataReference>
     {

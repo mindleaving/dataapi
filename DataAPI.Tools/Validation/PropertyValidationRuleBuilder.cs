@@ -6,7 +6,7 @@ using System.Linq;
 using System.Reflection;
 using Commons.Extensions;
 using Commons.Physics;
-using DataAPI.DataStructures.DomainModels;
+using DataAPI.DataStructures;
 using DataAPI.DataStructures.Validation;
 
 namespace DataAPI.Tools.Validation

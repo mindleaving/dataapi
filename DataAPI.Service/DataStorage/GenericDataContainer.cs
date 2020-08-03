@@ -1,5 +1,5 @@
 ﻿using System;
-using DataAPI.DataStructures.DomainModels;
+using DataAPI.DataStructures;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 using Newtonsoft.Json;

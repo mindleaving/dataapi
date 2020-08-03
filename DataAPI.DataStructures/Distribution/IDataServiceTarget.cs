@@ -2,7 +2,7 @@
 using DataAPI.DataStructures.Attributes;
 using DataAPI.DataStructures.Constants;
 
-namespace DataAPI.DataStructures.DomainModels
+namespace DataAPI.DataStructures.Distribution
 {
     [DataApiCollection("DataServiceTarget")]
     public interface IDataServiceTarget : IId

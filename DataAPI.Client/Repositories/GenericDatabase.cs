@@ -6,7 +6,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Net;
 using System.Threading.Tasks;
-using DataAPI.DataStructures.DomainModels;
+using DataAPI.DataStructures;
 using DataAPI.DataStructures.Exceptions;
 using Newtonsoft.Json.Linq;
 

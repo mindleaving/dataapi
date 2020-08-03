@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using DataAPI.DataStructures.Attributes;
 
-namespace DataAPI.DataStructures.DomainModels
+namespace DataAPI.DataStructures.DataManagement
 {
     [DataApiCollection("DataCollectionProtocol")]
     public interface IDataCollectionProtocol<TDataCollectionProtocolParameter,TDataPlaceholder> : IId

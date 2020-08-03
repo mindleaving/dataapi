@@ -3,7 +3,7 @@ using Newtonsoft.Json;
 
 namespace DataAPI.DataStructures.DataManagement
 {
-    public class DataTag
+    public class DataTag : IDataTag<DataReference>
     {
         [JsonConstructor]
         private DataTag(string id, DataReference dataReference, string tagName)

@@ -5,7 +5,7 @@ using Newtonsoft.Json;
 
 namespace DataAPI.DataStructures.DataManagement
 {
-    public class DataProjectUploadInfo
+    public class DataProjectUploadInfo : IDataProjectUploadInfo<DataReference>
     {
         [JsonConstructor]
         private DataProjectUploadInfo(

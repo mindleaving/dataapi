@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 using DataAPI.DataStructures.Attributes;
 using DataAPI.DataStructures.Validation;
 
-namespace DataAPI.DataStructures.DomainModels
+namespace DataAPI.DataStructures.Distribution
 {
     [DataApiCollection("DataServiceDefinition")]
     public interface IDataServiceDefinition<TDataServiceDefinitionField> : IId

@@ -3,7 +3,7 @@ using DataAPI.DataStructures.Attributes;
 using DataAPI.DataStructures.Constants;
 using DataAPI.DataStructures.Validation;
 
-namespace DataAPI.DataStructures.DomainModels
+namespace DataAPI.DataStructures.DataManagement
 {
     [DataApiCollection("DataCollectionProtocolParameter")]
     public interface IDataCollectionProtocolParameter : IId

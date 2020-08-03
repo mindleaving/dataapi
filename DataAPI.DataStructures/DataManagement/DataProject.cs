@@ -1,12 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using DataAPI.DataStructures.Constants;
 using Newtonsoft.Json;
 
 namespace DataAPI.DataStructures.DataManagement
 {
-    public class DataProject
+    public class DataProject : IDataProject<DataCollectionProtocol, DataCollectionProtocolParameter, DataPlaceholder>
     {
         [JsonConstructor]
         public DataProject(
