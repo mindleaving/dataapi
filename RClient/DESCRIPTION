@@ -1,0 +1,16 @@
+Package: dataapi
+Type: Package
+Title: R-Client for DataAPI
+Version: 1.10.0
+Author: Jan Scholtyssek <mindleaving@gmail.com>
+Maintainer: Jan Scholtyssek <mindleaving@gmail.com>
+Description: Exposes the essential data-functions for the DataAPI.
+License: MIT
+Encoding: UTF-8
+LazyData: true
+RoxygenNote: 7.1.0
+Imports:
+    httr,
+    rjson
+Suggests:
+    testthat
