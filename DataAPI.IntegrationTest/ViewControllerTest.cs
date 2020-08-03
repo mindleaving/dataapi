@@ -18,7 +18,7 @@ namespace DataAPI.IntegrationTest
         [Test]
         public void AnonymousUserCannotCreateView()
         {
-            var query = "SELECT * FROM CheeseInfo";
+            var query = "SELECT * FROM Computers";
             var expires = DateTime.UtcNow.AddMinutes(3);
             var noLoginDataApiClient = new DataApiClient(ApiSetup.ApiConfiguration) {LoginMethod = LoginMethod.JsonWebToken};
             AssertStatusCode(
@@ -30,7 +30,7 @@ namespace DataAPI.IntegrationTest
         public void LoggedInUserCanCreateAccessAndDeleteOwnViews()
         {
             UserGenerator.RegisterAndLoginUserWithRole(Role.Analyst, adminDataApiClient, out var dataApiClient);
-            var query = "SELECT * FROM CheeseInfo LIMIT 3";
+            var query = "SELECT * FROM Computers LIMIT 3";
             var expires = DateTime.UtcNow.AddMinutes(3);
             ViewInformation viewInformation = null;
             try
