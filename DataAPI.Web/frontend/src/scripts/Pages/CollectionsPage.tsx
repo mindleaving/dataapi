@@ -1,10 +1,13 @@
 import React, { Component } from 'react';
+import { RouteComponentProps } from 'react-router-dom';
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import CollectionList from './../Components/CollectionList';
+import Button from 'react-bootstrap/Button';
 
-interface CollectionsPageProps {}
+interface CollectionsPageProps extends RouteComponentProps<any> {
+}
 interface CollectionsPageState {}
 
 class CollectionsPage extends Component<CollectionsPageProps, CollectionsPageState> {
@@ -33,6 +36,7 @@ class CollectionsPage extends Component<CollectionsPageProps, CollectionsPageSta
                         <CollectionList 
                             onCollectionSelected={this.onCollectionSelected}
                         />
+                        <Button onClick={() => this.props.history.push("/collections/new")}>+ Create collection</Button>
                     </Col>
                     <Col sm={9}>
                     </Col>

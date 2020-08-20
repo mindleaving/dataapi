@@ -6,6 +6,7 @@ import * as serviceWorker from './serviceWorker';
 
 import 'bootstrap/dist/css/bootstrap.css';
 import 'react-notifications/dist/react-notifications.css';
+import 'react-confirm-alert/src/react-confirm-alert.css';
 import './styles/common.css';
 
 ReactDOM.render(
