@@ -156,6 +156,7 @@ namespace DataAPI.Web
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
+                TypescriptGeneration.Generate();
             }
             else
             {
