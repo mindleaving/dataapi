@@ -7,6 +7,7 @@ export namespace FrontendTypes {
         type: JsonSchemaPropertyType;
         itemType?: JsonSchemaArrayItem;
         objectSchema?: JsonSchemaObject;
+        isMandatory: boolean;
     }
     interface JsonSchemaObject {
         properties: JsonSchemaProperty[];

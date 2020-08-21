@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Form from 'react-bootstrap/Form';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
@@ -8,6 +8,7 @@ import EditJsonArray from './EditJsonArray';
 import JsonPropertyTypeSelector from './JsonPropertyTypeSelector';
 import EditJsonObject from './EditJsonObject';
 import { confirmAlert } from 'react-confirm-alert';
+import Button from 'react-bootstrap/esm/Button';
 
 interface EditJsonPropertyProps {
     property: FrontendTypes.JsonSchemaProperty;
@@ -15,7 +16,8 @@ interface EditJsonPropertyProps {
 }
 
 const EditJsonProperty = (props: EditJsonPropertyProps) => {
-
+    const [ showSubSchema, setShowSubSchema ] = useState(true);
+    
     const confirmTypeChange = (type: JsonSchemaPropertyType) => {
         confirmAlert({
             title: 'Confirm type change',
@@ -85,7 +87,7 @@ const EditJsonProperty = (props: EditJsonPropertyProps) => {
         <>
             <Form.Group as={Row}>
                 <Col>
-                    <Form.Control
+                    <Form.Control required
                         type="text"
                         value={property.name}
                         onChange={(e: any) => {
@@ -93,6 +95,7 @@ const EditJsonProperty = (props: EditJsonPropertyProps) => {
                                 props.updateProperty(p => ({ ...p, name: value }))
                             }
                         }
+                        placeholder="Enter property name..."
                     />
                 </Col>
                 <Col>
@@ -100,9 +103,33 @@ const EditJsonProperty = (props: EditJsonPropertyProps) => {
                         value={property.type}
                         onChange={onItemTypeChanged}
                     />
+                    {typeSpecificFormControls !== null 
+                        ? <Button variant="link" size="sm" onClick={() => setShowSubSchema(!showSubSchema)}>{showSubSchema ? 'Collapse' : 'Expand'}</Button>
+                        : null
+                    }
+                </Col>
+                <Col xs={2}>
+                    <Form.Check
+                        className="mt-1"
+                        label="Mandatory"
+                        checked={property.isMandatory}
+                        onChange={(e: any) => {
+                                const isMandatory = e.target.checked;
+                                props.updateProperty(p => ({ ...p, isMandatory: isMandatory }))
+                            }
+                        }
+                    />
                 </Col>
             </Form.Group>
-            {typeSpecificFormControls}
+            {typeSpecificFormControls !== null ?
+            <Row>
+                <Col>
+                    {showSubSchema ?
+                    <div className="ml-3 pl-3 pb-2 mb-2 border-left border-bottom border-danger">
+                        {typeSpecificFormControls}
+                    </div> : null}
+                </Col>
+            </Row> : null}
         </>
     );
 

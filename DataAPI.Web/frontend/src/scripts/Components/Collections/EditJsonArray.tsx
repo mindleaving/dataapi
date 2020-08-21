@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Form from 'react-bootstrap/Form';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
@@ -7,6 +7,7 @@ import { FrontendTypes } from '../../../types/frontend';
 import { JsonSchemaPropertyType } from '../../../types/frontendEnums';
 import EditJsonObject from './EditJsonObject';
 import { confirmAlert } from 'react-confirm-alert';
+import Button from 'react-bootstrap/esm/Button';
 
 interface EditJsonArrayProps {
     itemType: FrontendTypes.JsonSchemaArrayItem;
@@ -14,6 +15,7 @@ interface EditJsonArrayProps {
 }
 
 const EditJsonArray = (props: EditJsonArrayProps) => {
+    const [ showSubSchema, setShowSubSchema ] = useState(true);
 
     const confirmTypeChange = (type: JsonSchemaPropertyType) => {
         confirmAlert({
@@ -89,13 +91,21 @@ const EditJsonArray = (props: EditJsonArrayProps) => {
                         value={props.itemType.type}
                         onChange={onItemTypeChanged}
                     />
+                    {typeSpecificFormControls !== null 
+                        ? <Button variant="link" size="sm" onClick={() => setShowSubSchema(!showSubSchema)}>{showSubSchema ? 'Collapse' : 'Expand'}</Button>
+                        : null
+                    }
                 </Col>
             </Form.Group>
+            {typeSpecificFormControls !== null ?
             <Row>
                 <Col>
-                    {typeSpecificFormControls}
+                    {showSubSchema ?
+                    <div className="ml-3 pl-3 pb-2 border-left border-bottom border-warning">
+                        {typeSpecificFormControls}
+                    </div> : null}
                 </Col>
-            </Row>
+            </Row> : null}
         </>
     );
 }

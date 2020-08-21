@@ -6,7 +6,10 @@ import Col from 'react-bootstrap/Col';
 import Form from 'react-bootstrap/Form';
 import { FrontendTypes } from '../../../types/frontend.d';
 import EditJsonObject from './EditJsonObject';
-import { dataApiClient } from '../../Communication/DataApiClient';
+import { v4 as uuidv4 } from 'uuid';
+import '../../../styles/createEditCollection.css';
+import { JsonSchemaPropertyType } from '../../../types/frontendEnums';
+import JsonSchemaForm from '@rjsf/core'
 
 interface CreateEditCollectionProps {}
 interface CreateEditCollectionState {
@@ -23,7 +26,14 @@ class CreateEditCollection extends Component<CreateEditCollectionProps, CreateEd
         this.state = { 
             collectionName: '',
             schema: {
-                properties: []
+                properties: [
+                    {
+                        guid: uuidv4(),
+                        name: '',
+                        type: JsonSchemaPropertyType.string,
+                        isMandatory: false
+                    }
+                ]
             },
             isSaving: false
         };
@@ -52,19 +62,23 @@ class CreateEditCollection extends Component<CreateEditCollectionProps, CreateEd
             <Container>
                 <Row>
                     <Col>
-                        <Form>
+                        <h1>Create/edit collection</h1>
+                        <Form className="needs-validation was-validated">
                             <Form.Group>
-                                <Form.Label>Collection Name</Form.Label>
+                                <Form.Label><b>Collection Name</b></Form.Label>
                                 <Form.Control
                                     type="text"
                                     value={this.state.collectionName}
                                     onChange={(e: any) => this.setState({ collectionName: e.target.value })}
                                 />
                             </Form.Group>
-                            <EditJsonObject
-                                schema={this.state.schema}
-                                updateObject={this.onSchemaChanged}
-                            />
+                            <div className="mb-2 border border-dark p-3" style={{ maxWidth: '1000px' }}>
+                                <h3>Schema</h3>
+                                <EditJsonObject
+                                    schema={this.state.schema}
+                                    updateObject={this.onSchemaChanged}
+                                />
+                            </div>
                             <Button onClick={this.save}>
                             {this.state.isSaving 
                                 ? 'Saving...'
@@ -72,6 +86,11 @@ class CreateEditCollection extends Component<CreateEditCollectionProps, CreateEd
                             }
                             </Button>
                         </Form>
+                    </Col>
+                </Row>
+                <Row>
+                    <Col>
+                        <JsonSchemaForm schema={this.state.schema as any} />
                     </Col>
                 </Row>
             </Container>
