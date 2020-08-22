@@ -23,7 +23,7 @@ namespace DataAPI.Web
         public static void Generate()
         {
             var outputDirectory = Path.Combine(
-                RepositoryPaths[Environment.MachineName],
+                RepositoryPaths[Environment.MachineName.ToLowerInvariant()],
                 @"DataAPI.Web\frontend\src\types");
             TypescriptGenerator.TypescriptGenerator.Builder
                 .Include<CollectionInformation>()
@@ -51,6 +51,7 @@ namespace DataAPI.Web
                 .ReactDefaults()
                 .SetOutputDirectory(outputDirectory)
                 .SetDefaultFilenameForInterfaces("dataApiDataStructures.d.ts")
+                .SetDefaultFilenameForEnums("dataApiDataStructuresEnums.ts")
                 .Generate();
         }
     }
