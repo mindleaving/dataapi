@@ -6,6 +6,7 @@ using DataAPI.DataStructures.Validation;
 using DataAPI.Service.DataStorage;
 using DataAPI.Service.Objects;
 using MongoDB.Driver;
+using Newtonsoft.Json.Schema;
 
 namespace DataAPI.Service.Validators
 {
@@ -14,11 +15,13 @@ namespace DataAPI.Service.Validators
         private readonly RdDataMongoClient mongoClient;
         private readonly IMongoCollection<ValidatorDefinition> validatorDefinitionCollection;
         private readonly ValidatorFactory validatorFactory;
+        private readonly RulesetValidationDefinitionValidator validationDefinitionValidator;
 
         public ValidatorManager(RdDataMongoClient mongoClient, ValidatorFactory validatorFactory)
         {
             this.mongoClient = mongoClient;
             this.validatorFactory = validatorFactory;
+            validationDefinitionValidator = new RulesetValidationDefinitionValidator(validatorFactory);
             validatorDefinitionCollection = mongoClient.BackendDatabase.GetCollection<ValidatorDefinition>(nameof(ValidatorDefinition));
         }
 
@@ -123,21 +126,7 @@ namespace DataAPI.Service.Validators
 
         public RulesetValidationResult ValidateValidatorDefinition(ValidatorDefinition validatorDefinition)
         {
-            try
-            {
-                switch (validatorDefinition.ValidatorType)
-                {
-                    case ValidatorType.TextRules:
-                        var textRulesValidator = (TextRulesValidator)validatorFactory.Create(validatorDefinition);
-                        return textRulesValidator.IsRulesetSyntaxValid(validatorDefinition.Ruleset);
-                    default:
-                        return RulesetValidationResult.Invalid(validatorDefinition.Ruleset);
-                }
-            }
-            catch (Exception)
-            {
-                return RulesetValidationResult.Invalid(validatorDefinition.Ruleset);
-            }
+            return validationDefinitionValidator.Validate(validatorDefinition);
         }
     }
 }

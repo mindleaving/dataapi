@@ -8,7 +8,7 @@ namespace DataAPI.DataStructures.Validation
     {
         PythonScript = 1,
         Exe = 2,
-        JsonRuleset = 3,
+        JsonSchema = 3,
         TextRules = 4
     }
 }

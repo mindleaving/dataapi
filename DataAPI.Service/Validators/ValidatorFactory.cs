@@ -23,7 +23,7 @@ namespace DataAPI.Service.Validators
                     return CreatePythonScriptValidator(validatorDefinition);
                 case ValidatorType.Exe:
                     return CreateExecutableValidator(validatorDefinition);
-                case ValidatorType.JsonRuleset:
+                case ValidatorType.JsonSchema:
                     return CreateJsonRulesetValidator(validatorDefinition);
                 case ValidatorType.TextRules:
                     return CreateTextRulesetValidator(validatorDefinition);
@@ -58,7 +58,7 @@ namespace DataAPI.Service.Validators
 
         private IValidator CreateJsonRulesetValidator(ValidatorDefinition validatorDefinition)
         {
-            throw new NotImplementedException();
+            return new JsonSchemaValidator(validatorDefinition);
         }
 
         private IValidator CreateTextRulesetValidator(ValidatorDefinition validatorDefinition)

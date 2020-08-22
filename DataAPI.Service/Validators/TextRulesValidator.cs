@@ -55,8 +55,8 @@ namespace DataAPI.Service.Validators
             }
             if(failingRules.Any())
             {
-                var aggregatedRules = failingRules.Aggregate((a,b) => a + "; " + b);
-                return ValidationResult.Invalid($"Does not match rule(s) '{aggregatedRules}'", Definition.Id, Definition.SubmitterEmail);
+                var aggregatedRules = failingRules.Aggregate((a,b) => a + "\n" + b);
+                return ValidationResult.Invalid($"Does not match rule(s):\n{aggregatedRules}", Definition.Id, Definition.SubmitterEmail);
             }
             return ValidationResult.Valid();
         }

@@ -36,7 +36,7 @@ namespace DataAPI.DataStructures.Validation
             Id = $"{dataType}_{Guid.NewGuid()}";
             DataType = dataType;
             ValidatorType = validatorType;
-            if (validatorType == ValidatorType.JsonRuleset || validatorType == ValidatorType.TextRules)
+            if (validatorType == ValidatorType.JsonSchema || validatorType == ValidatorType.TextRules)
                 Ruleset = rulesetOrExecutable;
             else
                 ExecutableBase64 = rulesetOrExecutable;
