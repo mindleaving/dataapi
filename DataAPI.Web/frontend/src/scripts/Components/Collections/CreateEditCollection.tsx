@@ -9,7 +9,8 @@ import EditJsonObject from './EditJsonObject';
 import { v4 as uuidv4 } from 'uuid';
 import '../../../styles/createEditCollection.css';
 import { JsonSchemaPropertyType } from '../../../types/frontendEnums';
-import JsonSchemaForm from '@rjsf/core'
+import JsonSchemaForm from '@rjsf/core';
+import { convertJsonSchemaObject } from '../../Helpers/JsonSchemaBuilder';
 
 interface CreateEditCollectionProps {}
 interface CreateEditCollectionState {
@@ -90,7 +91,7 @@ class CreateEditCollection extends Component<CreateEditCollectionProps, CreateEd
                 </Row>
                 <Row>
                     <Col>
-                        <JsonSchemaForm schema={this.state.schema as any} />
+                        <JsonSchemaForm schema={convertJsonSchemaObject(this.state.schema)} />
                     </Col>
                 </Row>
             </Container>
