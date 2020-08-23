@@ -200,7 +200,8 @@ namespace DataAPI.Client.Communicators
         }
 
         public static void SetCollectionOptions(
-            ApiConfiguration configuration, HttpClient httpClient,
+            ApiConfiguration configuration, 
+            HttpClient httpClient,
             CollectionOptions collectionOptions)
         {
             var requestUri = RequestUriBuilder.Build(configuration, "api/dataio/setcollectionoptions");

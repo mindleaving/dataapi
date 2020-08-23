@@ -1,3 +1,13 @@
+export enum LoginMethod {
+    ActiveDirectory = "ActiveDirectory",
+    JsonWebToken = "JsonWebToken"
+}
+export enum AuthenticationErrorType {
+    Ok = "Ok",
+    UserNotFound = "UserNotFound",
+    InvalidPassword = "InvalidPassword",
+    AuthenticationMethodNotAvailable = "AuthenticationMethodNotAvailable"
+}
 export enum IdGeneratorType {
     Guid = "Guid",
     Integer = "Integer"

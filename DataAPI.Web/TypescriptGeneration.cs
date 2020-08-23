@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using DataAPI.DataStructures;
+using DataAPI.DataStructures.CollectionManagement;
 using DataAPI.DataStructures.DataIo;
 using DataAPI.DataStructures.DataManagement;
 using DataAPI.DataStructures.DataSubscription;
@@ -26,7 +27,11 @@ namespace DataAPI.Web
                 RepositoryPaths[Environment.MachineName.ToLowerInvariant()],
                 @"DataAPI.Web\frontend\src\types");
             TypescriptGenerator.TypescriptGenerator.Builder
+                .Include<LoginMethod>()
+                .Include<AuthenticationResult>()
                 .Include<CollectionInformation>()
+                .Include<CollectionUserPermissions>()
+                .Include<CollectionOptions>()
                 .Include<UserProfile>()
                 .Include<RegistrationInformation>()
                 .Include<ChangePasswordBody>()

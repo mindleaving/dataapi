@@ -2,12 +2,14 @@ import React, { Component } from 'react';
 import { NotificationManager } from 'react-notifications';
 import ListGroup from 'react-bootstrap/ListGroup';
 import CollectionListItem from './Collections/CollectionListItem';
+import { dataApiClient } from '../Communication/DataApiClient';
 import { DataAPI } from '../../types/dataApiDataStructures.d';
 
 interface CollectionListProps {
     onCollectionSelected: (collectionName: string) => void;
 }
 interface CollectionListState {
+    includeHidden: boolean;
     collections: DataAPI.DataStructures.CollectionInformation[];
 }
 
@@ -17,6 +19,7 @@ class CollectionList extends Component<CollectionListProps, CollectionListState>
         super(props);
 
         this.state = { 
+            includeHidden: false,
             collections: []
         };
     }
@@ -27,8 +30,8 @@ class CollectionList extends Component<CollectionListProps, CollectionListState>
 
     loadCollections = async () => {
         try {
-            throw new Error("Not implemented");
-            
+            const collectionInfos = await dataApiClient.listCollections(this.state.includeHidden);
+            this.setState({ collections: collectionInfos });
         } catch(e) {
             NotificationManager.error('Could not load collections', '', 5000);
         }

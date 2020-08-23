@@ -23,6 +23,13 @@ export namespace DataAPI {
         }
     
         export namespace UserManagement {
+            interface AuthenticationResult {
+                isAuthenticated: boolean;
+                username: string | null;
+                accessToken: string | null;
+                error: Enums.AuthenticationErrorType;
+            }
+        
             interface UserProfile {
                 username: string;
                 firstName: string;
@@ -39,6 +46,24 @@ export namespace DataAPI {
             }
         }
     
+        export namespace CollectionManagement {
+            interface CollectionUserPermissions {
+                collectionName: string;
+                username: string;
+                roles: Enums.Role[];
+            }
+        
+            interface CollectionOptions {
+                collectionName: string;
+                displayName: string;
+                description: string;
+                isProtected?: boolean | null;
+                nonAdminUsersCanOverwriteData?: boolean | null;
+                isHidden?: boolean | null;
+                idGeneratorType?: Enums.IdGeneratorType | null;
+            }
+        }
+    
         export namespace PostBodies {
             interface ChangePasswordBody {
                 username: string;
@@ -47,7 +72,7 @@ export namespace DataAPI {
         
             interface SubmitDataBody {
                 dataType: string;
-                id: string;
+                id?: string | null;
                 overwrite: boolean;
                 data: any;
             }
@@ -142,7 +167,7 @@ export namespace DataAPI {
                 uploaderInitials: string;
                 uploadTimestamp: Date;
                 dataProjectId: string;
-                filename: string;
+                filename: string | null;
                 rawData: DataAPI.DataStructures.DataManagement.DataReference;
                 derivedData: DataAPI.DataStructures.DataManagement.DataReference[];
             }
