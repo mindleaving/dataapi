@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using Newtonsoft.Json;
+using TypescriptGenerator.Attributes;
 
 namespace DataAPI.DataStructures.PostBodies
 {
@@ -17,6 +18,7 @@ namespace DataAPI.DataStructures.PostBodies
         [Required]
         public string DataType { get; }
 
+        [TypescriptIsOptional]
         public string Id { get; }
 
         [Required]

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using Newtonsoft.Json;
+using TypescriptGenerator.Attributes;
 
 namespace DataAPI.DataStructures.DataManagement
 {
@@ -45,6 +46,7 @@ namespace DataAPI.DataStructures.DataManagement
         public DateTime UploadTimestamp { get; private set; }
         [Required]
         public string DataProjectId { get; private set; }
+        [TypescriptIsOptional]
         public string Filename { get; private set; }
         [Required]
         public DataReference RawData { get; private set; }

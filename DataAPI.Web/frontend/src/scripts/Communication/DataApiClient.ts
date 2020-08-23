@@ -46,8 +46,8 @@ export class DataApiClient {
                 const userNotFoundResult: DataAPI.DataStructures.UserManagement.AuthenticationResult = {
                     isAuthenticated: false,
                     error: AuthenticationErrorType.UserNotFound,
-                    accessToken: null,
-                    username: null
+                    accessToken: '',
+                    username: ''
                 };
                 return userNotFoundResult;
             }
@@ -441,7 +441,7 @@ export class DataApiClient {
                 id: dataObjectId
             },
             derivedData: derivedData ?? [],
-            filename: filename ?? null
+            filename: filename
         };
         await this.insert('DataProjectUploadInfo', uploadInfo, uploadInfo.id);
     }

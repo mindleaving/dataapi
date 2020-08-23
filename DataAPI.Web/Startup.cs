@@ -50,7 +50,6 @@ namespace DataAPI.Web
                 {
                     var origins = Configuration.GetSection("CORS:AllowedOrigins").Get<string[]>();
                     builder.WithOrigins(origins)
-                        .AllowCredentials()
                         .AllowAnyMethod()
                         .AllowAnyHeader();
                 });

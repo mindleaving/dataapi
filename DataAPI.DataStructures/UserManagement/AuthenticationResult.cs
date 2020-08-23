@@ -1,4 +1,6 @@
-﻿using Newtonsoft.Json;
+﻿using System.ComponentModel.DataAnnotations;
+using Newtonsoft.Json;
+using TypescriptGenerator.Attributes;
 
 namespace DataAPI.DataStructures.UserManagement
 {
@@ -27,7 +29,9 @@ namespace DataAPI.DataStructures.UserManagement
         }
 
         public bool IsAuthenticated { get; }
+        [TypescriptIsOptional]
         public string Username { get; }
+        [TypescriptIsOptional]
         public string AccessToken { get; }
         public AuthenticationErrorType Error { get; }
     }

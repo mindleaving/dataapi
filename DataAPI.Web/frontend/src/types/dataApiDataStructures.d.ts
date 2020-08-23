@@ -25,8 +25,8 @@ export namespace DataAPI {
         export namespace UserManagement {
             interface AuthenticationResult {
                 isAuthenticated: boolean;
-                username: string | null;
-                accessToken: string | null;
+                username?: string;
+                accessToken?: string;
                 error: Enums.AuthenticationErrorType;
             }
         
@@ -72,7 +72,7 @@ export namespace DataAPI {
         
             interface SubmitDataBody {
                 dataType: string;
-                id?: string | null;
+                id?: string;
                 overwrite: boolean;
                 data: any;
             }
@@ -167,7 +167,7 @@ export namespace DataAPI {
                 uploaderInitials: string;
                 uploadTimestamp: Date;
                 dataProjectId: string;
-                filename: string | null;
+                filename?: string;
                 rawData: DataAPI.DataStructures.DataManagement.DataReference;
                 derivedData: DataAPI.DataStructures.DataManagement.DataReference[];
             }

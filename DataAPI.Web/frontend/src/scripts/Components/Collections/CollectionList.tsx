@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
 import { NotificationManager } from 'react-notifications';
 import ListGroup from 'react-bootstrap/ListGroup';
-import CollectionListItem from './Collections/CollectionListItem';
-import { dataApiClient } from '../Communication/DataApiClient';
-import { DataAPI } from '../../types/dataApiDataStructures.d';
+import CollectionListItem from './CollectionListItem';
+import { dataApiClient } from '../../Communication/DataApiClient';
+import { DataAPI } from '../../../types/dataApiDataStructures.d';
 
 interface CollectionListProps {
     onCollectionSelected: (collectionName: string) => void;
