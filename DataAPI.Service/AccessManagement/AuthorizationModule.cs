@@ -104,13 +104,13 @@ namespace DataAPI.Service.AccessManagement
         private async Task<bool> UpdateUser(string username, UpdateDefinition<User> updateDefinition)
         {
             var updateResult = await userCollection.UpdateOneAsync(x => x.UserName == username, updateDefinition);
-            return updateResult.IsAcknowledged && updateResult.ModifiedCount == 1;
+            return updateResult.IsAcknowledged && updateResult.MatchedCount == 1;
         }
 
         private async Task<bool> UpdateCollectionPermission(string permissionId, UpdateDefinition<CollectionPermissions> updateDefinition)
         {
             var updateResult = await collectionPermissionsCollection.UpdateOneAsync(x => x.Id == permissionId, updateDefinition);
-            return updateResult.IsAcknowledged && updateResult.ModifiedCount == 1;
+            return updateResult.IsAcknowledged && updateResult.MatchedCount == 1;
         }
 
         public async Task<AuthorizationResult> AuthorizeAsync(IResourceDescription resourceDescription, string username)

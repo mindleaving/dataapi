@@ -18,7 +18,6 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.SpaServices.ReactDevelopmentServer;
 using Microsoft.Azure.Storage;
 using Microsoft.Azure.Storage.Auth;
 using Microsoft.Extensions.Configuration;
@@ -26,6 +25,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
 
 #pragma warning disable 1591
 
@@ -33,7 +34,7 @@ namespace DataAPI.Web
 {
     public class Startup
     {
-        private const string CorsPolicyName = "LocalhostCorsPolicy";
+        private const string LocalhostCorsPolicy = "LocalhostCorsPolicy";
 
         public Startup(IConfiguration configuration)
         {
@@ -46,20 +47,31 @@ namespace DataAPI.Web
         {
             services.AddCors(options =>
             {
-                options.AddPolicy(CorsPolicyName, builder =>
+                options.AddPolicy(LocalhostCorsPolicy, builder =>
                 {
                     var origins = Configuration.GetSection("CORS:AllowedOrigins").Get<string[]>();
                     builder.WithOrigins(origins)
                         .AllowAnyMethod()
-                        .AllowAnyHeader();
+                        .AllowAnyHeader()
+                        .AllowCredentials();
                 });
             });
+            services.AddRouting(x => x.LowercaseUrls = true);
             services.AddControllers(
                 options =>
                 {
                     options.Filters.Add(new ProducesAttribute(Conventions.JsonContentType));
                 })
-                .AddNewtonsoftJson();
+                .AddNewtonsoftJson(
+                    options =>
+                    {
+                        options.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();
+                    });
+            services.AddSingleton(provider => new JsonSerializerSettings
+            {
+                ContractResolver = new CamelCasePropertyNamesContractResolver()
+            });
+            services.AddHttpContextAccessor();
 
             SetupJwtTokenAuthentication(services);
 
@@ -177,7 +189,10 @@ namespace DataAPI.Web
             app.UseAuthentication();
             app.UseAuthorization();
 
-            app.UseCors(CorsPolicyName);
+            if (env.IsDevelopment())
+            {
+                app.UseCors(LocalhostCorsPolicy);
+            }
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
@@ -189,7 +204,7 @@ namespace DataAPI.Web
 
                 if (env.IsDevelopment())
                 {
-                    spa.UseProxyToSpaDevelopmentServer("http://localhost:3000/");
+                    spa.UseProxyToSpaDevelopmentServer("http://localhost:3000");
                 }
             });
         }

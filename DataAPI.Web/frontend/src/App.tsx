@@ -3,7 +3,7 @@ import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 import Layout from './Layout';
 import HomePage from './scripts/Pages/HomePage';
 import CollectionsPage from './scripts/Pages/CollectionsPage';
-import CreateEditCollection from './scripts/Components/Collections/CreateEditCollection';
+import CreateEditCollection from './scripts/Components/Collections/Create/CreateEditCollection';
 import DataProjectsPage from './scripts/Pages/DataProjectsPage';
 import TagsPage from './scripts/Pages/TagsPage';
 import DataProcessingServicePage from './scripts/Pages/DataProcessingServicePage';

@@ -7,7 +7,9 @@ using DataAPI.Service.AccessManagement;
 using DataAPI.Service.AccessManagement.ResourceDescriptions;
 using DataAPI.Service.DataRouting;
 using DataAPI.Service.DataStorage;
+using DataAPI.Web.Helpers;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace DataAPI.Web.Controllers
@@ -22,17 +24,20 @@ namespace DataAPI.Web.Controllers
         private readonly IDataRouter dataRouter;
         private readonly AuthorizationModule authorizationModule;
         private readonly NewCollectionTasks newCollectionTasks;
+        private readonly IHttpContextAccessor httpContextAccessor;
 
 #pragma warning disable 1591
         public IdController(
 #pragma warning restore 1591
             IDataRouter dataRouter, 
             AuthorizationModule authorizationModule,
-            NewCollectionTasks newCollectionTasks)
+            NewCollectionTasks newCollectionTasks,
+            IHttpContextAccessor httpContextAccessor)
         {
             this.dataRouter = dataRouter;
             this.authorizationModule = authorizationModule;
             this.newCollectionTasks = newCollectionTasks;
+            this.httpContextAccessor = httpContextAccessor;
         }
 
         /// <summary>
@@ -62,7 +67,7 @@ namespace DataAPI.Web.Controllers
             }
 
             // Authorize
-            var loggedInUsername = UsernameNormalizer.Normalize(HttpContext.User.Identity.Name);
+            var loggedInUsername = ControllerHelpers.GetUsername(httpContextAccessor);
             var resourceDescription = new SubmitDataResourceDescription(dataType);
             var authorizationResult = await authorizationModule.AuthorizeAsync(resourceDescription, loggedInUsername);
             if (!authorizationResult.IsAuthorized)
@@ -76,12 +81,8 @@ namespace DataAPI.Web.Controllers
                 return StatusCode((int)HttpStatusCode.InternalServerError, "Failed to reserve ID");
             if(idReservationResult.Any(x => x.IsNewCollection))
                 newCollectionTasks.PerformTasks(dataType, authorizationResult.User);
-            return new ContentResult
-            {
-                ContentType = "text/plain",
-                Content = string.Join("\n",idReservationResult.Select(x => x.Id)),
-                StatusCode = (int)HttpStatusCode.OK
-            };
+            var ids = idReservationResult.Select(x => x.Id);
+            return Ok(ids);
         }
 
         /// <summary>
@@ -112,7 +113,7 @@ namespace DataAPI.Web.Controllers
                 return BadRequest($"The ID '{id}' for object of type '{dataType}' is not valid");
 
             // Authorize
-            var loggedInUsername = UsernameNormalizer.Normalize(HttpContext.User.Identity.Name);
+            var loggedInUsername = ControllerHelpers.GetUsername(httpContextAccessor);
             var resourceDescription = new SubmitDataResourceDescription(dataType);
             var authorizationResult = await authorizationModule.AuthorizeAsync(resourceDescription, loggedInUsername);
             if (!authorizationResult.IsAuthorized)

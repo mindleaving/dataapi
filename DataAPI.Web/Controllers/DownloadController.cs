@@ -11,7 +11,9 @@ using DataAPI.Service.AccessManagement.ResourceDescriptions;
 using DataAPI.Service.DataRouting;
 using DataAPI.Service.DataStorage;
 using DataAPI.Service.Objects;
+using DataAPI.Web.Helpers;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 
@@ -26,17 +28,20 @@ namespace DataAPI.Web.Controllers
         private readonly IDataRouter dataRouter;
         private readonly AuthorizationModule authorizationModule;
         private readonly ApiEventLogger apiEventLogger;
+        private readonly IHttpContextAccessor httpContextAccessor;
 
 #pragma warning disable 1591
         public DownloadController(
 #pragma warning restore 1591
             IDataRouter dataRouter, 
             AuthorizationModule authorizationModule,
-            ApiEventLogger apiEventLogger)
+            ApiEventLogger apiEventLogger,
+            IHttpContextAccessor httpContextAccessor)
         {
             this.dataRouter = dataRouter;
             this.authorizationModule = authorizationModule;
             this.apiEventLogger = apiEventLogger;
+            this.httpContextAccessor = httpContextAccessor;
         }
 
         /// <summary>
@@ -68,7 +73,7 @@ namespace DataAPI.Web.Controllers
                 return BadRequest("ID not specified");
 
             // Authorize
-            var loggedInUsername = UsernameNormalizer.Normalize(HttpContext.User.Identity.Name);
+            var loggedInUsername = ControllerHelpers.GetUsername(httpContextAccessor);
             var resourceDescription = new GetDataResourceDescription(dataType);
             var authorizationResult = await authorizationModule.AuthorizeAsync(resourceDescription, loggedInUsername);
             if (!authorizationResult.IsAuthorized)

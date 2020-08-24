@@ -12,6 +12,7 @@ using DataAPI.Service.AccessManagement.ResourceDescriptions;
 using DataAPI.Service.Objects;
 using DataAPI.Web.Helpers;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 
@@ -27,17 +28,23 @@ namespace DataAPI.Web.Controllers
         private readonly AuthenticationModule authenticationModule;
         private readonly AuthorizationModule authorizationModule;
         private readonly ApiEventLogger apiEventLogger;
+        private readonly IHttpContextAccessor httpContextAccessor;
+        private readonly JsonSerializerSettings jsonSerializerSettings;
 
 #pragma warning disable 1591
         public AccountController(
 #pragma warning restore 1591
             AuthenticationModule authenticationModule,
             AuthorizationModule authorizationModule,
-            ApiEventLogger apiEventLogger)
+            ApiEventLogger apiEventLogger,
+            IHttpContextAccessor httpContextAccessor,
+            JsonSerializerSettings jsonSerializerSettings)
         {
             this.authenticationModule = authenticationModule;
             this.authorizationModule = authorizationModule;
             this.apiEventLogger = apiEventLogger;
+            this.httpContextAccessor = httpContextAccessor;
+            this.jsonSerializerSettings = jsonSerializerSettings;
         }
 
         /// <summary>
@@ -52,7 +59,7 @@ namespace DataAPI.Web.Controllers
         public async Task<IActionResult> GetUserProfiles()
         {
             // Authroize
-            var loggedInUsername = UsernameNormalizer.Normalize(HttpContext.User.Identity.Name);
+            var loggedInUsername = ControllerHelpers.GetUsername(httpContextAccessor);
             var authorizationResult = await authorizationModule.AuthorizeAsync(new ViewUserProfilesResoruceDescription(), loggedInUsername);
             if (!authorizationResult.IsAuthorized)
             {
@@ -60,7 +67,7 @@ namespace DataAPI.Web.Controllers
             }
 
             var userProfiles = authenticationModule.GetAllUserProfilesAsync();
-            return userProfiles.ToFileStreamResult();
+            return userProfiles.ToFileStreamResult(jsonSerializerSettings);
         }
 
         /// <summary>
@@ -80,7 +87,7 @@ namespace DataAPI.Web.Controllers
             var normalizedUsername = UsernameNormalizer.Normalize(username);
 
             // Authroize
-            var loggedInUsername = UsernameNormalizer.Normalize(HttpContext.User.Identity.Name);
+            var loggedInUsername = ControllerHelpers.GetUsername(httpContextAccessor);
             var authorizationResult = await authorizationModule.AuthorizeAsync(new GetGlobalRolesResourceDescription(normalizedUsername), loggedInUsername);
             if (!authorizationResult.IsAuthorized)
             {
@@ -91,12 +98,7 @@ namespace DataAPI.Web.Controllers
                 return NotFound($"User '{normalizedUsername}' doesn't exist");
 
             var roles = await authenticationModule.GetGlobalRolesForUserAsync(normalizedUsername);
-            return new ContentResult
-            {
-                ContentType = Conventions.JsonContentType,
-                Content = JsonConvert.SerializeObject(roles),
-                StatusCode = (int) HttpStatusCode.OK
-            };
+            return Ok(roles);
         }
 
         /// <summary>
@@ -168,12 +170,9 @@ namespace DataAPI.Web.Controllers
             else
                 apiEventLogger.Log(LogLevel.Warning, $"User '{loggedInUsername}' was rejected");
 
-            return new ContentResult
-            {
-                ContentType = Conventions.JsonContentType,
-                Content = JsonConvert.SerializeObject(authenticationResult),
-                StatusCode = authenticationResult.IsAuthenticated ? (int)HttpStatusCode.OK : (int)HttpStatusCode.Unauthorized
-            };
+            if (authenticationResult.IsAuthenticated)
+                return Ok(authenticationResult);
+            return StatusCode((int) HttpStatusCode.Unauthorized, authenticationResult);
         }
 
         /// <summary>
@@ -191,12 +190,9 @@ namespace DataAPI.Web.Controllers
                 apiEventLogger.Log(LogLevel.Info, $"User '{loginInformation.Username}' successfully logged in");
             else
                 apiEventLogger.Log(LogLevel.Warning, $"User '{loginInformation.Username}' was rejected");
-            return new ContentResult
-            {
-                ContentType = Conventions.JsonContentType,
-                Content = JsonConvert.SerializeObject(authenticationResult),
-                StatusCode = authenticationResult.IsAuthenticated ? (int)HttpStatusCode.OK : (int)HttpStatusCode.Unauthorized
-            };
+            if (authenticationResult.IsAuthenticated)
+                return Ok(authenticationResult);
+            return StatusCode((int) HttpStatusCode.Unauthorized, authenticationResult);
         }
 
         /// <summary>
@@ -233,7 +229,7 @@ namespace DataAPI.Web.Controllers
                 return NotFound($"User '{normalizedUsername}' not found");
 
             // Authroize
-            var loggedInUsername = UsernameNormalizer.Normalize(HttpContext.User.Identity.Name);
+            var loggedInUsername = ControllerHelpers.GetUsername(httpContextAccessor);
             var authorizationResult = await authorizationModule.AuthorizeAsync(
                 new ManageUserResourceDescription(normalizedUsername, UserManagementActionType.ChangePassword),
                 loggedInUsername);
@@ -261,7 +257,7 @@ namespace DataAPI.Web.Controllers
             var normalizedUsername = UsernameNormalizer.Normalize(username);
 
             // Authroize
-            var loggedInUsername = UsernameNormalizer.Normalize(HttpContext.User.Identity.Name);
+            var loggedInUsername = ControllerHelpers.GetUsername(httpContextAccessor);
             var authorizationResult = await authorizationModule.AuthorizeAsync(
                 new ManageUserResourceDescription(normalizedUsername, UserManagementActionType.Delete), 
                 loggedInUsername);
@@ -306,7 +302,7 @@ namespace DataAPI.Web.Controllers
                 return NotFound($"User '{normalizedUsername}' not found");
 
             // Authroize
-            var loggedInUsername = UsernameNormalizer.Normalize(HttpContext.User.Identity.Name);
+            var loggedInUsername = ControllerHelpers.GetUsername(httpContextAccessor);
             var authorizationResult = await authorizationModule.AuthorizeAsync(
                 new ManageUserResourceDescription(normalizedUsername, UserManagementActionType.AssignRole), 
                 loggedInUsername);
@@ -363,7 +359,7 @@ namespace DataAPI.Web.Controllers
                 return NotFound($"User '{normalizedUsername}' not found");
 
             // Authroize
-            var loggedInUsername = UsernameNormalizer.Normalize(HttpContext.User.Identity.Name);
+            var loggedInUsername = ControllerHelpers.GetUsername(httpContextAccessor);
             var authorizationResult = await authorizationModule.AuthorizeAsync(
                 new ManageUserResourceDescription(normalizedUsername, UserManagementActionType.AssignRole), 
                 loggedInUsername);
@@ -420,7 +416,7 @@ namespace DataAPI.Web.Controllers
                 return NotFound($"User '{normalizedUsername}' not found");
 
             // Authroize
-            var loggedInUsername = UsernameNormalizer.Normalize(HttpContext.User.Identity.Name);
+            var loggedInUsername = ControllerHelpers.GetUsername(httpContextAccessor);
             var authorizationResult = await authorizationModule.AuthorizeAsync(
                 new ManageUserResourceDescription(normalizedUsername, UserManagementActionType.AssignRole), 
                 loggedInUsername);
@@ -462,7 +458,7 @@ namespace DataAPI.Web.Controllers
                 return BadRequest("Invalid collection name");
 
             // Authroize
-            var loggedInUsername = UsernameNormalizer.Normalize(HttpContext.User.Identity.Name);
+            var loggedInUsername = ControllerHelpers.GetUsername(httpContextAccessor);
             var authorizationResult = await authorizationModule.AuthorizeAsync(
                 new GetCollectionPermissionsResourceDescription(), 
                 loggedInUsername);
@@ -473,12 +469,7 @@ namespace DataAPI.Web.Controllers
 
             var collectionUserPermissions = await authorizationModule.GetAllCollectionPermissionsAsync(collectionName);
 
-            return new ContentResult
-            {
-                ContentType = Conventions.JsonContentType,
-                Content = JsonConvert.SerializeObject(collectionUserPermissions),
-                StatusCode = (int)HttpStatusCode.OK
-            };
+            return Ok(collectionUserPermissions);
         }
     }
 }

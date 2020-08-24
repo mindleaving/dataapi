@@ -3,9 +3,9 @@ import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Button from 'react-bootstrap/Button';
 import EditJsonProperty from './EditJsonProperty';
-import { FrontendTypes } from '../../../types/frontend';
+import { FrontendTypes } from '../../../../types/frontend';
 import { v4 as uuidv4 } from 'uuid';
-import { JsonSchemaPropertyType } from '../../../types/frontendEnums';
+import { JsonSchemaPropertyType } from '../../../../types/frontendEnums';
 
 interface EditJsonObjectProps
  {

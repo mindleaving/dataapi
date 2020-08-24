@@ -13,6 +13,7 @@ using DataAPI.Service.AccessManagement.ResourceDescriptions;
 using DataAPI.Service.DataRouting;
 using DataAPI.Service.Objects;
 using DataAPI.Service.Search;
+using DataAPI.Web.Helpers;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -31,6 +32,7 @@ namespace DataAPI.Web.Controllers
         private readonly IDataRouter dataRouter;
         private readonly AuthorizationModule authorizationModule;
         private readonly ApiEventLogger apiEventLogger;
+        private readonly IHttpContextAccessor httpContextAccessor;
 
 #pragma warning disable 1591
         public ViewController(
@@ -38,12 +40,14 @@ namespace DataAPI.Web.Controllers
             ViewManager viewManager, 
             IDataRouter dataRouter,
             AuthorizationModule authorizationModule,
-            ApiEventLogger apiEventLogger)
+            ApiEventLogger apiEventLogger,
+            IHttpContextAccessor httpContextAccessor)
         {
             this.viewManager = viewManager;
             this.dataRouter = dataRouter;
             this.authorizationModule = authorizationModule;
             this.apiEventLogger = apiEventLogger;
+            this.httpContextAccessor = httpContextAccessor;
         }
 
         /// <summary>
@@ -62,7 +66,7 @@ namespace DataAPI.Web.Controllers
             var dataType = DetermineViewCollection(body.Query);
 
             // Authroize
-            var loggedInUsername = UsernameNormalizer.Normalize(HttpContext.User.Identity.Name);
+            var loggedInUsername = ControllerHelpers.GetUsername(httpContextAccessor);
             var resourceDescription = new CreateViewResourceDescription(dataType);
             var authorizationResult = await authorizationModule.AuthorizeAsync(resourceDescription, loggedInUsername);
             if (!authorizationResult.IsAuthorized)
@@ -74,13 +78,8 @@ namespace DataAPI.Web.Controllers
 			{
 			    var viewInformation = await viewManager.CreateViewAsync(body, authorizationResult.User.UserName);
                 apiEventLogger.Log(LogLevel.Info, $"User '{authorizationResult.User.UserName}' added view with ID '{viewInformation.ViewId}'");
-				return new ContentResult
-				{
-					ContentType = Conventions.JsonContentType,
-					Content = JsonConvert.SerializeObject(viewInformation),
-					StatusCode = (int)HttpStatusCode.OK
-				};
-			}
+                return Ok(viewInformation);
+            }
 			catch(DocumentAlreadyExistsException)
 			{
 				return Conflict($"View with name '{body.ViewId}' already exists");
@@ -129,18 +128,13 @@ namespace DataAPI.Web.Controllers
             }
 
             // Authroize
-            var loggedInUsername = UsernameNormalizer.Normalize(HttpContext.User.Identity.Name);
+            var loggedInUsername = ControllerHelpers.GetUsername(httpContextAccessor);
             var dataType = DetermineViewCollection(parameterInsertedQuery);
             var resourceDescription = new GetViewResourceDescription(dataType);
             var authorizationResult = await authorizationModule.AuthorizeAsync(resourceDescription, loggedInUsername);
             if (!authorizationResult.IsAuthorized)
             {
-                return new ContentResult
-                {
-                    Content = "Not authorized",
-                    ContentType = "text/plain",
-                    StatusCode = (int)HttpStatusCode.Unauthorized
-                };
+                return StatusCode((int) HttpStatusCode.Unauthorized, "Not authorized");
             }
             return await SearchExecutor.PerformSearch(dataRouter, parameterInsertedQuery, resultFormatEnum);
         }
@@ -170,18 +164,13 @@ namespace DataAPI.Web.Controllers
                 return NotFound();
 
             // Authroize
-            var loggedInUsername = UsernameNormalizer.Normalize(HttpContext.User.Identity.Name);
+            var loggedInUsername = ControllerHelpers.GetUsername(httpContextAccessor);
             var dataType = DetermineViewCollection(view.Query);
             var resourceDescription = new DeleteViewResourceDescription(view.Submitter, dataType);
             var authorizationResult = await authorizationModule.AuthorizeAsync(resourceDescription, loggedInUsername);
             if (!authorizationResult.IsAuthorized)
             {
-                return new ContentResult
-                {
-                    Content = "Not authorized",
-                    ContentType = "text/plain",
-                    StatusCode = (int)HttpStatusCode.Unauthorized
-                };
+                return StatusCode((int) HttpStatusCode.Unauthorized, "Not authorized");
             }
 
             await viewManager.DeleteViewAsync(viewId);

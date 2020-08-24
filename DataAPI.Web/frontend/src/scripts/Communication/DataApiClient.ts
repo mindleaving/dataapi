@@ -9,6 +9,7 @@ export class DataApiClient {
     loginMethod: LoginMethod;
     isLoggedIn: boolean;
     loggedInUsername: string | null;
+    accessToken: string | null;
 
     constructor(endpoint: string) {
         this.endpoint = endpoint;
@@ -18,6 +19,7 @@ export class DataApiClient {
         this.loginMethod = LoginMethod.ActiveDirectory;
         this.isLoggedIn = false;
         this.loggedInUsername = null;
+        this.accessToken = null;
     }
 
     isAvailable = async (): Promise<boolean> => {
@@ -57,19 +59,26 @@ export class DataApiClient {
     }
 
     login = async (username: string, password: string): Promise<DataAPI.DataStructures.UserManagement.AuthenticationResult> => {
-        const response = await this._sendRequest('POST', 'api/account/login', {}, { usename: username, password: password }, false);
+        const response = await this._sendRequest('POST', 'api/account/login', {}, { username: username, password: password }, false);
         if(!response.ok && response.status !== 401) {
             return this._handleError(response);
         }
-        return await response.json() as DataAPI.DataStructures.UserManagement.AuthenticationResult;
+        const authenticationResult = await response.json() as DataAPI.DataStructures.UserManagement.AuthenticationResult;
+        if(authenticationResult.isAuthenticated) {
+            this.loggedInUsername = authenticationResult.username!;
+            this.accessToken = authenticationResult.accessToken!;
+        }
+        return authenticationResult;
     }
 
     retryLogin = async (): Promise<DataAPI.DataStructures.UserManagement.AuthenticationResult> => {
         throw new Error("Not implemented");
     }
 
-    setAccessToken = (accessToken: string): void => {
-        throw new Error("Not implemented");
+    setAccessToken = (username: string, accessToken: string): void => {
+        this.isLoggedIn = true;
+        this.loggedInUsername = username;
+        this.accessToken = accessToken;
     }
 
     logout = async (): Promise<void> => {
@@ -239,9 +248,17 @@ export class DataApiClient {
         }
         const lines = allLines.split('\n');
         const results = [];
-        for(const line in lines) {
-            const result = JSON.parse(line);
-            results.push(result);
+        for(const lineIndex in lines) {
+            const line = lines[lineIndex];
+            if(!line) {
+                continue;
+            }
+            try {
+                const result = JSON.parse(lines[lineIndex]);
+                results.push(result);
+            } catch {
+                // Ignore parsing erros
+            }
         }
         return results;
     }
@@ -480,8 +497,15 @@ export class DataApiClient {
         handleError: boolean = true
     ): Promise<Response> => {
         const url = buildUrl(this.endpoint, resourcePath, params ?? {});
+        const headers: HeadersInit = {
+            "Content-Type": "application/json"
+        };
+        if(this.isLoggedIn) {
+            headers["Authorization"] = "Bearer " + this.accessToken;
+        }
         const options: RequestInit =  {
-            method: method
+            method: method,
+            headers: headers
         };
         if(body) {
             options.body = typeof body === "string" ? body : JSON.stringify(body)

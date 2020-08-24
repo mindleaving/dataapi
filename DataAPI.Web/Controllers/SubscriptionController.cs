@@ -11,7 +11,9 @@ using DataAPI.Service.Objects;
 using DataAPI.Service.SubscriptionManagement;
 using DataAPI.Web.Helpers;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 
 namespace DataAPI.Web.Controllers
 {
@@ -26,6 +28,8 @@ namespace DataAPI.Web.Controllers
         private readonly AuthorizationModule authorizationModule;
         private readonly SubscriptionManager subscriptionManager;
         private readonly ApiEventLogger apiEventLogger;
+        private readonly IHttpContextAccessor httpContextAccessor;
+        private readonly JsonSerializerSettings jsonSerializerSettings;
 
 #pragma warning disable 1591
         public SubscriptionController(
@@ -33,12 +37,16 @@ namespace DataAPI.Web.Controllers
             AuthenticationModule authenticationModule,
             AuthorizationModule authorizationModule, 
             SubscriptionManager subscriptionManager, 
-            ApiEventLogger apiEventLogger)
+            ApiEventLogger apiEventLogger,
+            IHttpContextAccessor httpContextAccessor,
+            JsonSerializerSettings jsonSerializerSettings)
         {
             this.authenticationModule = authenticationModule;
             this.authorizationModule = authorizationModule;
             this.subscriptionManager = subscriptionManager;
             this.apiEventLogger = apiEventLogger;
+            this.httpContextAccessor = httpContextAccessor;
+            this.jsonSerializerSettings = jsonSerializerSettings;
         }
 
         /// <summary>
@@ -64,7 +72,7 @@ namespace DataAPI.Web.Controllers
                 return BadRequest($"{nameof(SubscriptionBody.ModificationTypes)} contained value '{DataModificationType.Unknown}'");
 
             // Authroize
-            var loggedInUsername = UsernameNormalizer.Normalize(HttpContext.User.Identity.Name);
+            var loggedInUsername = ControllerHelpers.GetUsername(httpContextAccessor);
             var authorizationResult = await authorizationModule.AuthorizeAsync(
                 new SubscriptionResourceDescription(subscription.DataType), 
                 loggedInUsername);
@@ -109,7 +117,7 @@ namespace DataAPI.Web.Controllers
                 return NotFound();
 
             // Authroize
-            var loggedInUsername = UsernameNormalizer.Normalize(HttpContext.User.Identity.Name);
+            var loggedInUsername = ControllerHelpers.GetUsername(httpContextAccessor);
             var authorizationResult = await authorizationModule.AuthorizeAsync(
                 new UnsubscribeResourceDescription(matchingSubscription.Username), 
                 loggedInUsername);
@@ -136,7 +144,7 @@ namespace DataAPI.Web.Controllers
         public async Task<IActionResult> UnsubscribeAll([FromQuery] string dataType)
         {
             // Authroize
-            var loggedInUsername = UsernameNormalizer.Normalize(HttpContext.User.Identity.Name);
+            var loggedInUsername = ControllerHelpers.GetUsername(httpContextAccessor);
             var authorizationResult = await authorizationModule.AuthorizeAsync(
                 new UnsubscribeAllResourceDescription(), 
                 loggedInUsername);
@@ -166,7 +174,7 @@ namespace DataAPI.Web.Controllers
             dataType = dataType?.Trim();
 
             // Authroize
-            var loggedInUsername = UsernameNormalizer.Normalize(HttpContext.User.Identity.Name);
+            var loggedInUsername = ControllerHelpers.GetUsername(httpContextAccessor);
             var authorizationResult = await authorizationModule.AuthorizeAsync(
                 new ListSubscriptionResourceDescription(),
                 loggedInUsername);
@@ -177,7 +185,7 @@ namespace DataAPI.Web.Controllers
 
             // Provide
             var subscriptions = subscriptionManager.GetSubscriptionsAsync(dataType, authorizationResult.User.UserName);
-            return subscriptions.ToFileStreamResult();
+            return subscriptions.ToFileStreamResult(jsonSerializerSettings);
         }
 
         /// <summary>
@@ -194,7 +202,7 @@ namespace DataAPI.Web.Controllers
         public async Task<IActionResult> GetSubscribedObjects([FromQuery]string dataType = null)
         {
             // Authroize
-            var loggedInUsername = UsernameNormalizer.Normalize(HttpContext.User.Identity.Name);
+            var loggedInUsername = ControllerHelpers.GetUsername(httpContextAccessor);
             var authorizationResult = await authorizationModule.AuthorizeAsync(
                 new SubscriptionResourceDescription(dataType), 
                 loggedInUsername);
@@ -205,7 +213,7 @@ namespace DataAPI.Web.Controllers
 
             // Provide
             var subscribedObjects = subscriptionManager.GetSubscribedObjectsAsync(authorizationResult.User.UserName, dataType);
-            return subscribedObjects.ToFileStreamResult();
+            return subscribedObjects.ToFileStreamResult(jsonSerializerSettings);
         }
 
         /// <summary>
@@ -229,7 +237,7 @@ namespace DataAPI.Web.Controllers
                 return NotFound();
 
             // Authroize
-            var loggedInUsername = UsernameNormalizer.Normalize(HttpContext.User.Identity.Name);
+            var loggedInUsername = ControllerHelpers.GetUsername(httpContextAccessor);
             var authorizationResult = await authorizationModule.AuthorizeAsync(
                 new DeleteNotificationResourceDescription(notification.Username), 
                 loggedInUsername);
@@ -281,7 +289,7 @@ namespace DataAPI.Web.Controllers
                 return BadRequest("Unknown recipient");
 
             // Authenticate
-            var loggedInUsername = UsernameNormalizer.Normalize(HttpContext.User.Identity.Name);
+            var loggedInUsername = ControllerHelpers.GetUsername(httpContextAccessor);
             var authorizationResult = await authorizationModule.AuthorizeAsync(
                 new ReportDataResourceDescription(), 
                 loggedInUsername);

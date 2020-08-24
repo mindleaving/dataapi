@@ -4,13 +4,12 @@ import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Form from 'react-bootstrap/Form';
-import { FrontendTypes } from '../../../types/frontend.d';
+import { FrontendTypes } from '../../../../types/frontend';
 import EditJsonObject from './EditJsonObject';
 import { v4 as uuidv4 } from 'uuid';
-import '../../../styles/createEditCollection.css';
-import { JsonSchemaPropertyType } from '../../../types/frontendEnums';
+import { JsonSchemaPropertyType } from '../../../../types/frontendEnums';
 import JsonSchemaForm from '@rjsf/core';
-import { convertJsonSchemaObject } from '../../Helpers/JsonSchemaBuilder';
+import { convertJsonSchemaObject } from '../../../Helpers/JsonSchemaBuilder';
 
 interface CreateEditCollectionProps {}
 interface CreateEditCollectionState {

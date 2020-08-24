@@ -10,7 +10,9 @@ using DataAPI.Service.AccessManagement;
 using DataAPI.Service.AccessManagement.ResourceDescriptions;
 using DataAPI.Service.Objects;
 using DataAPI.Service.Validators;
+using DataAPI.Web.Helpers;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 
@@ -26,17 +28,20 @@ namespace DataAPI.Web.Controllers
         private readonly AuthorizationModule authorizationModule;
         private readonly ValidatorManager validatorManager;
         private readonly ApiEventLogger apiEventLogger;
+        private readonly IHttpContextAccessor httpContextAccessor;
 
 #pragma warning disable 1591
         public ValidatorController(
 #pragma warning restore 1591
             AuthorizationModule authorizationModule,
             ValidatorManager validatorManager,
-            ApiEventLogger apiEventLogger)
+            ApiEventLogger apiEventLogger,
+            IHttpContextAccessor httpContextAccessor)
         {
             this.authorizationModule = authorizationModule;
             this.validatorManager = validatorManager;
             this.apiEventLogger = apiEventLogger;
+            this.httpContextAccessor = httpContextAccessor;
         }
 
         /// <summary>
@@ -63,12 +68,7 @@ namespace DataAPI.Web.Controllers
                 return Task.FromResult<IActionResult>(StatusCode((int)HttpStatusCode.Forbidden, "Exe-validators are currently rejected because of security concerns."));
 
             var rulesetValidationResult = validatorManager.ValidateValidatorDefinition(body.ValidatorDefinition);
-            return Task.FromResult<IActionResult>(new ContentResult
-            {
-                ContentType = Conventions.JsonContentType,
-                Content = JsonConvert.SerializeObject(rulesetValidationResult),
-                StatusCode = (int)HttpStatusCode.OK
-            });
+            return Task.FromResult<IActionResult>(Ok(rulesetValidationResult));
         }
 
         /// <summary>
@@ -98,16 +98,11 @@ namespace DataAPI.Web.Controllers
             var definitionValidationResult = validatorManager.ValidateValidatorDefinition(body.ValidatorDefinition);
             if (!definitionValidationResult.IsValid)
             {
-                return new ContentResult
-                {
-                    ContentType = Conventions.JsonContentType,
-                    Content = JsonConvert.SerializeObject(definitionValidationResult),
-                    StatusCode = (int) HttpStatusCode.BadRequest
-                };
+                return StatusCode((int)HttpStatusCode.BadRequest, definitionValidationResult);
             }
 
             // Authroize
-            var loggedInUsername = UsernameNormalizer.Normalize(HttpContext.User.Identity.Name);
+            var loggedInUsername = ControllerHelpers.GetUsername(httpContextAccessor);
             var authorizationResult = await authorizationModule.AuthorizeAsync(
                 new AddValidatorResourceDescription(body.ValidatorDefinition.DataType), 
                 loggedInUsername);
@@ -173,12 +168,7 @@ namespace DataAPI.Web.Controllers
                     var validationResult = validator.Validate(body.Data.ToString());
                     if (!validationResult.IsValid)
                     {
-                        return new ContentResult
-                        {
-                            ContentType = Conventions.JsonContentType,
-                            Content = JsonConvert.SerializeObject(validationResult),
-                            StatusCode = (int) HttpStatusCode.BadRequest
-                        };
+                        return StatusCode((int)HttpStatusCode.BadRequest, validationResult);
                     }
                 }
                 catch (Exception e)
@@ -210,7 +200,7 @@ namespace DataAPI.Web.Controllers
                 return NotFound();
 
             // Authroize
-            var loggedInUsername = UsernameNormalizer.Normalize(HttpContext.User.Identity.Name);
+            var loggedInUsername = ControllerHelpers.GetUsername(httpContextAccessor);
             var authorizationResult = await authorizationModule.AuthorizeAsync(new GetValidatorResourceDescription(validatorDefinition), loggedInUsername);
             if (!authorizationResult.IsAuthorized)
             {
@@ -220,12 +210,7 @@ namespace DataAPI.Web.Controllers
             apiEventLogger.Log(LogLevel.Info, $"User '{authorizationResult.User.UserName}' "
                                               + $"accessed validator for type '{validatorDefinition.DataType}' "
                                               + $"with ID '{validatorDefinition.Id}'");
-            return new ContentResult
-            {
-                ContentType = Conventions.JsonContentType,
-                Content = JsonConvert.SerializeObject(validatorDefinition),
-                StatusCode = (int)HttpStatusCode.OK
-            };
+            return Ok(validatorDefinition);
         }
 
         /// <summary>
@@ -240,7 +225,7 @@ namespace DataAPI.Web.Controllers
         public async Task<IActionResult> GetAll([FromQuery] string dataType = null)
         {
             // Authroize
-            var loggedInUsername = UsernameNormalizer.Normalize(HttpContext.User.Identity.Name);
+            var loggedInUsername = ControllerHelpers.GetUsername(httpContextAccessor);
             var resourceDescription = new ManageValidatorsResourceDescription(ValidatorManagementAction.ListAll, null, null);
             var authorizationResult = await authorizationModule.AuthorizeAsync(resourceDescription, loggedInUsername);
             if (!authorizationResult.IsAuthorized)
@@ -249,12 +234,7 @@ namespace DataAPI.Web.Controllers
             }
 
             var validatorDefinitions = await validatorManager.GetAllValidatorDefinitions(dataType);
-            return new ContentResult
-            {
-                ContentType = Conventions.JsonContentType,
-                Content = JsonConvert.SerializeObject(validatorDefinitions),
-                StatusCode = (int)HttpStatusCode.OK
-            };
+            return Ok(validatorDefinitions);
         }
 
         /// <summary>
@@ -277,7 +257,7 @@ namespace DataAPI.Web.Controllers
                 return NotFound();
 
             // Authroize
-            var loggedInUsername = UsernameNormalizer.Normalize(HttpContext.User.Identity.Name);
+            var loggedInUsername = ControllerHelpers.GetUsername(httpContextAccessor);
             var resourceDescription = new ManageValidatorsResourceDescription(
                 ValidatorManagementAction.Approve, 
                 validatorDefinition.Submitter,
@@ -314,7 +294,7 @@ namespace DataAPI.Web.Controllers
                 return NotFound();
 
             // Authroize
-            var loggedInUsername = UsernameNormalizer.Normalize(HttpContext.User.Identity.Name);
+            var loggedInUsername = ControllerHelpers.GetUsername(httpContextAccessor);
             var resourceDescription = new ManageValidatorsResourceDescription(
                 ValidatorManagementAction.Approve, 
                 validatorDefinition.Submitter,
@@ -351,7 +331,7 @@ namespace DataAPI.Web.Controllers
                 return NotFound();
 
             // Authroize
-            var loggedInUsername = UsernameNormalizer.Normalize(HttpContext.User.Identity.Name);
+            var loggedInUsername = ControllerHelpers.GetUsername(httpContextAccessor);
             var resourceDescription = new ManageValidatorsResourceDescription(
                 ValidatorManagementAction.Delete, 
                 validatorDefinition.Submitter, 

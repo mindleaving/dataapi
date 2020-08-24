@@ -20,7 +20,9 @@ using DataAPI.Service.Objects;
 using DataAPI.Service.Search;
 using DataAPI.Service.SubscriptionManagement;
 using DataAPI.Service.Validators;
+using DataAPI.Web.Helpers;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 
@@ -41,6 +43,7 @@ namespace DataAPI.Web.Controllers
         private readonly ApiEventLogger apiEventLogger;
         private readonly IIdPolicy idPolicy;
         private readonly NewCollectionTasks newCollectionTasks;
+        private readonly IHttpContextAccessor httpContextAccessor;
 
 #pragma warning disable 1591
         public DataIoController(
@@ -52,7 +55,8 @@ namespace DataAPI.Web.Controllers
             ApiEventLogger apiEventLogger,
             IDataRouter dataRouter,
             IIdPolicy idPolicy,
-            NewCollectionTasks newCollectionTasks)
+            NewCollectionTasks newCollectionTasks,
+            IHttpContextAccessor httpContextAccessor)
         {
             this.authorizationModule = authorizationModule;
             this.validatorManager = validatorManager;
@@ -62,6 +66,7 @@ namespace DataAPI.Web.Controllers
             this.dataRouter = dataRouter;
             this.idPolicy = idPolicy;
             this.newCollectionTasks = newCollectionTasks;
+            this.httpContextAccessor = httpContextAccessor;
         }
 
         /// <summary>
@@ -104,7 +109,7 @@ namespace DataAPI.Web.Controllers
                 return BadRequest("Invalid submissionId");
 
             // Authorize
-            var loggedInUsername = UsernameNormalizer.Normalize(HttpContext.User.Identity.Name);
+            var loggedInUsername = ControllerHelpers.GetUsername(httpContextAccessor);
             var resourceDescription = new SubmitDataResourceDescription(dataType);
             var authorizationResult = await authorizationModule.AuthorizeAsync(resourceDescription, loggedInUsername);
             if (!authorizationResult.IsAuthorized)
@@ -155,7 +160,7 @@ namespace DataAPI.Web.Controllers
                 return BadRequest("No data submitted");
 
             // Authorize
-            var loggedInUsername = UsernameNormalizer.Normalize(HttpContext.User.Identity.Name);
+            var loggedInUsername = ControllerHelpers.GetUsername(httpContextAccessor);
             var resourceDescription = new SubmitDataResourceDescription(body.DataType);
             var authorizationResult = await authorizationModule.AuthorizeAsync(resourceDescription, loggedInUsername);
             if (!authorizationResult.IsAuthorized)
@@ -190,12 +195,7 @@ namespace DataAPI.Web.Controllers
                     var validationResult = validator.Validate(body.Data.ToString());
                     if (!validationResult.IsValid)
                     {
-                        return new ContentResult
-                        {
-                            ContentType = Conventions.JsonContentType,
-                            Content = JsonConvert.SerializeObject(validationResult),
-                            StatusCode = (int) HttpStatusCode.BadRequest
-                        };
+                        return StatusCode((int)HttpStatusCode.BadRequest, validationResult);
                     }
                 }
                 catch (Exception e)
@@ -294,7 +294,7 @@ namespace DataAPI.Web.Controllers
                 return BadRequest("ID not specified");
 
             // Authorize
-            var loggedInUsername = UsernameNormalizer.Normalize(HttpContext.User.Identity.Name);
+            var loggedInUsername = ControllerHelpers.GetUsername(httpContextAccessor);
             var resourceDescription = new GetDataResourceDescription(dataType);
             var authorizationResult = await authorizationModule.AuthorizeAsync(resourceDescription, loggedInUsername);
             if (!authorizationResult.IsAuthorized)
@@ -340,7 +340,7 @@ namespace DataAPI.Web.Controllers
                 return BadRequest("ID not specified");
 
             // Authorize
-            var loggedInUsername = UsernameNormalizer.Normalize(HttpContext.User.Identity.Name);
+            var loggedInUsername = ControllerHelpers.GetUsername(httpContextAccessor);
             var resourceDescription = new GetDataResourceDescription(dataType);
             var authorizationResult = await authorizationModule.AuthorizeAsync(resourceDescription, loggedInUsername);
             if (!authorizationResult.IsAuthorized)
@@ -393,7 +393,7 @@ namespace DataAPI.Web.Controllers
                 return BadRequest("Invalid id");
 
             // Authorize
-            var loggedInUsername = UsernameNormalizer.Normalize(HttpContext.User.Identity.Name);
+            var loggedInUsername = ControllerHelpers.GetUsername(httpContextAccessor);
             var resourceDescription = new GetDataResourceDescription(dataType);
             var authorizationResult = await authorizationModule.AuthorizeAsync(resourceDescription, loggedInUsername);
             if (!authorizationResult.IsAuthorized)
@@ -449,7 +449,7 @@ namespace DataAPI.Web.Controllers
                 return BadRequest("Invalid id");
 
             // Authorize
-            var loggedInUsername = UsernameNormalizer.Normalize(HttpContext.User.Identity.Name);
+            var loggedInUsername = ControllerHelpers.GetUsername(httpContextAccessor);
             var resourceDescription = new GetDataResourceDescription(dataType);
             var authorizationResult = await authorizationModule.AuthorizeAsync(resourceDescription, loggedInUsername);
             if (!authorizationResult.IsAuthorized)
@@ -498,7 +498,7 @@ namespace DataAPI.Web.Controllers
                 return BadRequest("Data type not specified");
 
             // Authorize
-            var loggedInUsername = UsernameNormalizer.Normalize(HttpContext.User.Identity.Name);
+            var loggedInUsername = ControllerHelpers.GetUsername(httpContextAccessor);
             var resourceDescription = new GetDataResourceDescription(dataType);
             var authorizationResult = await authorizationModule.AuthorizeAsync(resourceDescription, loggedInUsername);
             if (!authorizationResult.IsAuthorized)
@@ -568,7 +568,7 @@ namespace DataAPI.Web.Controllers
                 return Ok(); // SECURITY NOTE: Returning OK without authentication allows for brute-force scanning for valid IDs!
 
             // Authorize
-            var loggedInUsername = UsernameNormalizer.Normalize(HttpContext.User.Identity.Name);
+            var loggedInUsername = ControllerHelpers.GetUsername(httpContextAccessor);
             var overwritingAllowed = await authorizationModule.IsOverwritingAllowedForCollectionAsync(dataType);
             var resourceDescription = new DeleteDataResourceDescription(dataType, metadata.Submitter, overwritingAllowed);
             var authorizationResult = await authorizationModule.AuthorizeAsync(resourceDescription, loggedInUsername);
@@ -614,7 +614,7 @@ namespace DataAPI.Web.Controllers
                 return BadRequest(e.Message);
             }
 
-            var loggedInUsername = UsernameNormalizer.Normalize(HttpContext.User.Identity.Name);
+            var loggedInUsername = ControllerHelpers.GetUsername(httpContextAccessor);
             var overwritingAllowed = await authorizationModule.IsOverwritingAllowedForCollectionAsync(dataType);
 
             // Check existance
@@ -649,12 +649,7 @@ namespace DataAPI.Web.Controllers
 
             apiEventLogger.Log(LogLevel.Warning, $"User '{loggedInUsername}' has deleted data of type '{dataType}' with matching '{whereArguments}'");
 
-            return new ContentResult
-            {
-                ContentType = Conventions.JsonContentType,
-                Content = JsonConvert.SerializeObject(deleteResults),
-                StatusCode = (int)HttpStatusCode.OK
-            };
+            return Ok(deleteResults);
         }
 
         /// <summary>
@@ -685,7 +680,7 @@ namespace DataAPI.Web.Controllers
             var dataType = parsedQuery.FromArguments;
 
             // Authorize
-            var loggedInUsername = UsernameNormalizer.Normalize(HttpContext.User.Identity.Name);
+            var loggedInUsername = ControllerHelpers.GetUsername(httpContextAccessor);
             var resourceDescription = new SearchResourceDescription(dataType);
             var authorizationResult = await authorizationModule.AuthorizeAsync(resourceDescription, loggedInUsername);
             if (!authorizationResult.IsAuthorized)
@@ -714,7 +709,7 @@ namespace DataAPI.Web.Controllers
                 return BadRequest("Collection name not specified");
 
             // Authorize
-            var loggedInUsername = UsernameNormalizer.Normalize(HttpContext.User.Identity.Name);
+            var loggedInUsername = ControllerHelpers.GetUsername(httpContextAccessor);
             var resourceDescription = new GetCollectionInformationResourceDescription(collectionName);
             var authorizationResult = await authorizationModule.AuthorizeAsync(resourceDescription, loggedInUsername);
             if (!authorizationResult.IsAuthorized)
@@ -723,12 +718,7 @@ namespace DataAPI.Web.Controllers
             }
 
             var collectionInformation = await collectionInformationManager.GetCollectionInformationAsync(collectionName, authorizationResult.User);
-            return new ContentResult
-            {
-                ContentType = Conventions.JsonContentType,
-                Content = JsonConvert.SerializeObject(collectionInformation),
-                StatusCode = (int)HttpStatusCode.OK
-            };
+            return Ok(collectionInformation);
         }
 
         /// <summary>
@@ -742,7 +732,7 @@ namespace DataAPI.Web.Controllers
         public async Task<IActionResult> ListCollectionNames([FromQuery]bool includeHidden = false)
         {
             // Authorize
-            var loggedInUsername = UsernameNormalizer.Normalize(HttpContext.User.Identity.Name);
+            var loggedInUsername = ControllerHelpers.GetUsername(httpContextAccessor);
             var resourceDescription = new ListCollectionsResourceDescription();
             var authorizationResult = await authorizationModule.AuthorizeAsync(resourceDescription, loggedInUsername);
             if (!authorizationResult.IsAuthorized)
@@ -752,7 +742,7 @@ namespace DataAPI.Web.Controllers
 
             var collectionNames = dataRouter.ListCollectionNamesAsync();
             var permissionFilteredCollectionNames = new List<string>();
-            await foreach (var collectionName in collectionNames)
+            await foreach (var collectionName in collectionNames.OrderBy(x => x))
             {
                 var collectionInformation = await collectionInformationManager.GetCollectionInformationAsync(collectionName, authorizationResult.User);
                 if (!includeHidden && collectionInformation.IsHidden)
@@ -760,12 +750,7 @@ namespace DataAPI.Web.Controllers
                 permissionFilteredCollectionNames.Add(collectionName);
             }
 
-            return new ContentResult
-            {
-                ContentType = Conventions.JsonContentType,
-                Content = JsonConvert.SerializeObject(permissionFilteredCollectionNames),
-                StatusCode = (int)HttpStatusCode.OK
-            };
+            return Ok(permissionFilteredCollectionNames);
         }
 
         /// <summary>
@@ -779,7 +764,7 @@ namespace DataAPI.Web.Controllers
         public async Task<IActionResult> ListCollections([FromQuery]bool includeHidden = false)
         {
             // Authorize
-            var loggedInUsername = UsernameNormalizer.Normalize(HttpContext.User.Identity.Name);
+            var loggedInUsername = ControllerHelpers.GetUsername(httpContextAccessor);
             var resourceDescription = new ListCollectionsResourceDescription();
             var authorizationResult = await authorizationModule.AuthorizeAsync(resourceDescription, loggedInUsername);
             if (!authorizationResult.IsAuthorized)
@@ -789,7 +774,7 @@ namespace DataAPI.Web.Controllers
 
             var collectionNames = dataRouter.ListCollectionNamesAsync();
             var collectionInformations = new List<CollectionInformation>();
-            await foreach (var collectionName in collectionNames)
+            await foreach (var collectionName in collectionNames.OrderBy(x => x))
             {
                 var collectionInformation = await collectionInformationManager.GetCollectionInformationAsync(collectionName, authorizationResult.User);
                 if (!includeHidden && collectionInformation.IsHidden)
@@ -797,12 +782,7 @@ namespace DataAPI.Web.Controllers
                 collectionInformations.Add(collectionInformation);
             }
 
-            return new ContentResult
-            {
-                ContentType = Conventions.JsonContentType,
-                Content = JsonConvert.SerializeObject(collectionInformations),
-                StatusCode = (int)HttpStatusCode.OK
-            };
+            return Ok(collectionInformations);
         }
 
         /// <summary>
@@ -836,7 +816,7 @@ namespace DataAPI.Web.Controllers
             }
 
             // Authorize
-            var loggedInUsername = UsernameNormalizer.Normalize(HttpContext.User.Identity.Name);
+            var loggedInUsername = ControllerHelpers.GetUsername(httpContextAccessor);
             var resourceDescription = new SetDataRedirectionResourceDescription();
             var authorizationResult = await authorizationModule.AuthorizeAsync(resourceDescription, loggedInUsername);
             if (!authorizationResult.IsAuthorized)
@@ -880,7 +860,7 @@ namespace DataAPI.Web.Controllers
                 return BadRequest($"The backing storage for collection '{collectionOptions.CollectionName}' doesn't support ID generator type '{collectionOptions.IdGeneratorType}'");
 
             // Authorize
-            var loggedInUsername = UsernameNormalizer.Normalize(HttpContext.User.Identity.Name);
+            var loggedInUsername = ControllerHelpers.GetUsername(httpContextAccessor);
             var resourceDescription = new SetCollectionOptionsResourceDescription();
             var authorizationResult = await authorizationModule.AuthorizeAsync(resourceDescription, loggedInUsername);
             if (!authorizationResult.IsAuthorized)

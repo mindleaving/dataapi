@@ -39,7 +39,7 @@ namespace DataAPI.Service.AccessManagement
         {
             var normalizedUsername = UsernameNormalizer.Normalize(username);
             var updateResult = await userCollection.UpdateOneAsync(x => x.UserName == normalizedUsername, updateDefinition);
-            return updateResult.IsAcknowledged && updateResult.ModifiedCount == 1;
+            return updateResult.IsAcknowledged && updateResult.MatchedCount == 1;
         }
 
         public async Task<bool> ChangePasswordAsync(string username, string password)

@@ -44,6 +44,7 @@ class CollectionList extends Component<CollectionListProps, CollectionListState>
                 {this.state.collections.map(collection => 
                     <CollectionListItem
                         collection={collection}
+                        onCollectionSelected={this.props.onCollectionSelected}
                     />
                 )}
             </ListGroup>

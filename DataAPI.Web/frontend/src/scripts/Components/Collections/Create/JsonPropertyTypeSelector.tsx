@@ -1,6 +1,6 @@
 import React from 'react';
 import Form from 'react-bootstrap/Form';
-import { JsonSchemaPropertyType } from '../../../types/frontendEnums';
+import { JsonSchemaPropertyType } from '../../../../types/frontendEnums';
 
 interface JsonPropertyTypeSelectorProps {
     value: JsonSchemaPropertyType, 
