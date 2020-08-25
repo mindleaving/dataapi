@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Net;
 using System.Threading.Tasks;
+using Commons.Extensions;
 using DataAPI.DataStructures.PostBodies;
 using DataAPI.DataStructures.UserManagement;
 using DataAPI.DataStructures.Validation;
@@ -89,8 +90,8 @@ namespace DataAPI.Web.Controllers
                 return BadRequest("Validator definition is null");
             if (!NamingConventions.IsValidDataType(body.ValidatorDefinition.DataType))
                 return BadRequest($"Data type '{body.ValidatorDefinition.DataType}' is not a valid name for a collection");
-            if(body.ValidatorDefinition.ValidatorType != ValidatorType.TextRules)
-                return StatusCode((int)HttpStatusCode.Forbidden, "Currently only text rule validators are supported");
+            if(!body.ValidatorDefinition.ValidatorType.InSet(ValidatorType.TextRules, ValidatorType.JsonSchema))
+                return StatusCode((int)HttpStatusCode.Forbidden, "Currently only text rule and JSON schema validators are supported");
             if(body.ValidatorDefinition.ValidatorType == ValidatorType.Exe)
                 return StatusCode((int)HttpStatusCode.Forbidden, "Exe-validators are currently rejected because of security concerns.");
 

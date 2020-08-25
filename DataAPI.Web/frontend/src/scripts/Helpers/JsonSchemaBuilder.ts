@@ -1,3 +1,4 @@
+import { v4 as uuidv4 } from 'uuid';
 import { FrontendTypes } from "../../types/frontend";
 import { JsonSchemaPropertyType } from "../../types/frontendEnums";
 import { JSONSchema7, JSONSchema7Definition } from 'json-schema';
@@ -52,4 +53,37 @@ export const convertItemType = (itemType: FrontendTypes.JsonSchemaArrayItem): JS
         return convertJsonSchemaObject(itemType.objectSchema!);
     }
     throw new Error(`Item type '${itemType.type}' is not supported`);
+}
+
+export const convertJsonSchemaToFrontend = (schema: JSONSchema7): FrontendTypes.JsonSchemaObject => {
+    const frontendSchema: FrontendTypes.JsonSchemaObject = {
+        properties: []
+    };
+    if(schema.properties) {
+        Object.keys(schema.properties).forEach(propertyName => {
+            const propertyValue = schema.properties![propertyName] as JSONSchema7;
+            const frontendProperty: FrontendTypes.JsonSchemaProperty = {
+                guid: uuidv4(),
+                name: propertyName,
+                isMandatory: schema.required?.includes(propertyName) ?? false,
+                type: propertyValue.type as JsonSchemaPropertyType,
+                itemType: propertyValue.type === "array" 
+                    ? convertArrayToFrontend(propertyValue)
+                    : undefined,
+                objectSchema: propertyValue.type === "object" ? convertJsonSchemaToFrontend(propertyValue) : undefined
+            };
+            frontendSchema.properties.push(frontendProperty);
+        });
+    }
+    return frontendSchema;
+}
+
+const convertArrayToFrontend = (property: JSONSchema7): FrontendTypes.JsonSchemaArrayItem => {
+    const schemaItems = property.items as JSONSchema7;
+    const type = schemaItems?.type as JsonSchemaPropertyType ?? JsonSchemaPropertyType.string;
+    return {
+        type: type,
+        itemType: type === JsonSchemaPropertyType.array ? convertArrayToFrontend(schemaItems) : undefined,
+        objectSchema: type === JsonSchemaPropertyType.object ? convertJsonSchemaToFrontend(schemaItems) : undefined
+    };
 }

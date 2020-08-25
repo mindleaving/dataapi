@@ -22,7 +22,7 @@ namespace DataAPI.DataStructures.Validation
         public static RulesetValidationResult Invalid(string ruleset)
             => new RulesetValidationResult(false, ruleset, new List<RuleValidationResult>());
         public static RulesetValidationResult ValidEmpty(string ruleset)
-            => new RulesetValidationResult(false, ruleset, new List<RuleValidationResult>());
+            => new RulesetValidationResult(true, ruleset, new List<RuleValidationResult>());
 
         public bool IsValid { get; }
         public string Ruleset { get; }

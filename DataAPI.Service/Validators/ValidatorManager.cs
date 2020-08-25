@@ -71,7 +71,10 @@ namespace DataAPI.Service.Validators
         {
             try
             {
-                validatorDefinitionCollection.InsertOne(validatorDefinition);
+                validatorDefinitionCollection.ReplaceOne(
+                    x => x.Id == validatorDefinition.Id, 
+                    validatorDefinition, 
+                    new ReplaceOptions { IsUpsert = true});
             }
             catch (MongoWriteException writeException)
             {

@@ -5,3 +5,12 @@
 .indent-40 {
     margin-left: 40px;
 }
+
+.collection-list > .list-group-item {
+    background-color: white;
+    cursor: pointer;
+}
+
+.collection-list > .list-group-item:hover {
+    background-color: aliceblue;
+}

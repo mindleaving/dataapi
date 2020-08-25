@@ -3,7 +3,7 @@ import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 import Layout from './Layout';
 import HomePage from './scripts/Pages/HomePage';
 import CollectionsPage from './scripts/Pages/CollectionsPage';
-import CreateEditCollection from './scripts/Components/Collections/Create/CreateEditCollection';
+import CreateEditCollectionPage from './scripts/Pages/CreateEditCollectionPage';
 import DataProjectsPage from './scripts/Pages/DataProjectsPage';
 import TagsPage from './scripts/Pages/TagsPage';
 import DataProcessingServicePage from './scripts/Pages/DataProcessingServicePage';
@@ -20,31 +20,35 @@ function App() {
             render={(props) => <HomePage {...props} />}
           />
           <Route 
-            path="/explore/collections" 
+            exact path="/explore/collections" 
             render={(props) => <CollectionsPage {...props} />}
           />
           <Route
-            path="/collections/new"
-            render={(props) => <CreateEditCollection {...props} />}
+            exact path="/explore/collections/new"
+            render={(props) => <CreateEditCollectionPage {...props} />}
+          />
+          <Route
+            exact path="/explore/collections/edit/:collectionName"
+            render={(props) => <CreateEditCollectionPage {...props} />}
           />
           <Route 
-            path="/explore/dataprojects" 
+            exact path="/explore/dataprojects" 
             render={(props) => <DataProjectsPage {...props} />}
           />
           <Route 
-            path="/explore/tags" 
+            exact path="/explore/tags" 
             render={(props) => <TagsPage {...props} />}
           />
           <Route 
-            path="/automation" 
+            exact path="/automation" 
             render={(props) => <DataProcessingServicePage {...props} />}
           />
           <Route 
-            path="/distribution" 
+            exact path="/distribution" 
             render={(props) => <DataServicesPage {...props} />}
           />
           <Route 
-            path="/users" 
+            exact path="/users" 
             render={(props) => <UserManagementPage {...props} />}
           />
           <Route 

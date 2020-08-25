@@ -1,4 +1,5 @@
 import { JsonSchemaPropertyType } from "./frontendEnums";
+import { ValidatorType } from "./dataApiDataStructuresEnums";
 
 export namespace FrontendTypes {
     interface JsonSchemaProperty {
@@ -18,4 +19,11 @@ export namespace FrontendTypes {
         objectSchema?: JsonSchemaObject;
     }
     type Update<T> = (item: T) => T;
+    interface CollectionValidator {
+        id: string;
+        existsInDataAPI: boolean;
+        validatorType: ValidatorType;
+        schema: FrontendTypes.JsonSchemaObject;
+        rules: string;
+    }
 }

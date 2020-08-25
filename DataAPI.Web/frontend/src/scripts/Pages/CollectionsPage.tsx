@@ -37,13 +37,16 @@ class CollectionsPage extends Component<CollectionsPageProps, CollectionsPageSta
                     </Col>
                 </Row>
                 <Row>
-                    <Col sm={3}>
-                        <CollectionList 
-                            onCollectionSelected={this.onCollectionSelected}
-                        />
-                        <Button onClick={() => this.props.history.push("/collections/new")}>+ Create collection</Button>
+                    <Col md={'auto'}>
+                        <div style={{ width: '300px', marginBottom: '30px' }}>
+                            <CollectionList 
+                                onCollectionSelected={this.onCollectionSelected}
+                                editCollection={(collectionName) => this.props.history.push(`/explore/collections/edit/${collectionName}`)}
+                            />
+                            <Button className="mt-3" onClick={() => this.props.history.push("/explore/collections/new")}>+ Create collection</Button>
+                        </div>
                     </Col>
-                    <Col sm={9}>
+                    <Col>
                         {this.state.selectedCollection !== null ?
                         <CollectionExplorer
                             key={this.state.selectedCollection}

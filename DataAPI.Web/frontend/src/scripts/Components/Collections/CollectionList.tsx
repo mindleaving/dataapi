@@ -7,6 +7,7 @@ import { DataAPI } from '../../../types/dataApiDataStructures.d';
 
 interface CollectionListProps {
     onCollectionSelected: (collectionName: string) => void;
+    editCollection: (collectionName: string) => void;
 }
 interface CollectionListState {
     includeHidden: boolean;
@@ -40,11 +41,13 @@ class CollectionList extends Component<CollectionListProps, CollectionListState>
     render() {
         return (
         <>
-            <ListGroup>
+            <ListGroup className="collection-list">
                 {this.state.collections.map(collection => 
                     <CollectionListItem
+                        key={collection.collectionName}
                         collection={collection}
                         onCollectionSelected={this.props.onCollectionSelected}
+                        editCollection={this.props.editCollection}
                     />
                 )}
             </ListGroup>

@@ -113,8 +113,8 @@ export namespace DataAPI {
                 submitter: string;
                 submitterEmail: string;
                 validatorType: Enums.ValidatorType;
-                executableBase64: string;
-                ruleset: string;
+                executableBase64?: string;
+                ruleset?: string;
                 isApproved: boolean;
             }
         

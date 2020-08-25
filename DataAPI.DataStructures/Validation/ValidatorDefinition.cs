@@ -1,6 +1,7 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
 using Newtonsoft.Json;
+using TypescriptGenerator.Attributes;
 
 // ReSharper disable AutoPropertyCanBeMadeGetOnly.Local
 
@@ -57,8 +58,10 @@ namespace DataAPI.DataStructures.Validation
         [Required]
         public ValidatorType ValidatorType { get; private set; }
 
+        [TypescriptIsOptional]
         public string ExecutableBase64 { get; private set; }
 
+        [TypescriptIsOptional]
         public string Ruleset { get; private set; }
 
         // ReSharper disable once AutoPropertyCanBeMadeGetOnly.Global

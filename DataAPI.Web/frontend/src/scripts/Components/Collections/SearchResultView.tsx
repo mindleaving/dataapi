@@ -21,6 +21,7 @@ class SearchResultView extends Component<SearchResultViewProps, SearchResultView
                 <Accordion>
                     {this.props.items.map((item, idx) => (
                         <SearchResultItemView
+                            key={idx + ''}
                             item={item}
                             itemIndex={idx}
                         />
