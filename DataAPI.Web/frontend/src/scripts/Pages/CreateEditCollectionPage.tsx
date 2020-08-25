@@ -24,6 +24,7 @@ interface CreateEditCollectionState {
     isNewCollection: boolean;
     collectionName: string;
     validators: FrontendTypes.CollectionValidator[];
+    knownCollectionNames: string[];
     isSaving: boolean;
 }
 
@@ -37,21 +38,28 @@ class CreateEditCollectionPage extends Component<CreateEditCollectionProps, Crea
             isNewCollection: collectionName === undefined,
             collectionName: collectionName ?? '',
             validators: [],
+            knownCollectionNames: [],
             isSaving: false
         };
     }
 
     async componentDidMount() {
+        await this.loadKnownCollectionNames();
         if(!this.state.isNewCollection) {
             await this.loadCollectionInformation(this.state.collectionName);
         }
+    }
+
+    loadKnownCollectionNames = async () => {
+        const collectionNames = await dataApiClient.listCollectionNames(true);
+        this.setState({ knownCollectionNames: collectionNames });
     }
 
     loadCollectionInformation = async (collectionName: string) => {
         const collectionInformation = await dataApiClient.getCollectionInformation(collectionName);
         this.setState({
             validators: collectionInformation.validatorDefinitions.map(this.convertToFrontendValidator)
-        })
+        });
     }
 
     convertToFrontendValidator = (validatorDefinition: DataAPI.DataStructures.Validation.ValidatorDefinition) => {
@@ -144,6 +152,11 @@ class CreateEditCollectionPage extends Component<CreateEditCollectionProps, Crea
         e.preventDefault();
         this.setState({ isSaving: true });
         try {
+            const loggedInUsername = dataApiClient.getLoggedInUsername();
+            if(!loggedInUsername) {
+                alert('You are not logged in!');
+                return;
+            }
             if(this.state.isNewCollection) {
                 // Trigger creation of collection
                 const id = await dataApiClient.insert(this.state.collectionName, { });
@@ -165,7 +178,7 @@ class CreateEditCollectionPage extends Component<CreateEditCollectionProps, Crea
                     dataType: this.state.collectionName,
                     isApproved: false,
                     ruleset: ruleset,
-                    submitter: dataApiClient.loggedInUsername!,
+                    submitter: loggedInUsername,
                     submitterEmail: '', //TODO
                     validatorType: validator.validatorType
                 };
@@ -195,7 +208,9 @@ class CreateEditCollectionPage extends Component<CreateEditCollectionProps, Crea
                                             value={this.state.collectionName}
                                             onChange={(e: any) => this.setState({ collectionName: e.target.value })}
                                             disabled={!this.state.isNewCollection}
+                                            isInvalid={this.state.isNewCollection && this.state.knownCollectionNames.includes(this.state.collectionName)}
                                         />
+                                        <Form.Control.Feedback type="invalid">A collection with this name already exists</Form.Control.Feedback>
                                     </Form.Group>
                                 </> 
                                 : <h1>Edit collection '{this.state.collectionName}'</h1>

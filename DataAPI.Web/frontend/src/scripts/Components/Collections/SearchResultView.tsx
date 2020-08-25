@@ -1,35 +1,30 @@
-import React, { Component } from 'react';
+import React from 'react';
 import Accordion from 'react-bootstrap/Accordion';
 import SearchResultItemView from './SearchResultItemView';
 
 interface SearchResultViewProps {
-    items: any[]
+    collectionName: string;
+    items: any[],
+    onEntryDeleted?: (dataType: string, id: string) => void;
 }
-interface SearchResultViewState {}
 
-class SearchResultView extends Component<SearchResultViewProps, SearchResultViewState> {
+const SearchResultView = (props: SearchResultViewProps) => {
 
-    constructor(props: SearchResultViewProps) {
-        super(props);
-
-        this.state = { };
-    }
-
-    render() {
-        return (
-            <div style={{ maxHeight: '800px', overflow: 'auto' }}>
-                <Accordion>
-                    {this.props.items.map((item, idx) => (
-                        <SearchResultItemView
-                            key={idx + ''}
-                            item={item}
-                            itemIndex={idx}
-                        />
-                    ))}
-                </Accordion>
-            </div>
-        );
-    }
+    return (
+        <div style={{ maxHeight: '800px', overflow: 'auto' }}>
+            <Accordion>
+                {props.items.map((item, idx) => (
+                    <SearchResultItemView
+                        key={idx + ''}
+                        collectionName={props.collectionName}
+                        item={item}
+                        itemIndex={idx}
+                        onDeleted={props.onEntryDeleted}
+                    />
+                ))}
+            </Accordion>
+        </div>
+    );
 
 }
 

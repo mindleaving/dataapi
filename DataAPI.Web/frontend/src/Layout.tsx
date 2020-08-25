@@ -3,12 +3,25 @@ import { NotificationContainer } from 'react-notifications';
 import Navbar from 'react-bootstrap/Navbar';
 import Nav from 'react-bootstrap/Nav';
 import NavDropdown from 'react-bootstrap/NavDropdown';
+import { dataApiClient } from './scripts/Communication/DataApiClient';
+import { useHistory } from 'react-router-dom';
+import Button from 'react-bootstrap/Button';
 
 interface LayoutProps {
-
+    onLogout?: () => void;
 }
 
 const Layout : React.FC<LayoutProps> = (props) => {
+    const history = useHistory();
+
+    const logout = async () => {
+        await dataApiClient.logout();
+        if(props.onLogout) {
+            props.onLogout();
+        }        
+        history.push('/login');
+    }
+
     return (
         <>
             <NotificationContainer />
@@ -27,6 +40,8 @@ const Layout : React.FC<LayoutProps> = (props) => {
                     </Nav>
                     <Nav>
                         <Nav.Link href="/users">Configuration</Nav.Link>
+                        <Nav.Link className="text-dark" disabled><b>Hello, {dataApiClient.getLoggedInUsername()}!</b></Nav.Link>
+                        <Button className="mx-2" size="sm" onClick={logout}>Logout</Button>
                     </Nav>
                 </Navbar.Collapse>
             </Navbar>

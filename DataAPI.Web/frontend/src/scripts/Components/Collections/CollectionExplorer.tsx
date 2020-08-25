@@ -4,6 +4,7 @@ import Col from 'react-bootstrap/Col';
 import QueryEditor from './QueryEditor';
 import SearchResultView from './SearchResultView';
 import { dataApiClient } from '../../Communication/DataApiClient';
+import { Link } from 'react-router-dom';
 
 interface CollectionExplorerProps {
     collectionName: string;
@@ -36,17 +37,32 @@ class CollectionExplorer extends Component<CollectionExplorerProps, CollectionEx
         }
     }
 
+    onEntryDeleted = (dataType: string, id: string) => {
+        this.setState(state => ({
+            loadedItems: state.loadedItems?.filter(x => x._id !== id) ?? null
+        }));
+    }
+
     render() {
         return (
         <>
             <Row className="mb-3">
-                <h2>{this.props.collectionName}</h2>
+                <Col>
+                    <h2>{this.props.collectionName}</h2>
+                </Col>
+            </Row>
+            <Row>
+                <Col>
+                    <Link to={`/edit/${this.props.collectionName}`}>+ Add entry</Link>
+                </Col>
             </Row>
             <Row>
                 <Col>
                     {this.state.loadedItems ?
                         <SearchResultView
+                            collectionName={this.props.collectionName}
                             items={this.state.loadedItems}
+                            onEntryDeleted={this.onEntryDeleted}
                         />
                         : <i>Edit query below and click 'Run' to search for items</i>
                     }

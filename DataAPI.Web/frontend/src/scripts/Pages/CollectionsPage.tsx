@@ -7,7 +7,10 @@ import CollectionList from './../Components/Collections/CollectionList';
 import Button from 'react-bootstrap/Button';
 import CollectionExplorer from '../Components/Collections/CollectionExplorer';
 
-interface CollectionsPageProps extends RouteComponentProps<any> {
+interface CollectionsPageParams {
+    selectedCollection?: string;
+}
+interface CollectionsPageProps extends RouteComponentProps<CollectionsPageParams> {
 }
 interface CollectionsPageState {
     selectedCollection: string | null;
@@ -19,7 +22,7 @@ class CollectionsPage extends Component<CollectionsPageProps, CollectionsPageSta
         super(props);
 
         this.state = { 
-            selectedCollection: null
+            selectedCollection: this.props.match.params.selectedCollection ?? null
         };
     }
 

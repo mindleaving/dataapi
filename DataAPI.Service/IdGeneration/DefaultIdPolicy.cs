@@ -11,6 +11,9 @@ namespace DataAPI.Service.IdGeneration
     {
         public async Task<SuggestedId> DetermineIdAsync(SubmitDataBody body, string submitter, IRdDataStorage rdDataStorage)
         {
+            if (body.Id != null)
+                return new SuggestedId(body.Id, false);
+
             var dataType = body.Data.GetType();
             string dataId;
             if (dataType == typeof(JObject))
@@ -32,8 +35,6 @@ namespace DataAPI.Service.IdGeneration
 
             if (dataId != null)
                 return new SuggestedId(dataId, false);
-            if (body.Id != null)
-                return new SuggestedId(body.Id, false);
             var idReservationResult = (await rdDataStorage.GetIdsAsync(body.DataType, submitter, 1)).Single();
             if(!idReservationResult.IsReserved)
                 throw new Exception($"Could not determine a suitable ID for data type '{dataType}'");

@@ -3,13 +3,12 @@ import { buildUrl } from '../Helpers/UrlBuilder';
 import { v4 as uuidv4 } from 'uuid';
 import { DataAPI } from "../../types/dataApiDataStructures";
 import { LoginMethod, Role, ResultFormat, DataModificationType, AuthenticationErrorType } from "../../types/dataApiDataStructuresEnums";
+import { getCookieValue, setCookie, removeCookie } from "../Helpers/CookieHelpers";
+import { decodeJwtAccessToken } from "../Helpers/Base64Helpers";
 
 export class DataApiClient {
     endpoint: string;
     loginMethod: LoginMethod;
-    isLoggedIn: boolean;
-    loggedInUsername: string | null;
-    accessToken: string | null;
 
     constructor(endpoint: string) {
         this.endpoint = endpoint;
@@ -17,9 +16,6 @@ export class DataApiClient {
             this.endpoint += '/';
         }
         this.loginMethod = LoginMethod.ActiveDirectory;
-        this.isLoggedIn = false;
-        this.loggedInUsername = null;
-        this.accessToken = null;
     }
 
     isAvailable = async (): Promise<boolean> => {
@@ -29,6 +25,17 @@ export class DataApiClient {
         } catch {
             return false;
         }
+    }
+
+    isLoggedIn = () => {
+        const isLoggedIn = getCookieValue('isLoggedIn');
+        if(!isLoggedIn) {
+            return false;
+        }
+        return isLoggedIn === 'true';
+    }
+    getLoggedInUsername = () => {
+        return getCookieValue('loggedInUsername');
     }
 
     getUserProfiles = async () => {
@@ -42,9 +49,11 @@ export class DataApiClient {
     }
 
     loginWithAD = async (): Promise<DataAPI.DataStructures.UserManagement.AuthenticationResult> => {
-        const response = await this._sendRequest('GET', 'api/Account/LoginWithAD', {}, undefined, false);
+        const response = await this._sendRequest('GET', 'api/Account/LoginWithAD', {}, undefined, false, false);
         if(!response.ok) {
             if(response.status === 401) {
+                // Because the 401 code comes from IIS and not the controller, 
+                // no AuthenticationResult object is returned so we have to build it ourselves
                 const userNotFoundResult: DataAPI.DataStructures.UserManagement.AuthenticationResult = {
                     isAuthenticated: false,
                     error: AuthenticationErrorType.UserNotFound,
@@ -55,7 +64,11 @@ export class DataApiClient {
             }
             return this._handleError(response);
         }
-        return await response.json() as DataAPI.DataStructures.UserManagement.AuthenticationResult;
+        const authenticationResult = await response.json() as DataAPI.DataStructures.UserManagement.AuthenticationResult;
+        if(authenticationResult.isAuthenticated) {
+            this.setAccessToken(authenticationResult.username!, authenticationResult.accessToken!);
+        }
+        return authenticationResult;
     }
 
     login = async (username: string, password: string): Promise<DataAPI.DataStructures.UserManagement.AuthenticationResult> => {
@@ -65,23 +78,38 @@ export class DataApiClient {
         }
         const authenticationResult = await response.json() as DataAPI.DataStructures.UserManagement.AuthenticationResult;
         if(authenticationResult.isAuthenticated) {
-            this.loggedInUsername = authenticationResult.username!;
-            this.accessToken = authenticationResult.accessToken!;
+            this.setAccessToken(authenticationResult.username!, authenticationResult.accessToken!);
         }
         return authenticationResult;
     }
 
-    retryLogin = async (): Promise<DataAPI.DataStructures.UserManagement.AuthenticationResult> => {
-        throw new Error("Not implemented");
-    }
-
     setAccessToken = (username: string, accessToken: string): void => {
-        this.isLoggedIn = true;
-        this.loggedInUsername = username;
-        this.accessToken = accessToken;
+        const accessTokenObject = decodeJwtAccessToken(accessToken);
+        const expiresEpochSeconds = accessTokenObject.exp;
+        const expiresDate = new Date(expiresEpochSeconds*1000);
+        const now = new Date();
+        const millisecondsToExpiration = expiresDate.getTime() - now.getTime();
+        if(millisecondsToExpiration < 0) {
+            alert('DataAPI access token has expired. You need to log in again');
+            return;
+        }
+
+        setCookie('isLoggedIn', 'true', false, expiresDate);
+        setCookie('loggedInUsername', username, false, expiresDate);
+        setCookie('accessToken', accessToken, false, expiresDate);
+        
+        const refreshBeforeExpirationInMilliseconds = 5*60*1000;
+        if(millisecondsToExpiration < refreshBeforeExpirationInMilliseconds) {
+            this._refreshLogin();
+        } else {
+            setTimeout(this._refreshLogin, millisecondsToExpiration - refreshBeforeExpirationInMilliseconds);
+        }
     }
 
     logout = async (): Promise<void> => {
+        removeCookie('isLoggedIn');
+        removeCookie('loggedInUsername');
+        removeCookie('accessToken');
         return Promise.resolve();
     }
 
@@ -155,11 +183,7 @@ export class DataApiClient {
             overwrite: overwrite,
             data: obj
         };
-        const url = buildUrl(this.endpoint, '/api/DataIO/Submit', {});
-        const response = await fetch(url, { 
-            method: "POST", 
-            body: JSON.stringify(body)
-        });
+        const response = await this._sendRequest('POST', '/api/DataIO/Submit', {}, body, false);
         if(response.ok) {
             return await response.text();
         } else if(response.status === 409) {
@@ -448,11 +472,15 @@ export class DataApiClient {
         if(!await this.exists('DataProject', projectId)) {
             throw new Error(`No data project with ID '${projectId}' exists`)
         }
+        const loggedInUsername = this.getLoggedInUsername();
+        if(!loggedInUsername) {
+            throw new Error('Not logged in!');
+        }
         const uploadInfo: DataAPI.DataStructures.DataManagement.DataProjectUploadInfo = {
             id: uuidv4(),
             dataProjectId: projectId,
             uploadTimestamp: new Date(),
-            uploaderInitials: this.loggedInUsername!,
+            uploaderInitials: loggedInUsername,
             rawData: {
                 dataType: dataType,
                 id: dataObjectId
@@ -485,6 +513,14 @@ export class DataApiClient {
         await this.insert('DataTag', dataTag, dataTag.id);
     }
 
+    _getAccessToken = () => {
+        return getCookieValue('accessToken');
+    }
+
+    _refreshLogin = async () => {
+        await this.loginWithAD();
+    }
+
     _handleError = async (response: Response) => {
         throw new ApiError(response.status, await response.text());
     }
@@ -494,14 +530,15 @@ export class DataApiClient {
         resourcePath: string, 
         params?: { [key: string]: string | undefined }, 
         body?: any,
-        handleError: boolean = true
+        handleError: boolean = true,
+        includeAccessToken: boolean = true
     ): Promise<Response> => {
         const url = buildUrl(this.endpoint, resourcePath, params ?? {});
         const headers: HeadersInit = {
             "Content-Type": "application/json"
         };
-        if(this.isLoggedIn) {
-            headers["Authorization"] = "Bearer " + this.accessToken;
+        if(includeAccessToken && this.isLoggedIn()) {
+            headers["Authorization"] = "Bearer " + this._getAccessToken();
         }
         const options: RequestInit =  {
             method: method,
