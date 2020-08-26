@@ -41,12 +41,27 @@ class CollectionsPage extends Component<CollectionsPageProps, CollectionsPageSta
                 </Row>
                 <Row>
                     <Col md={'auto'}>
-                        <div style={{ width: '300px', marginBottom: '30px' }}>
+                        <Button className="mt-1" onClick={() => this.props.history.push("/explore/collections/new")}>+ Create collection</Button>
+
+                        <div style={{ width: '420px' }}>{/* Placeholder for sizing column */}</div>
+                        <div style={{ 
+                            width: '400px',
+                            position: 'fixed', 
+                            bottom: '20px', 
+                            top: '160px',
+                            left: '0', 
+                            zIndex: 1,
+                            overflowX: 'hidden',
+                            overflowY: 'auto',
+                            paddingTop: '20px',
+                            paddingBottom: '20px',
+                            paddingLeft: '30px',
+                            paddingRight: '20px'
+                        }}>
                             <CollectionList 
                                 onCollectionSelected={this.onCollectionSelected}
                                 editCollection={(collectionName) => this.props.history.push(`/explore/collections/edit/${collectionName}`)}
                             />
-                            <Button className="mt-3" onClick={() => this.props.history.push("/explore/collections/new")}>+ Create collection</Button>
                         </div>
                     </Col>
                     <Col>

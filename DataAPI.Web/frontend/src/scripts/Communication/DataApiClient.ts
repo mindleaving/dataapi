@@ -49,7 +49,7 @@ export class DataApiClient {
     }
 
     loginWithAD = async (): Promise<DataAPI.DataStructures.UserManagement.AuthenticationResult> => {
-        const response = await this._sendRequest('GET', 'api/Account/LoginWithAD', {}, undefined, false, false);
+        const response = await this._sendRequest('GET', 'api/Account/LoginWithAD', {}, undefined, false, LoginMethod.ActiveDirectory);
         if(!response.ok) {
             if(response.status === 401) {
                 // Because the 401 code comes from IIS and not the controller, 
@@ -533,18 +533,19 @@ export class DataApiClient {
         params?: { [key: string]: string | undefined }, 
         body?: any,
         handleError: boolean = true,
-        includeAccessToken: boolean = true
+        loginMethod: LoginMethod | "None" = LoginMethod.JsonWebToken
     ): Promise<Response> => {
         const url = buildUrl(this.endpoint, resourcePath, params ?? {});
         const headers: HeadersInit = {
             "Content-Type": "application/json"
         };
-        if(includeAccessToken && this.isLoggedIn()) {
+        if(loginMethod === LoginMethod.JsonWebToken && this.isLoggedIn()) {
             headers["Authorization"] = "Bearer " + this._getAccessToken();
         }
         const options: RequestInit =  {
             method: method,
-            headers: headers
+            headers: headers,
+            credentials: loginMethod === LoginMethod.ActiveDirectory ? 'include' : 'omit'
         };
         if(body) {
             options.body = typeof body === "string" ? body : JSON.stringify(body)
