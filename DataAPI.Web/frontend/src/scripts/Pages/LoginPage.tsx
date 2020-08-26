@@ -6,6 +6,7 @@ import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import { dataApiClient } from '../Communication/DataApiClient';
 import { useHistory } from 'react-router-dom';
+import { LoginMethod } from '../../types/dataApiDataStructuresEnums';
 
 interface LoginPageProps {
     onLoginSuccess?: () => void;
@@ -13,6 +14,7 @@ interface LoginPageProps {
 
 const LoginPage = (props: LoginPageProps) => {
 
+    const [ loginMethod, setLoginMethod ] = useState(LoginMethod.JsonWebToken);
     const [ username, setUsername ] = useState('');
     const [ password, setPassword ] = useState('');
     const [ isLoggingIn, setIsLoggingIn ] = useState(false);
@@ -23,7 +25,14 @@ const LoginPage = (props: LoginPageProps) => {
         e.preventDefault();
         setIsLoggingIn(true);
         try {
-            const authenticationResult = await dataApiClient.login(username, password);
+            let authenticationResult;
+            if(loginMethod === LoginMethod.ActiveDirectory) {
+                authenticationResult = await dataApiClient.loginWithAD();
+            } else if(loginMethod === LoginMethod.JsonWebToken) {
+                authenticationResult = await dataApiClient.login(username, password);
+            } else {
+                throw new Error(`Unsupported login method '${loginMethod}'`);
+            }
             if(authenticationResult.isAuthenticated) {
                 if(props.onLoginSuccess) {
                     props.onLoginSuccess();
@@ -46,24 +55,48 @@ const LoginPage = (props: LoginPageProps) => {
                     <h1>Login</h1>
                 </Col>
             </Row>
+            <Row className="m-3">
+                <Col sm={'auto'}>
+                    Login method:
+                </Col>
+                <Col>
+                    <Button
+                        className="mx-2"
+                        variant={loginMethod === LoginMethod.JsonWebToken ? 'primary': 'outline-primary'} 
+                        onClick={() => setLoginMethod(LoginMethod.JsonWebToken)}
+                    >
+                        Username/password
+                    </Button>
+                    <Button 
+                        className="mx-2"
+                        variant={loginMethod === LoginMethod.ActiveDirectory ? 'primary': 'outline-primary'} 
+                        onClick={() => setLoginMethod(LoginMethod.ActiveDirectory)}
+                    >
+                        Windows
+                    </Button>
+                </Col>
+            </Row>
             <Row>
                 <Col>
                     <Form className="needs-validation was-validated" onSubmit={login}>
-                        <Form.Group>
-                            <Form.Label>Username</Form.Label>
-                            <Form.Control
-                                value={username}
-                                onChange={(e: any) => setUsername(e.target.value)}
-                            />
-                        </Form.Group>
-                        <Form.Group>
-                            <Form.Label>Password</Form.Label>
-                            <Form.Control
-                                type="password"
-                                value={password}
-                                onChange={(e: any) => setPassword(e.target.value)}
-                            />
-                        </Form.Group>
+                        {loginMethod === LoginMethod.JsonWebToken ?
+                        <>
+                            <Form.Group>
+                                <Form.Label>Username</Form.Label>
+                                <Form.Control
+                                    value={username}
+                                    onChange={(e: any) => setUsername(e.target.value)}
+                                />
+                            </Form.Group>
+                            <Form.Group>
+                                <Form.Label>Password</Form.Label>
+                                <Form.Control
+                                    type="password"
+                                    value={password}
+                                    onChange={(e: any) => setPassword(e.target.value)}
+                                />
+                            </Form.Group>
+                        </> : null}
                         {errorMessage ? 
                             <div className="my-2">
                                 <b style={{ color: 'red' }}>{errorMessage}</b>

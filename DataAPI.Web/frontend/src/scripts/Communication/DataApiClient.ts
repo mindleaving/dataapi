@@ -66,6 +66,7 @@ export class DataApiClient {
         }
         const authenticationResult = await response.json() as DataAPI.DataStructures.UserManagement.AuthenticationResult;
         if(authenticationResult.isAuthenticated) {
+            this.loginMethod = LoginMethod.ActiveDirectory;
             this.setAccessToken(authenticationResult.username!, authenticationResult.accessToken!);
         }
         return authenticationResult;
@@ -78,6 +79,7 @@ export class DataApiClient {
         }
         const authenticationResult = await response.json() as DataAPI.DataStructures.UserManagement.AuthenticationResult;
         if(authenticationResult.isAuthenticated) {
+            this.loginMethod = LoginMethod.JsonWebToken;
             this.setAccessToken(authenticationResult.username!, authenticationResult.accessToken!);
         }
         return authenticationResult;
