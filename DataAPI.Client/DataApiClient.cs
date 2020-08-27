@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 using DataAPI.Client.Communicators;
+using DataAPI.Client.Serialization;
 using DataAPI.Client.UtilityFunctions;
 using DataAPI.DataStructures;
 using DataAPI.DataStructures.CollectionManagement;
@@ -164,6 +165,9 @@ namespace DataAPI.Client
 
         public Task<DataReference> TransferBinaryData(Stream data, string id = null)
             => DataTransferFunctions.TransferBinaryData(this, data, id);
+
+        public Task<DownloadStream> Download(string dataType, string id)
+            => DownloadCommunicator.GetFile(ApiConfiguration, httpClientProxy.Client, dataType, id);
 
         public Task<bool> ExistsAsync<T>(string id)
             => DataIoCommunicator.ExistsAsync(ApiConfiguration, httpClientProxy.Client, GetCollectionName<T>(), id);

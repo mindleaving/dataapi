@@ -243,6 +243,14 @@ namespace DataAPI.Client
         Task<DataReference> TransferBinaryData(Stream data, string id = null);
 
         /// <summary>
+        /// Download data object
+        /// </summary>
+        /// <param name="dataType">Collection from which to download</param>
+        /// <param name="id">ID of object to download</param>
+        /// <returns>Stream of data</returns>
+        Task<DownloadStream> Download(string dataType, string id);
+
+        /// <summary>
         /// Check existance of object with the given ID.
         /// </summary>
         /// <returns>True, if object exists, false if not. Throws exception if other status code</returns>
