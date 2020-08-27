@@ -1,6 +1,7 @@
 import React, { Component, FormEvent } from 'react';
 import { RouteComponentProps } from 'react-router-dom';
-import JsonSchemaForm, { ISubmitEvent } from '@rjsf/core';
+import JsonSchemaForm from '@rjsf/bootstrap-4';
+import { ISubmitEvent } from '@rjsf/core';
 import { v4 as uuidv4 } from 'uuid';
 import { DataAPI } from '../../types/dataApiDataStructures';
 import { JSONSchema7 } from 'json-schema';
@@ -10,7 +11,8 @@ import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Form from 'react-bootstrap/Form';
-import Button from 'react-bootstrap/esm/Button';
+import Button from 'react-bootstrap/Button';
+import { NotificationManager } from 'react-notifications';
 
 interface CreateEditDataObjectPageParams {
     dataType: string;
@@ -93,9 +95,10 @@ class CreateEditDataObjectPage extends Component<CreateEditDataObjectPageProps, 
             const obj = JSON.parse(this.state.rawJson);
             const id = this.state.id ?? obj.id ?? obj.Id ?? obj.ID ?? uuidv4();
             await dataApiClient.replace(this.state.dataType, obj, id);
+            NotificationManager.success(`Entry saved to '${this.state.dataType}'`, 'Saved!', 3000);
             this.props.history.push(`/explore/collections/${this.state.dataType}`);
         } catch(e) {
-            alert('Could not save: ' + e.message);
+            NotificationManager.error('Could not save: ' + e.message, 'Save failed!', 5000);
         } finally {
             this.setState({ isSaving: false });
         }
@@ -104,9 +107,13 @@ class CreateEditDataObjectPage extends Component<CreateEditDataObjectPageProps, 
     saveJsonSchemaForm = async (e: ISubmitEvent<unknown>) => {
         this.setState({ isSaving: true });
         try {
-
-        } catch {
-
+            const obj: any = e.formData;
+            const id = this.state.id ?? obj.id ?? obj.Id ?? obj.ID ?? uuidv4();
+            await dataApiClient.replace(this.state.dataType, obj, id);
+            NotificationManager.success(`Entry saved to '${this.state.dataType}'`, 'Saved!', 3000);
+            this.props.history.push(`/explore/collections/${this.state.dataType}`);
+        } catch(e) {
+            NotificationManager.error('Could not save: ' + e.message, 'Save failed!', 5000);
         } finally {
             this.setState({ isSaving: false });
         }

@@ -7,7 +7,7 @@ import { FrontendTypes } from '../../../../types/frontend';
 import { JsonSchemaPropertyType } from '../../../../types/frontendEnums';
 import EditJsonObject from './EditJsonObject';
 import { confirmAlert } from 'react-confirm-alert';
-import Button from 'react-bootstrap/esm/Button';
+import Button from 'react-bootstrap/Button';
 
 interface EditJsonArrayProps {
     itemType: FrontendTypes.JsonSchemaArrayItem;

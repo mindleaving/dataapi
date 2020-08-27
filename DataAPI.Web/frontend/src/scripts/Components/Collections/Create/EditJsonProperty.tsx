@@ -8,7 +8,7 @@ import EditJsonArray from './EditJsonArray';
 import JsonPropertyTypeSelector from './JsonPropertyTypeSelector';
 import EditJsonObject from './EditJsonObject';
 import { confirmAlert } from 'react-confirm-alert';
-import Button from 'react-bootstrap/esm/Button';
+import Button from 'react-bootstrap/Button';
 
 interface EditJsonPropertyProps {
     property: FrontendTypes.JsonSchemaProperty;

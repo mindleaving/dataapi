@@ -5,6 +5,7 @@ import QueryEditor from './QueryEditor';
 import SearchResultView from './SearchResultView';
 import { dataApiClient } from '../../Communication/DataApiClient';
 import { Link } from 'react-router-dom';
+import { NotificationManager } from 'react-notifications';
 
 interface CollectionExplorerProps {
     collectionName: string;
@@ -31,7 +32,7 @@ class CollectionExplorer extends Component<CollectionExplorerProps, CollectionEx
             const results = await dataApiClient.search(query);
             this.setState({ loadedItems: results });
         } catch(e) {
-            alert('Search failed: ' + e.message);
+            NotificationManager.error(e.message, 'Search failed', 3000);
         } finally {
             this.setState({ isRunningQuery: false });
         }

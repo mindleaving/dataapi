@@ -14,6 +14,7 @@ import { RouteComponentProps } from 'react-router-dom';
 import ValidatorView from '../Components/Collections/Create/ValidatorView';
 import { JsonSchemaPropertyType } from '../../types/frontendEnums';
 import { confirmAlert } from 'react-confirm-alert';
+import { NotificationManager } from 'react-notifications';
 
 interface CreateEditCollectionParams {
     collectionName?: string;
@@ -140,6 +141,7 @@ class CreateEditCollectionPage extends Component<CreateEditCollectionProps, Crea
         try {
             if(existsInDataAPI) {
                 await dataApiClient.deleteValidator(validatorId);
+                NotificationManager.success('', 'Validator deleted!', 3000);
             }
         } finally {
             this.setState(state => ({
@@ -154,7 +156,7 @@ class CreateEditCollectionPage extends Component<CreateEditCollectionProps, Crea
         try {
             const loggedInUsername = dataApiClient.getLoggedInUsername();
             if(!loggedInUsername) {
-                alert('You are not logged in!');
+                NotificationManager.error('', 'Not logged in!', 3000);
                 return;
             }
             if(this.state.isNewCollection) {
@@ -184,9 +186,10 @@ class CreateEditCollectionPage extends Component<CreateEditCollectionProps, Crea
                 };
                 await dataApiClient.submitValidator(validatorDefinition, false);
             }
+            NotificationManager.success('', `Collection '${this.state.collectionName}' created`, 3000);
             this.props.history.push('/explore/collections');
         } catch(e) {
-            alert('Could not create collection: ' + e.message);
+            NotificationManager.error(`Could not create collection: ${e.message}`, 'Error', 3000);
         } finally {
             this.setState({ isSaving: false });
         }

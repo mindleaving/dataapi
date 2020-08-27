@@ -6,7 +6,7 @@ import Col from 'react-bootstrap/Col';
 import { ValidatorType } from '../../../../types/dataApiDataStructuresEnums';
 import { FrontendTypes } from '../../../../types/frontend';
 import TextRulesView from './TextRulesView';
-import Button from 'react-bootstrap/esm/Button';
+import Button from 'react-bootstrap/Button';
 
 interface ValidatorViewProps {
     validator: FrontendTypes.CollectionValidator;

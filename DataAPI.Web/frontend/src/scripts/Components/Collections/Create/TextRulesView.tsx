@@ -11,7 +11,9 @@ const TextRulesView = (props: TextRulesViewProps) => {
     return (
         <Form.Control required
             as="textarea"
-            value={props.rules}
+            spellCheck={false}
+            style={{ height: '160px', overflowX: 'auto' }}
+            value={props.rules.split(';').map(x => x.trim()).join('\n')}
             onChange={(e:any) => props.onTextRulesChanged(e.target.value)}
         />
     );

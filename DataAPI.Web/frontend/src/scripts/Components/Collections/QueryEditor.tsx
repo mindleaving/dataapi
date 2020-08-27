@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import Form from 'react-bootstrap/Form';
 import Col from 'react-bootstrap/Col';
 import Button from 'react-bootstrap/Button';
+import { NotificationManager } from 'react-notifications';
 
 interface QueryEditorProps {
     collectionName: string;
@@ -24,7 +25,7 @@ class QueryEditor extends Component<QueryEditorProps, QueryEditorState> {
 
     runQuery = () => {
         if(!this.isQueryValid(this.state.query)) {
-            alert('Query is invalid');
+            NotificationManager.error('Query is invalid', '', 5000);
             return;
         }
         const completedQuery = this.completeQuery(this.state.query);

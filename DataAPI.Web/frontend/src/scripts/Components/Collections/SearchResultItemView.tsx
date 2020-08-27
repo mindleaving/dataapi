@@ -6,6 +6,7 @@ import { Link } from 'react-router-dom';
 import Button from 'react-bootstrap/Button';
 import { confirmAlert } from 'react-confirm-alert';
 import { dataApiClient } from '../../Communication/DataApiClient';
+import { NotificationManager } from 'react-notifications';
 
 interface SearchResultItemViewProps {
     collectionName: string;
@@ -30,7 +31,7 @@ const SearchResultItemView = (props: SearchResultItemViewProps) => {
                 props.onDeleted(dataType, id);
             }
         } catch(e) {
-            alert('Could not delete: ' + e.message);
+            NotificationManager.error(e.message, 'Could not delete', 5000);
         }
     }
 
