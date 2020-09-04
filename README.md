@@ -9,7 +9,7 @@ The DataAPI is a web-API that is a single and uniform entry point to data stored
 
 ## Prerequisites
 Before being able to start your DataAPI, you need:
-- Visual Studio
+- Visual Studio 2019
 - .NET Core 3.1 SDK or newer
 - MongoDB
   - [Install MongoDB](https://www.mongodb.com/try/download/community)
@@ -29,8 +29,8 @@ Optional, if not done change DataAPI.Web > appsettings.conf > MongoDB > ReplicaS
 - Install IIS on the server if not installed by default
 - [Install ASP.NET Core Hosting Bundle](https://dotnet.microsoft.com/permalink/dotnetcore-current-windows-runtime-bundle-installer)
 - Publish DataAPI.Web to a folder and copy these files to the webserver (or publish directly to the server if you know how to set that up).
-- Create a new website in IIS which points to the DataAPI.Web-files and configure it for SSL
-- Get a SSL-certificate for the website
+- Get a SSL-certificate for the website and install it
+- Create a new website in IIS which points to the DataAPI.Web-files and configure it for SSL with the installed IIS certificate
 - Start the website
-- Test that the website was started by visiting <website address>/api/servicestatus/ping
+- Test that the website was started by visiting \<website address\>/api/servicestatus/ping
 - Test the DataAPI-functionality by running all tests in DataAPI.IntegrationTest (NB: set address to website in ApiSetup.cs)
