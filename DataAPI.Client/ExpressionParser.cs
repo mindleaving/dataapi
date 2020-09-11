@@ -292,16 +292,53 @@ namespace DataAPI.Client
 
         private static string ParseBinaryExpression(BinaryExpression expression, string operatorSymbol, bool omitParentheses = false)
         {
-            var leftExpression = IsPathReference(expression.Left)
-                ? ExtractPath(expression.Left)
-                : ParseWhereExpression(expression.Left);
-            var rightExpression = IsPathReference(expression.Right)
-                ? ExtractPath(expression.Right)
-                : ParseWhereExpression(expression.Right);
+            string leftExpression;
+            string rightExpression;
+
+            if (IsEnumComparison(expression))
+            {
+                UnaryExpression convertExpression;
+                object enumValue;
+                if (expression.Left.NodeType.InSet(ExpressionType.Convert, ExpressionType.ConvertChecked))
+                {
+                    convertExpression = (UnaryExpression) expression.Left;
+                    enumValue = GetInstanceFromExpression(expression.Right);
+                }
+                else
+                {
+                    convertExpression = (UnaryExpression) expression.Right;
+                    enumValue = GetInstanceFromExpression(expression.Left);
+                }
+                leftExpression = ExtractPath(convertExpression.Operand);
+                var enumType = convertExpression.Operand.Type;
+                rightExpression = $"'{Enum.GetName(enumType, enumValue)}'";
+            }
+            else
+            {
+                leftExpression = IsPathReference(expression.Left)
+                    ? ExtractPath(expression.Left)
+                    : ParseWhereExpression(expression.Left);
+                rightExpression = IsPathReference(expression.Right)
+                    ? ExtractPath(expression.Right)
+                    : ParseWhereExpression(expression.Right);
+            }
+
             if(omitParentheses)
                 return $"{leftExpression} {operatorSymbol} {rightExpression}";
             else
                 return $"({leftExpression}) {operatorSymbol} ({rightExpression})";
+        }
+
+        private static bool IsEnumComparison(BinaryExpression expression)
+        {
+            UnaryExpression convertExpression;
+            if (expression.Left.NodeType.InSet(ExpressionType.Convert, ExpressionType.ConvertChecked))
+                convertExpression = (UnaryExpression)expression.Left;
+            else if (expression.Right.NodeType.InSet(ExpressionType.Convert, ExpressionType.ConvertChecked))
+                convertExpression = (UnaryExpression)expression.Right;
+            else
+                return false;
+            return convertExpression.Operand.Type.IsEnum;
         }
 
         private static bool IsPathReference(Expression expression)

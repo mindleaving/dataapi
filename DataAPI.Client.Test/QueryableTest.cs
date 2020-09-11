@@ -43,7 +43,7 @@ namespace DataAPI.Client.Test
         }
 
         [Test]
-        [NUnit.Framework.Category("IntegrationTest")]
+        [Category("IntegrationTest")]
         public void QueryableIntegrationTest()
         {
             var ids = new List<string> {"1228357", "1228358"};
