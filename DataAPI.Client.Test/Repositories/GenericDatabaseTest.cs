@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using DataAPI.Client.Repositories;
 using DataAPI.Client.Test.Models;
 using Moq;
+using Newtonsoft.Json.Linq;
 using NUnit.Framework;
 
 namespace DataAPI.Client.Test.Repositories
@@ -49,13 +50,27 @@ namespace DataAPI.Client.Test.Repositories
         }
 
         [Test]
-        public async Task PermanentFilterIsApplied()
+        public async Task PermanentFilterIsAppliedForTypedRepository()
         {
             string actual = null;
             dataApiClient.Setup(x => x.GetManyAsync<TestObject1>(It.IsAny<string>(), null, null))
                 .Callback<string, string, uint?>((whereArguments, orderByArguments, limit) => actual = whereArguments)
                 .ReturnsAsync(new List<TestObject1>());
             var sut = new GenericDatabase<TestObject1>(dataApiClient.Object, x => x.SourceSystem == "XY");
+
+            await sut.GetManyAsync("Data.source_id LIKE 'abc%'");
+
+            Assert.That(actual, Is.EqualTo("Data.source_system = 'XY' AND (Data.source_id LIKE 'abc%')"));
+        }
+
+        [Test]
+        public async Task PermanentFilterIsAppliedForTypelessRepository()
+        {
+            string actual = null;
+            dataApiClient.Setup(x => x.GetManyAsync("TestObject1", It.IsAny<string>(), null, null))
+                .Callback<string, string, string, uint?>((dataType, whereArguments, orderByArguments, limit) => actual = whereArguments)
+                .ReturnsAsync(new List<string>());
+            var sut = new GenericDatabase(dataApiClient.Object, "TestObject1", "Data.source_system = 'XY'");
 
             await sut.GetManyAsync("Data.source_id LIKE 'abc%'");
 

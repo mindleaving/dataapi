@@ -15,11 +15,13 @@ namespace DataAPI.Client.Repositories
     public class GenericDatabase : IObjectDatabase<JObject>
     {
         private readonly IDataApiClient dataApiClient;
+        private readonly string parsedPermanentFilter;
         private readonly ConcurrentDictionary<string, JObject> cachedItems = new ConcurrentDictionary<string, JObject>();
 
-        public GenericDatabase(IDataApiClient dataApiClient, string collectionName)
+        public GenericDatabase(IDataApiClient dataApiClient, string collectionName, string permanentFilter = null)
         {
             this.dataApiClient = dataApiClient ?? throw new ArgumentNullException(nameof(dataApiClient));
+            parsedPermanentFilter = permanentFilter;
             ElementType = typeof(JObject);
             Provider = new DataApiQueryProvider<JObject>(dataApiClient);
             Expression = Expression.Constant(this);
@@ -36,7 +38,8 @@ namespace DataAPI.Client.Repositories
         public async Task<IEnumerable<JObject>> GetManyAsync(string sqlWhereClause, string orderByClause = null, uint? limit = null)
         {
             EnsureLoggedIn();
-            var items = (await dataApiClient.GetManyAsync(CollectionName, sqlWhereClause, orderByClause, limit))
+            var combinedWhereClause = WhereClauseCombiner.CombinedWhereClause(parsedPermanentFilter, sqlWhereClause);
+            var items = (await dataApiClient.GetManyAsync(CollectionName, combinedWhereClause, orderByClause, limit))
                 .Select(JObject.Parse)
                 .ToList();
             items.ForEach(item => cachedItems.AddOrUpdate(GetId(item), item, (key, existingItem) => item));
@@ -119,16 +122,23 @@ namespace DataAPI.Client.Repositories
     public class GenericDatabase<T> : IObjectDatabase<T> where T: IId
     {
         private readonly IDataApiClient dataApiClient;
-        private readonly Expression<Func<T, bool>> permanentFilter;
         private readonly string parsedPermanentFilter;
         private readonly ConcurrentDictionary<string, T> cachedItems = new ConcurrentDictionary<string, T>();
 
-        public GenericDatabase(IDataApiClient dataApiClient, Expression<Func<T, bool>> permanentFilter = null)
+        public GenericDatabase(IDataApiClient dataApiClient, Expression<Func<T, bool>> permanentFilter)
         {
             this.dataApiClient = dataApiClient ?? throw new ArgumentNullException(nameof(dataApiClient));
-            this.permanentFilter = permanentFilter;
             if (permanentFilter != null)
                 parsedPermanentFilter = ExpressionParser.ParseWhereExpression(permanentFilter);
+            ElementType = typeof(T);
+            Provider = new DataApiQueryProvider<T>(dataApiClient);
+            Expression = Expression.Constant(this);
+        }
+
+        public GenericDatabase(IDataApiClient dataApiClient, string permanentFilter = null)
+        {
+            this.dataApiClient = dataApiClient ?? throw new ArgumentNullException(nameof(dataApiClient));
+            parsedPermanentFilter = permanentFilter;
             ElementType = typeof(T);
             Provider = new DataApiQueryProvider<T>(dataApiClient);
             Expression = Expression.Constant(this);
