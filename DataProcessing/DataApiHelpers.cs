@@ -6,7 +6,6 @@ using Commons.Extensions;
 using DataAPI.Client;
 using DataAPI.Client.Serialization;
 using DataAPI.DataStructures;
-using DataAPI.DataStructures.DomainModels;
 
 namespace DataProcessing
 {

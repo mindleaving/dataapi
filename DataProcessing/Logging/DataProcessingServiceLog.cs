@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Threading;
-using DataAPI.DataStructures.DomainModels;
+using DataAPI.DataStructures;
 using Newtonsoft.Json;
 
 namespace DataProcessing.Logging

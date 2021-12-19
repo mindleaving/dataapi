@@ -1,5 +1,5 @@
 ﻿using DataAPI.DataStructures.Constants;
-using DataAPI.DataStructures.DomainModels;
+using DataAPI.DataStructures.Distribution;
 
 namespace DataProcessing.Models
 {

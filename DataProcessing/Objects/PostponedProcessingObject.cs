@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using DataAPI.DataStructures;
 using DataAPI.DataStructures.DataManagement;
 using DataAPI.DataStructures.DataSubscription;
-using DataAPI.DataStructures.DomainModels;
 using Newtonsoft.Json;
 
 namespace DataProcessing.Objects
