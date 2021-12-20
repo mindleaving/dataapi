@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using DataAPI.DataStructures;
 using DataAPI.DataStructures.DataManagement;
 using DataAPI.DataStructures.DataSubscription;
-using DataAPI.DataStructures.DomainModels;
 using DataProcessing.Objects;
 using Newtonsoft.Json;
 

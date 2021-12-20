@@ -6,7 +6,6 @@ using Commons.Extensions;
 using DataAPI.Client;
 using DataAPI.DataStructures;
 using Microsoft.Win32;
-using Ookii.Dialogs.Wpf;
 using SharedViewModels.Helpers;
 using SharedViewModels.ViewModels;
 using SharedWpfControls.Helpers;
@@ -76,12 +75,7 @@ namespace DataExplorerWpf.ViewModels
 
         private async Task ExportAll()
         {
-            var outputDirectoryDialog = new VistaFolderBrowserDialog
-            {
-                Description = @"Select output folder",
-                UseDescriptionForTitle = true,
-                ShowNewFolderButton = true
-            };
+            var outputDirectoryDialog = new WpfFolderBrowseDialog(@"Select output folder", true);
             if(outputDirectoryDialog.ShowDialog() != true)
                 return;
 

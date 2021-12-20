@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using DataAPI.DataStructures.DomainModels;
+using DataAPI.DataStructures;
 using DataProcessing.Logging;
 using DataProcessing.Test.Models;
 using NUnit.Framework;

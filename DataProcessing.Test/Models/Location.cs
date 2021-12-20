@@ -1,4 +1,4 @@
-﻿using DataAPI.DataStructures.DomainModels;
+﻿using DataAPI.DataStructures;
 
 namespace DataProcessing.Test.Models
 {

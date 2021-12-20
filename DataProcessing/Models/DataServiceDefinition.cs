@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using DataAPI.DataStructures.DomainModels;
+using DataAPI.DataStructures.Distribution;
 using Newtonsoft.Json;
 
 namespace DataProcessing.Models

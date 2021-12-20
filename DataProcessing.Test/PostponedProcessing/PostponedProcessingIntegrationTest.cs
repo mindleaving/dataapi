@@ -1,9 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using DataAPI.DataStructures;
 using DataAPI.DataStructures.DataManagement;
 using DataAPI.DataStructures.DataSubscription;
-using DataAPI.DataStructures.DomainModels;
 using DataProcessing.Objects;
 using DataProcessing.ProcessingPostponing;
 using DataProcessing.Test.Models;

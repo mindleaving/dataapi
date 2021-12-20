@@ -5,7 +5,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="mindleaving.DataAPI.Client" Version="1.19.0" />
+    <PackageReference Include="mindleaving.DataAPI.Client" Version="1.21.0" />
     <PackageReference Include="mindleaving.DataAPI.DataStructures" Version="1.16.0" />
   </ItemGroup>
 
