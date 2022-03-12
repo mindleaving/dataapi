@@ -17,6 +17,11 @@ namespace DataAPI.Web
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
                     webBuilder.UseStartup<Startup>();
+                    webBuilder.UseKestrel(
+                        options =>
+                        {
+                            options.Limits.MaxRequestBodySize = long.MaxValue;
+                        });
                 });
     }
 }

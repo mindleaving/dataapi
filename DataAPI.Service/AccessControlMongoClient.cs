@@ -19,13 +19,13 @@ namespace DataAPI.Service
             string password)
         {
             SetupConventions();
-            Client = new MongoClient(new MongoClientSettings
-            {
-                ConnectionMode = ConnectionMode.ReplicaSet,
-                ReplicaSetName = replicaSetName,
-                Servers = serverAddresses.Select(MongoServerAddress.Parse).ToList(),
-                Credential = MongoCredential.CreateCredential("admin", username, password)
-            });
+            Client = new MongoClient();
+            //Client = new MongoClient(new MongoClientSettings
+            //{
+            //    ReplicaSetName = replicaSetName,
+            //    Servers = serverAddresses.Select(MongoServerAddress.Parse).ToList(),
+            //    Credential = MongoCredential.CreateCredential("admin", username, password)
+            //});
             Database = Client.GetDatabase(databaseName);
         }
 

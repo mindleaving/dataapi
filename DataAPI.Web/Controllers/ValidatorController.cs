@@ -25,14 +25,14 @@ namespace DataAPI.Web.Controllers
     {
         private readonly AuthorizationModule authorizationModule;
         private readonly ValidatorManager validatorManager;
-        private readonly ApiEventLogger apiEventLogger;
+        private readonly IEventLogger apiEventLogger;
 
 #pragma warning disable 1591
         public ValidatorController(
 #pragma warning restore 1591
             AuthorizationModule authorizationModule,
             ValidatorManager validatorManager,
-            ApiEventLogger apiEventLogger)
+            IEventLogger apiEventLogger)
         {
             this.authorizationModule = authorizationModule;
             this.validatorManager = validatorManager;

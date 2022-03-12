@@ -38,7 +38,7 @@ namespace DataAPI.Web.Controllers
         private readonly CollectionInformationManager collectionInformationManager;
         private readonly ValidatorManager validatorManager;
         private readonly SubscriptionManager subscriptionManager;
-        private readonly ApiEventLogger apiEventLogger;
+        private readonly IEventLogger apiEventLogger;
         private readonly IIdPolicy idPolicy;
         private readonly NewCollectionTasks newCollectionTasks;
 
@@ -49,7 +49,7 @@ namespace DataAPI.Web.Controllers
             CollectionInformationManager collectionInformationManager,
             ValidatorManager validatorManager,
             SubscriptionManager subscriptionManager, 
-            ApiEventLogger apiEventLogger,
+            IEventLogger apiEventLogger,
             IDataRouter dataRouter,
             IIdPolicy idPolicy,
             NewCollectionTasks newCollectionTasks)
@@ -93,6 +93,7 @@ namespace DataAPI.Web.Controllers
         /// <param name="dataType">Data type of submission</param>
         /// <param name="submissionId">ID of submission</param>
         [HttpPost]
+        [DisableRequestSizeLimit]
         [ActionName(nameof(TransferSubmissionData))]
         [ProducesResponseType(typeof(void), 200)]
         [ProducesResponseType(typeof(string), 400)]

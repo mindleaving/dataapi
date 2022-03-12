@@ -26,14 +26,14 @@ namespace DataAPI.Web.Controllers
     {
         private readonly AuthenticationModule authenticationModule;
         private readonly AuthorizationModule authorizationModule;
-        private readonly ApiEventLogger apiEventLogger;
+        private readonly IEventLogger apiEventLogger;
 
 #pragma warning disable 1591
         public AccountController(
 #pragma warning restore 1591
             AuthenticationModule authenticationModule,
             AuthorizationModule authorizationModule,
-            ApiEventLogger apiEventLogger)
+            IEventLogger apiEventLogger)
         {
             this.authenticationModule = authenticationModule;
             this.authorizationModule = authorizationModule;

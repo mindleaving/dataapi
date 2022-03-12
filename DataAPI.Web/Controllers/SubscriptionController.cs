@@ -25,7 +25,7 @@ namespace DataAPI.Web.Controllers
         private readonly AuthenticationModule authenticationModule;
         private readonly AuthorizationModule authorizationModule;
         private readonly SubscriptionManager subscriptionManager;
-        private readonly ApiEventLogger apiEventLogger;
+        private readonly IEventLogger apiEventLogger;
 
 #pragma warning disable 1591
         public SubscriptionController(
@@ -33,7 +33,7 @@ namespace DataAPI.Web.Controllers
             AuthenticationModule authenticationModule,
             AuthorizationModule authorizationModule, 
             SubscriptionManager subscriptionManager, 
-            ApiEventLogger apiEventLogger)
+            IEventLogger apiEventLogger)
         {
             this.authenticationModule = authenticationModule;
             this.authorizationModule = authorizationModule;

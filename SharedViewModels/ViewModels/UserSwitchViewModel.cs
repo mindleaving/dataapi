@@ -5,7 +5,7 @@ using SharedViewModels.Helpers;
 
 namespace SharedViewModels.ViewModels
 {
-    public class UserSwitchViewModel
+    public class UserSwitchViewModel : NotifyPropertyChangedBase
     {
         private readonly IDataApiClient dataApiClient;
         private readonly Action loginSuccessfulCallback;
@@ -63,6 +63,12 @@ namespace SharedViewModels.ViewModels
             } while (true);
             if (!dataApiClient.IsLoggedIn)
                 loginFailedCallback();
+        }
+
+        public void TriggerOnPropertyChangedEvents()
+        {
+            OnPropertyChanged(nameof(IsLoggedIn));
+            OnPropertyChanged(nameof(LoggedInUser));
         }
     }
 }

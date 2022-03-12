@@ -25,14 +25,14 @@ namespace DataAPI.Web.Controllers
     {
         private readonly IDataRouter dataRouter;
         private readonly AuthorizationModule authorizationModule;
-        private readonly ApiEventLogger apiEventLogger;
+        private readonly IEventLogger apiEventLogger;
 
 #pragma warning disable 1591
         public DownloadController(
 #pragma warning restore 1591
             IDataRouter dataRouter, 
             AuthorizationModule authorizationModule,
-            ApiEventLogger apiEventLogger)
+            IEventLogger apiEventLogger)
         {
             this.dataRouter = dataRouter;
             this.authorizationModule = authorizationModule;

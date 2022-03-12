@@ -30,7 +30,7 @@ namespace DataAPI.Web.Controllers
         private readonly ViewManager viewManager;
         private readonly IDataRouter dataRouter;
         private readonly AuthorizationModule authorizationModule;
-        private readonly ApiEventLogger apiEventLogger;
+        private readonly IEventLogger apiEventLogger;
 
 #pragma warning disable 1591
         public ViewController(
@@ -38,7 +38,7 @@ namespace DataAPI.Web.Controllers
             ViewManager viewManager, 
             IDataRouter dataRouter,
             AuthorizationModule authorizationModule,
-            ApiEventLogger apiEventLogger)
+            IEventLogger apiEventLogger)
         {
             this.viewManager = viewManager;
             this.dataRouter = dataRouter;

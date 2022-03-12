@@ -57,6 +57,7 @@ namespace DataExplorerWpf.ViewModels
         public async void LoginSuccessful()
         {
             await CollectionsMainViewModel.Reload();
+            UserSwitchViewModel.TriggerOnPropertyChangedEvents();
         }
 
         private void LoginFailed()
