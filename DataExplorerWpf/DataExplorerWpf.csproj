@@ -8,7 +8,7 @@
 
   <ItemGroup>
     <PackageReference Include="mindleaving.DataAPI.Client" Version="1.21.0" />
-    <PackageReference Include="Ookii.Dialogs.Wpf" Version="5.0.0" />
+    <PackageReference Include="Ookii.Dialogs.Wpf" Version="5.0.1" />
   </ItemGroup>
 
   <ItemGroup>

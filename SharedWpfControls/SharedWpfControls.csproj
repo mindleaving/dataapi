@@ -7,7 +7,7 @@
 
   <ItemGroup>
     <PackageReference Include="mindleaving.Commons" Version="2.1.8" />
-    <PackageReference Include="Ookii.Dialogs.Wpf" Version="5.0.0" />
+    <PackageReference Include="Ookii.Dialogs.Wpf" Version="5.0.1" />
   </ItemGroup>
 
   <ItemGroup>
