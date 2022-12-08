@@ -5,7 +5,7 @@ namespace DataAPI.IntegrationTest
 {
     public static class ApiSetup
     {
-        public static string ServerAddress { get; } = "";
+        public static string ServerAddress { get; } = "dataapi.doctorstodo.com";
         public static ushort ServerPort { get; } = 443;
         public static ApiConfiguration ApiConfiguration { get; } = new ApiConfiguration(ServerAddress, ServerPort);
 

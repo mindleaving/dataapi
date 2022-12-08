@@ -1,13 +1,13 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net5.0-windows</TargetFramework>
+    <TargetFramework>net6.0-windows</TargetFramework>
     <UseWPF>true</UseWPF>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="mindleaving.Commons" Version="2.1.8" />
-    <PackageReference Include="Ookii.Dialogs.Wpf" Version="5.0.0" />
+    <PackageReference Include="Ookii.Dialogs.Wpf" Version="5.0.1" />
   </ItemGroup>
 
   <ItemGroup>

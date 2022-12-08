@@ -3,7 +3,7 @@
   <Profiles />
   <Settings>
     <Setting Name="ApiServerAddress" Type="System.String" Scope="User">
-      <Value Profile="(Default)">dataapi</Value>
+      <Value Profile="(Default)">dataapi.doctorstodo.com</Value>
     </Setting>
     <Setting Name="ApiServerPort" Type="System.UInt16" Scope="User">
       <Value Profile="(Default)">443</Value>

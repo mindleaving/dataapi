@@ -25,7 +25,7 @@ namespace FileUploader.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("dataapi")]
+        [global::System.Configuration.DefaultSettingValueAttribute("dataapi.doctorstodo.com")]
         public string ApiServerAddress {
             get {
                 return ((string)(this["ApiServerAddress"]));
