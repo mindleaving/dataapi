@@ -2,7 +2,7 @@
 {
     public class SubscriptionObject
     {
-        public string NotificationId { get; }
-        public object Object { get; }
+        public string NotificationId { get; set; }
+        public object Object { get; set; }
     }
 }

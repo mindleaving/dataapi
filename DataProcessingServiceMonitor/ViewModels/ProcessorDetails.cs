@@ -13,7 +13,7 @@ namespace DataProcessingServiceMonitor.ViewModels
         }
 
         public string Name { get; }
-        public DataProcessingServiceExecutorType ExecutorType { get; }
+        public DataProcessingServiceExecutorType ExecutorType { get; set; }
         public string InputTypeName { get; }
         public string OutputTypeName { get; }
         public UnitValue ExecutionTimeLast24Hours { get; set; }

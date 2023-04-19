@@ -6,7 +6,7 @@ namespace DataAPI.Client.Test.Models
     {
         public string Id { get; set; }
         public string EntityId { get; set; }
-        public List<WellMeasurement> Items { get; }
+        public List<WellMeasurement> Items { get; set; }
         public string ExperimentId { get; set; }
     }
 

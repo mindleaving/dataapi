@@ -68,7 +68,7 @@ namespace DataAPI.Client.Test
             public string InputMessage { get; set; }
             public string ErrorTitle { get; set; }
             public string ErrorMessage { get; set; }
-            public List<ParameterOption> Options { get; }
+            public List<ParameterOption> Options { get; set; }
         }
 
         [DataApiCollection("AttributeCollectionName")]

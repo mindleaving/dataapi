@@ -1,13 +1,13 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFramework>net5.0</TargetFramework>
+    <TargetFramework>net7.0</TargetFramework>
     <AssemblyName>SharedWpfControls.Test</AssemblyName>
     <RootNamespace>SharedWpfControls.Test</RootNamespace>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="mindleaving.Commons" Version="2.1.8" />
+    <PackageReference Include="mindleaving.Commons" Version="2.2.1" />
     <PackageReference Include="NUnit" Version="3.13.3" />
-    <PackageReference Include="NUnit3TestAdapter" Version="4.3.1" />
+    <PackageReference Include="NUnit3TestAdapter" Version="4.4.2" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\SharedViewModels\SharedViewModels.csproj" />

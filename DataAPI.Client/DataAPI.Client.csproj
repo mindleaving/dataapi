@@ -18,9 +18,9 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="mindleaving.Commons" Version="2.1.8" />
+    <PackageReference Include="mindleaving.Commons" Version="2.2.1" />
     <PackageReference Include="mindleaving.DataAPI.DataStructures" Version="1.16.0" />
-    <PackageReference Include="Newtonsoft.Json" Version="13.0.2" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
   </ItemGroup>
 
 </Project>

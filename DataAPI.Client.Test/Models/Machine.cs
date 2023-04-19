@@ -2,6 +2,6 @@
 {
     internal class Machine
     {
-        public Location Location { get; }
+        public Location Location { get; set; }
     }
 }

@@ -97,6 +97,6 @@ namespace SharedViewModels.Repositories
 
         public Expression Expression { get; }
         public Type ElementType { get; } = typeof(UserProfile);
-        public IQueryProvider Provider { get; }
+        public IQueryProvider Provider { get; set; }
     }
 }
