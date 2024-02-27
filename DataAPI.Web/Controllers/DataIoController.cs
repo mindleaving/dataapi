@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 using Commons.Extensions;
@@ -29,9 +28,7 @@ namespace DataAPI.Web.Controllers
     [Authorize]
     [ApiController]
     [Route("api/[controller]/[action]")]
-#pragma warning disable 1591
     public class DataIoController : ControllerBase
-#pragma warning restore 1591
     {
         private readonly IDataRouter dataRouter;
         private readonly AuthorizationModule authorizationModule;
@@ -42,9 +39,7 @@ namespace DataAPI.Web.Controllers
         private readonly IIdPolicy idPolicy;
         private readonly NewCollectionTasks newCollectionTasks;
 
-#pragma warning disable 1591
         public DataIoController(
-#pragma warning restore 1591
             AuthorizationModule authorizationModule,
             CollectionInformationManager collectionInformationManager,
             ValidatorManager validatorManager,

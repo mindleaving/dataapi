@@ -2,11 +2,11 @@
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.ServiceProcess;
-using Commons.Extensions;
 using DataProcessing;
 
 namespace DataProcessingService
 {
+    // TODO: Convert to BackgroundService (https://learn.microsoft.com/en-us/dotnet/core/extensions/windows-service)
     public partial class DataProcessingService : ServiceBase
     {
         [DllImport("advapi32.dll", SetLastError=true)]  

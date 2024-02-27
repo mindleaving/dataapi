@@ -33,7 +33,7 @@ namespace DataAPI.IntegrationTest
                 Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.OK));
                 Assert.That(response.Content.Headers.ContentDisposition, Is.Not.Null);
                 var content = await response.Content.ReadAsByteArrayAsync();
-                CollectionAssert.AreEqual(dataBlob.Data, content);
+                Assert.That(content, Is.EqualTo(dataBlob.Data));
             }
             finally
             {
@@ -62,7 +62,7 @@ namespace DataAPI.IntegrationTest
                 Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.OK));
                 Assert.That(response.Content.Headers.ContentDisposition, Is.Not.Null);
                 var content = await response.Content.ReadAsByteArrayAsync();
-                CollectionAssert.AreEqual(dataBlob.Data, content);
+                Assert.That(content, Is.EqualTo(dataBlob.Data));
             }
             finally
             {

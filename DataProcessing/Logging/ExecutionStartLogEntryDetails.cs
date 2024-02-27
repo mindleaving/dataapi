@@ -4,6 +4,7 @@ namespace DataProcessing.Logging
 {
     public class ExecutionStartLogEntryDetails : ILogEntryDetails
     {
+        public ExecutionStartLogEntryDetails() {}
         [JsonConstructor]
         public ExecutionStartLogEntryDetails(
             DataProcessingServiceExecutorType executorType, 

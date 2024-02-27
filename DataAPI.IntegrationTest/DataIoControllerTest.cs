@@ -216,7 +216,7 @@ namespace DataAPI.IntegrationTest
                     Throws.Nothing);
                 Assert.That(allSearchObjects, Is.Not.Null);
                 Assume.That(allSearchObjects.Count, Is.EqualTo(submittedData.Count), "Search data collection may not be clean. Remove all documents from the collection and run this test again");
-                CollectionAssert.AreEquivalent(submittedData.Select(x => x.Id), allSearchObjects.Select(x => x.Id));
+                Assert.That(allSearchObjects.Select(x => x.Id), Is.EquivalentTo(submittedData.Select(x => x.Id)));
             }
             finally 
             {
@@ -264,7 +264,7 @@ namespace DataAPI.IntegrationTest
                     Assert.Inconclusive($"WARNING: Collection '{nameof(UnitTestSearchObject)}' contains data from previous tests. " +
                                       "Delete all documents in these collections manually");
                 }
-                CollectionAssert.IsSubsetOf(submittedData.Select(x => x.Id), results.Select(row => row.Value<string>("_id")), "Test 1 failed");
+                Assert.That(results.Select(row => row.Value<string>("_id")), Is.SubsetOf(submittedData.Select(x => x.Id)), "Test 1 failed");
 
                 // Test 2:
                 var query2 = $"SELECT Data.Id AS Id, Data.Products.Price AS Price FROM {nameof(UnitTestSearchObject)} ORDER BY Price";
@@ -274,7 +274,7 @@ namespace DataAPI.IntegrationTest
                 Assert.That(results.All(x => x.ContainsKey("Price")), "Results do not contain 'Price'-field");
                 var expectedPrices = submittedData.SelectMany(x => x.Products).Select(product => product.Price).OrderBy(price => price).ToList();
                 var actualPrices = results.Select(x => x.Value<double>("Price")).ToList();
-                CollectionAssert.AreEqual(expectedPrices, actualPrices, "Test 2 failed");
+                Assert.That(actualPrices, Is.EqualTo(expectedPrices), "Test 2 failed");
             }
             finally 
             {
@@ -490,9 +490,7 @@ namespace DataAPI.IntegrationTest
                 List<string> actual = null;
                 var repository = new GenericDatabase<UnitTestSearchObject>(analystDataApiClient);
                 Assert.That(() => actual = repository.OrderBy(x => x.Name).Select(x => x.Id).ToList(), Throws.Nothing);
-                CollectionAssert.AreEqual(
-                    submittedData.OrderBy(x => x.Name).Select(x => x.Id).ToList(),
-                    actual);
+                Assert.That(actual, Is.EqualTo(submittedData.OrderBy(x => x.Name).Select(x => x.Id).ToList()));
             }
             finally 
             {

@@ -1,4 +1,4 @@
-﻿
+
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.29609.76
@@ -7,7 +7,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DataProcessing", "DataProce
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DataProcessing.Test", "DataProcessing.Test\DataProcessing.Test.csproj", "{52D6D429-8EF8-4A95-A797-207C10E2E0AF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DataProcessingService", "DataProcessingService\DataProcessingService.csproj", "{A7AB2AA0-C0DA-4F70-84E6-73F38264D807}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DataProcessingService", "DataProcessingService\DataProcessingService.csproj", "{A7AB2AA0-C0DA-4F70-84E6-73F38264D807}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DataProcessingServiceMonitor", "DataProcessingServiceMonitor\DataProcessingServiceMonitor.csproj", "{D21D5FEB-1545-4031-9296-481A0261B020}"
 EndProject

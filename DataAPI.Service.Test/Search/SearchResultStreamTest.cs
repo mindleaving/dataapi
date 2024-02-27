@@ -17,7 +17,7 @@ namespace DataAPI.Service.Test.Search
             using var sut = new SearchResultStream(asyncEnumerable);
             using var streamReader = new StreamReader(sut);
             var actual = ReadAllLines(streamReader).ToList();
-            CollectionAssert.IsEmpty(actual);
+            Assert.That(actual, Is.Empty);
         }
 
         [Test]
@@ -28,7 +28,7 @@ namespace DataAPI.Service.Test.Search
             using var sut = new SearchResultStream(asyncEnumerable);
             using var streamReader = new StreamReader(sut);
             var actual = ReadAllLines(streamReader).ToList();
-            CollectionAssert.AreEqual(expected, actual);
+            Assert.That(actual, Is.EqualTo(expected));
         }
 
         private static IEnumerable<string> ReadAllLines(TextReader streamReader)

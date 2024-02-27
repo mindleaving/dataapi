@@ -2,6 +2,7 @@
 {
     public class CrashLogEntryDetails : ILogEntryDetails
     {
+        public CrashLogEntryDetails() {}
         public CrashLogEntryDetails(string crashedEntity, string exceptionMessage)
         {
             CrashedEntity = crashedEntity;

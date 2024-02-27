@@ -51,7 +51,7 @@ namespace DataAPI.Client.Test
             var queryable = new GenericDatabase<TestObject1>(dataApiClient);
             var searchResult = queryable.Where(x => ids.Contains(x.Id)).ToList();
             Assert.That(searchResult, Is.Not.Null);
-            CollectionAssert.AreEqual(ids, searchResult.Select(x => x.Id));
+            Assert.That(searchResult.Select(x => x.Id), Is.EqualTo(ids));
         }
 
         [Test]

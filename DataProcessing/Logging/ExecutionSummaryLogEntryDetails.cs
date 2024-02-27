@@ -5,6 +5,7 @@ namespace DataProcessing.Logging
 {
     public class ExecutionSummaryLogEntryDetails : ILogEntryDetails
     {
+        public ExecutionSummaryLogEntryDetails() {}
         public ExecutionSummaryLogEntryDetails(
             DataProcessingServiceExecutorType executorType,
             string processorName,

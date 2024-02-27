@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
-using Commons.Extensions;
 using DataAPI.DataStructures;
 using DataAPI.Service;
 using DataAPI.Service.DataRouting;
@@ -44,7 +43,7 @@ namespace DataAPI.Web
             }
             catch (AggregateException aggregateException)
             {
-                var innermostException = aggregateException.InnermostException();
+                var innermostException = Commons.Extensions.ExceptionExtensions.InnermostException(aggregateException);
                 if (innermostException is FormatException)
                 {
                     return new ContentResult
@@ -87,16 +86,14 @@ namespace DataAPI.Web
                 var entry = topLevelFields.ToDictionary(element => element.Name, element => $"\"{element.Value}\"");
                 var entryColumnNames = entry.Keys.ToList();
                 // Update header map with new columns
-                entryColumnNames
-                    .Where(columnName => !columnNames.Contains(columnName))
-                    .ForEach(columnName => columnNames.Add(columnName));
+                columnNames.AddRange(entryColumnNames.Where(columnName => !columnNames.Contains(columnName)));
                 if (firstDocument)
                 {
                     yield return string.Join(Delimiter, columnNames);
                     firstDocument = false;
                 }
 
-                var rowValues = columnNames.Select(columnName => entry.ContainsKey(columnName) ? entry[columnName] : null);
+                var rowValues = columnNames.Select(columnName => entry.GetValueOrDefault(columnName));
                 yield return string.Join(Delimiter, rowValues);
             }
         }
